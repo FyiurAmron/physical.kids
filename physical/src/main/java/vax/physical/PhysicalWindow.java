@@ -1,5 +1,8 @@
 package vax.physical;
 
+import vax.math.Plane3f;
+import vax.physical.body.PlaneBody;
+import vax.physical.body.SphereBody;
 import vax.openglue.mesh.SphereMesh;
 import vax.openglue.mesh.RectangleMesh;
 import vax.openglue.mesh.Mesh;
@@ -199,19 +202,19 @@ public class PhysicalWindow extends WindowGLUE {
         //bodyManager.Gravity.setZero();
             /* SphereBody */
         squirrelBody = new SphereBody( 1, BALL_RADIUS );
-        squirrelBody.Transform.setTranslation( 40, 40, 40 );
-        squirrelBody.RotationSpeed = 1f;
+        squirrelBody.getTransform().setTranslation( 40, 40, 40 );
+        squirrelBody.setRotationSpeed( 1f);
         /* SphereBody */
         turtleBody = new SphereBody( 25, BALL_RADIUS * 5 );
-        turtleBody.Transform.setTranslation( 0, 20, 0 );
+        turtleBody.getTransform().setTranslation( 0, 20, 0 );
         //turtleBody.Velocity.Y = 5;
-        turtleBody.RotationSpeed = 1f;
+        turtleBody.setRotationSpeed( 1f);
         /* SphereBody */
         dilloBody = new SphereBody( 25, BALL_RADIUS * 2 );
         //dilloBody.Transform.setTranslation( -20, 100, -30 );
-        dilloBody.Transform.setTranslation( 0, 30, 0 );
+        dilloBody.getTransform().setTranslation( 0, 30, 0 );
         //dilloBody.Velocity.Y = -5;
-        dilloBody.RotationSpeed = 1f;
+        dilloBody.setRotationSpeed( 1f);
         Vector3f fixPoint = new Vector3f( 0, 42, 9 );
         /*
          // spring - vertical harmonic oscillator
@@ -242,7 +245,7 @@ public class PhysicalWindow extends WindowGLUE {
         };
 
         for( PlaneBody pb : planeBodies ) {
-            pb.Friction = 0.1f;
+            pb.setFriction( 0.1f );
             bodyManager.addBody( pb );
         }
         bodyManager.addBody( squirrelBody, squirrelMesh );
@@ -253,7 +256,7 @@ public class PhysicalWindow extends WindowGLUE {
     }
 
     @Override
-    protected void onUpdateFrame ( FrameEventArgs e ) {
+    protected void onUpdateFrame () {
         KeyboardState currentKeyboardState = OpenTK.Input.Keyboard.GetState();
         if ( currentKeyboardState[Key.Escape] ) {
             System.exit( 0 );
@@ -305,9 +308,9 @@ public class PhysicalWindow extends WindowGLUE {
             bodyManager.Gravity.rotate( 1 );
         }
         if ( currentKeyboardState[Key.BackSlash] && !lastKeyboardState[Key.BackSlash] ) {
-            squirrelBody.Restitution = 1 - squirrelBody.Restitution;
-            dilloBody.Restitution = 1 - dilloBody.Restitution;
-            turtleBody.Restitution = 1 - turtleBody.Restitution;
+            squirrelBody.setRestitution( 1 - squirrelBody.getRestitution() );
+            dilloBody.setRestitution( 1 - dilloBody.getRestitution() );
+            turtleBody.setRestitution( 1 - turtleBody.getRestitution() );
         }
 
         if ( currentKeyboardState[Key.Number1] ) {

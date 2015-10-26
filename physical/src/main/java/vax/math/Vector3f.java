@@ -38,4 +38,8 @@ public class Vector3f extends VectorFloat {
     public void scale ( float f ) {
         throw new UnsupportedOperationException( "Not yet implemented." );
     }
+
+    public void add ( Vector3f random ) {
+        throw new UnsupportedOperationException( "Not yet implemented." );
+    }
 }
