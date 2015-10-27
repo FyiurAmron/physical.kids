@@ -1,45 +1,111 @@
 package vax.math;
 
-/**
-
- @author toor
- */
 public class Vector3f extends VectorFloat {
-    public final static int OX = 0, OY = 1, OZ = 2;
 
-    public static float[] getNormal ( float[] p, float[] r, float[] p0 ) {
-        throw new UnsupportedOperationException( "Not yet implemented." );
+    public final static int SIZE = 3;
+    public final int OX = 0, OY = 1, OZ = 2;
+
+    public float x;
+
+    public void setX( float val ) {
+        data[0] = val;
     }
 
-    public Vector3f ( int i, int i0, int i1 ) {
-        throw new UnsupportedOperationException( "Not yet implemented." );
+    public float getX() {
+        return data[0];
     }
 
-    public Vector3f () {
-        throw new UnsupportedOperationException( "Not yet implemented." );
+    public float y;
+
+    public void setY( float val ) {
+        data[1] = val;
     }
 
-    public void normalize () {
-        throw new UnsupportedOperationException( "Not yet implemented." );
+    public float getY() {
+        return data[1];
     }
 
-    public void set ( float f, float f0, float f1 ) {
-        throw new UnsupportedOperationException( "Not yet implemented." );
+    public float z;
+
+    public void setZ( float val ) {
+        data[2] = val;
     }
 
-    public static Vector3f getRandom ( float min, float max ) {
-        return new Vector3f();
+    public float getZ() {
+        return data[2];
     }
 
-    public float length () {
-        throw new UnsupportedOperationException( "Not yet implemented." );
+    public Vector3f( Vector3f vector ) {
+        super( vector );
     }
 
-    public void scale ( float f ) {
-        throw new UnsupportedOperationException( "Not yet implemented." );
+    public Vector3f( float[] data ) {
+        super( data, SIZE );
     }
 
-    public void add ( Vector3f random ) {
-        throw new UnsupportedOperationException( "Not yet implemented." );
+    public Vector3f() {
+        super( new float[ SIZE]);
+    }
+
+    public Vector3f( float x, float y, float z ) {
+        super( new float[] {x, y, z} );
+    }
+
+    public Vector3f set( float x, float y, float z ) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        return this;
+    }
+
+    public Vector3f add( float x, float y, float z ) {
+        this.x += x;
+        this.y += y;
+        this.z += z;
+        return this;
+    }
+
+    public Vector3f scale( float x, float y, float z ) {
+        this.x *= x;
+        this.y *= y;
+        this.z *= z;
+        return this;
+    }
+
+    public float dot( float x, float y, float z ) {
+        return this.x * x + this.y * y + this.z * z;
+    }
+
+    public Vector3f cross( Vector3f vector ) {
+        return new Vector3f( cross( data, vector.data ) );
+    }
+
+    public Vector3f getNormal( Vector3f v1, Vector3f v2 ) {
+        return new Vector3f( getNormal( data, v1.data, v2.data ) );
+    }
+
+    static public float[] cross( float[] v1, float[] v2 ) {
+        return new float[]{
+            v1[1] * v2[2] - v1[2] * v2[1],
+            v1[2] * v2[0] - v1[0] * v2[2],
+            v1[0] * v2[1] - v1[1] * v2[0]
+        };
+    }
+
+    static public float[] getNormal( float[] v1, float[] v2, float[] v3 ) {
+        float[] norm = cross(
+                new float[]{ v2[0] - v1[0], v2[1] - v1[1], v2[2] - v1[2] },
+                new float[]{ v3[0] - v1[0], v3[1] - v1[1], v3[2] - v1[2] } );
+        normalize( norm );
+        return norm;
+    }
+
+    static public float distance( float x1, float y1, float z1, float x2, float y2, float z2 ) {
+        return (float) Math.sqrt( distanceSq( x1, y1, z1, x2, y2, z2 ) );
+    }
+
+    static public float distanceSq( float x1, float y1, float z1, float x2, float y2, float z2 ) {
+        float x = x2 - x1, y = y2 - y1, z = z2 - z1;
+        return x * x + y * y + z * z;
     }
 }
