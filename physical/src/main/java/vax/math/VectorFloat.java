@@ -260,6 +260,6 @@ public class VectorFloat {
     }
 
     static public Vector3f getRandom( float min, float max ) {
-        return new Vector3f( MathUtils.nextfloat( min, max ), MathUtils.nextfloat( min, max ), MathUtils.nextfloat( min, max ) );
+        return new Vector3f( MathUtils.nextFloat( min, max ), MathUtils.nextFloat( min, max ), MathUtils.nextFloat( min, max ) );
     }
 }
