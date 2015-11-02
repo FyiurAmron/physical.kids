@@ -3,13 +3,11 @@ package vax.openglue.mesh;
 import java.io.*;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+
 import vax.math.Matrix4f;
 import vax.openglue.constants.BufferTarget;
-import vax.openglue.OpenGLUE;
-import vax.openglue.OpenGlConstants;
 import vax.openglue.constants.PrimitiveType;
-import vax.openglue.Renderable;
-import vax.openglue.Texture;
+import vax.openglue.*;
 import vax.physical.Main;
 import vax.util.Action;
 
@@ -100,14 +98,14 @@ public class Mesh implements Renderable {
     }
 
     @Override
-    public void update ( OpenGLUE gl ) {
+    public void update ( OpenGlUe gl ) {
         if ( updateAction != null ) {
             updateAction.exec( this );
         }
     }
 
     @Override
-    public void render ( OpenGLUE gl ) {
+    public void render ( OpenGlUe gl ) {
         if ( texture != null ) {
             gl.glBindTexture( OpenGlConstants.GL_TEXTURE_2D, texture.getHandle() );
         }
@@ -116,27 +114,27 @@ public class Mesh implements Renderable {
         gl.glDrawElements( primitiveType, modelData.getIndices().length, DrawElementsType.UnsignedInt, IntPtr.Zero );
     }
 
-    public <T> int genBuffer ( OpenGLUE gl, int bufferTarget, float[] data ) {
+    public <T> int genBuffer ( OpenGlUe gl, int bufferTarget, float[] data ) {
         int handle = gl.glGenBuffer();
         gl.glBindBuffer( bufferTarget, handle );
         gl.glBufferData( bufferTarget, new IntPtr( data.Length * Marshal.SizeOf( data[0] ) ), data, BufferUsageHint.StaticDraw );
         return handle;
     }
 
-    public <T> int genBuffer ( OpenGLUE gl, int bufferTarget, int[] data ) {
+    public <T> int genBuffer ( OpenGlUe gl, int bufferTarget, int[] data ) {
         int handle = gl.glGenBuffer();
         gl.glBindBuffer( bufferTarget, handle );
         gl.glBufferData( bufferTarget, new IntPtr( data.Length * Marshal.SizeOf( data[0] ) ), data, BufferUsageHint.StaticDraw );
         return handle;
     }
 
-    void enableAttribute ( OpenGLUE gl, int attribNr, int handle, int size ) {
+    void enableAttribute ( OpenGlUe gl, int attribNr, int handle, int size ) {
         gl.glEnableVertexAttribArray( attribNr );
         gl.glBindBuffer( OpenGlConstants.GL_ARRAY_BUFFER, handle );
-        gl.glVertexAttribPointer( attribNr, size, OpenGlConstants.GL_FLOAT, OpenGlConstants.GL_TRUE, size * Float.BYTES, 0 );
+        gl.glVertexAttribPointer( attribNr, size, OpenGlConstants.GL_FLOAT, true, size * Float.BYTES, 0 );
     }
 
-    public void init ( OpenGLUE gl ) {
+    public void init ( OpenGlUe gl ) {
         positionVboHandle = genBuffer( gl, OpenGlConstants.GL_ARRAY_BUFFER, modelData.getVertices() );
         normalVboHandle = genBuffer( gl, OpenGlConstants.GL_ARRAY_BUFFER, modelData.getNormals() );
         uvsVboHandle = genBuffer( gl, OpenGlConstants.GL_ARRAY_BUFFER, modelData.getUvs() );

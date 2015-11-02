@@ -1,48 +1,66 @@
 package vax.openglue;
 
-import vax.util.MiscUtils;
+import vax.openglue.constants.TextureTarget;
 
+/**
+ Manages OpenGL state of the Texture; heavyweight object, requiring OpenGL context to initialize.
+
+ @author toor
+ */
 public class Texture {
     private int handle;
-    private final String filename;
+    private int targetEnum;
+    private TextureDescriptor textureDescriptor;
+    private TextureParameters textureParameters;
+    private boolean updateTexParams;
 
-    public Texture ( String filename ) {
-        this.filename = filename;
-        if ( filename == null || filename.isEmpty() ) {
+    public Texture ( int handle, TextureDescriptor textureDescriptor, TextureParameters textureParameters, int targetEnum ) {
+        this.handle = handle;
+        this.textureDescriptor = textureDescriptor;
+        this.targetEnum = targetEnum;
+    }
 
-        }
-        if ( MiscUtils.isNullOrEmpty( filename ) ) {
-            throw new IllegalArgumentException( filename );
-        }
+    public Texture ( int handle, TextureDescriptor textureDescriptor, TextureParameters textureParameters, TextureTarget textureTarget ) {
+        this( handle, textureDescriptor, textureParameters, textureTarget.getValue() );
+    }
+
+    public Texture ( int handle, TextureDescriptor textureDescriptor, TextureParameters textureParameters ) {
+        this( handle, textureDescriptor, textureParameters, OpenGlConstants.GL_TEXTURE_2D );
+    }
+
+    public Texture ( int handle, TextureDescriptor textureDescriptor ) {
+        this( handle, textureDescriptor, TextureParameters.DEFAULT, OpenGlConstants.GL_TEXTURE_2D );
     }
 
     public int getHandle () {
         return handle;
     }
 
-    public void loadData () {
-        // TODO replace with Java loader (port from SC maybe?)
-        Bitmap bmp = new Bitmap( filename );
-        BitmapData bmp_data = bmp.LockBits( new Rectangle( 0, 0, bmp.Width, bmp.Height ), ImageLockMode.ReadOnly,
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb );
-        bmp.UnlockBits( bmp_data );
+    public TextureDescriptor getTextureDescriptor () {
+        return textureDescriptor;
     }
 
-    public void init ( OpenGLUE gl ) {
-        handle = gl.glGenTexture();
-        gl.glBindTexture( TextureTarget.Texture2D, handle );
+    public void bind ( OpenGlUe gl ) {
+        gl.glBindTexture( targetEnum, handle );
+        if ( updateTexParams ) {
+            textureParameters.update( gl, targetEnum );
+        }
+    }
 
-        // TODO: replace below code with proper texture parameter abstraction
+    /**
+     useful to mimic disabling the texturing unit at all.
 
-        // We will not upload mipmaps, so disable mipmapping (otherwise the texture will not appear).
-        // We can use GL.GenerateMipmaps() or GL.Ext.GenerateMipmaps() to create
-        // mipmaps automatically. In that case, use TextureMinFilter.LinearMipmapLinear to enable them.
-        gl.glTexParameter( TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int) TextureMinFilter.Linear );
-        gl.glTexParameter( TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int) TextureMagFilter.Linear );
-        gl.glTexParameter( TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int) TextureParameterName.ClampToEdge );
-        gl.glTexParameter( TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int) TextureParameterName.ClampToEdge );
+     @param gl
+     */
+    public void unbind ( OpenGlUe gl ) {
+        gl.glBindTexture( targetEnum, 0 );
+    }
 
-        gl.glTexImage2D( TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bmp_data.Width, bmp_data.Height, 0,
-                OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bmp_data.Scan0 );
+    public void setTextureParameters ( TextureParameters textureParameters ) {
+        if ( this.textureParameters.equals( textureParameters ) ) {
+            return;
+        }
+        this.textureParameters = textureParameters;
+        updateTexParams = true;
     }
 }

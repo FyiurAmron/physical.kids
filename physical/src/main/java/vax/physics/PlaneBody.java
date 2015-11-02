@@ -1,4 +1,4 @@
-﻿package vax.physics;
+package vax.physics;
 
 import vax.math.*;
 

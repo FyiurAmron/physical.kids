@@ -1,16 +1,15 @@
 package vax.physical;
 
-import vax.math.Plane3f;
-import vax.physical.body.PlaneBody;
-import vax.physical.body.SphereBody;
-import vax.openglue.mesh.SphereMesh;
-import vax.openglue.mesh.RectangleMesh;
-import vax.openglue.mesh.Mesh;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import vax.physics.*;
+import vax.physics.BodyManager;
+import vax.physical.body.PlaneBody;
+import vax.physical.body.SphereBody;
 import vax.math.*;
 import vax.openglue.*;
+import vax.openglue.mesh.*;
 import vax.openglue.constants.ClearBufferMask;
 import vax.util.Action;
 
@@ -65,7 +64,7 @@ public class PhysicalWindow extends WindowGLUE {
     }
 
     @Override
-    protected void onLoad ( OpenGLUE gl ) {
+    protected void onLoad ( OpenGlUe gl ) {
         lastMouseState = OpenTK.Input.Mouse.GetState();
 
         Texture angrySquirrelTexture, angryTurtleTexture, angryDilloTexture;
@@ -77,9 +76,8 @@ public class PhysicalWindow extends WindowGLUE {
 
         projectionMatrix.set( Matrix4.CreatePerspectiveFieldOfView( (float) Math.PI / 4, aspectRatio, 1, 1000 ) );
 
-        cameraOnFrame = delegate( Matrix4f mvMatrix
-            ) {
-                float radius = 40, y = 20, timeRatio = 0.5f;
+        cameraOnFrame = (Matrix4f mvMatrix) -> {
+            float radius = 40, y = 20, timeRatio = 0.5f;
             Vector3 pos = new Vector3(
                     (float) Math.sin( time.getValue() * timeRatio ) * radius,
                     y,
@@ -128,7 +126,7 @@ public class PhysicalWindow extends WindowGLUE {
         squirrelMesh = new SphereMesh( BALL_RADIUS, 20, 20, true );
         squirrelMesh.texture = angrySquirrelTexture;
         /*
-         squirrelMesh.UpdateAction = delegate( Mesh model ) {
+         squirrelMesh.UpdateAction = ( Mesh model ) -> {
          Matrix4f transform = model.Transform;
          transform.setScaleAndRotation( Matrix4.CreateRotationZ( time.Value ) );
          //transform.setTranslationY( BALL_RADIUS + JUMP_HEIGHT * 0.5f * (1 + (float) Math.Sin( time.Value )) ); // hover
@@ -142,7 +140,7 @@ public class PhysicalWindow extends WindowGLUE {
         turtleMesh = new SphereMesh( BALL_RADIUS * 5, 10, 10, true );
         turtleMesh.texture = angryTurtleTexture;
         /*
-         turtleMesh.UpdateAction = delegate( Mesh model ) {
+         turtleMesh.UpdateAction = ( Mesh model ) -> {
          Matrix4f transform = model.Transform;
          transform.setScaleAndRotation( Matrix4.CreateRotationX( -time.Value ) );
          };
@@ -153,7 +151,7 @@ public class PhysicalWindow extends WindowGLUE {
         dilloMesh = new SphereMesh( BALL_RADIUS * 2, 20, 20, true );
         dilloMesh.texture = angryDilloTexture;
         /*
-         dilloMesh.UpdateAction = delegate( Mesh model ) {
+         dilloMesh.UpdateAction = ( Mesh model ) -> {
          Matrix4f transform = model.Transform;
          transform.setScaleAndRotation( Matrix4.CreateRotationX( -time.Value ) );
          };
@@ -203,22 +201,22 @@ public class PhysicalWindow extends WindowGLUE {
             /* SphereBody */
         squirrelBody = new SphereBody( 1, BALL_RADIUS );
         squirrelBody.getTransform().setTranslation( 40, 40, 40 );
-        squirrelBody.setRotationSpeed( 1f);
+        squirrelBody.setRotationSpeed( 1f );
         /* SphereBody */
         turtleBody = new SphereBody( 25, BALL_RADIUS * 5 );
         turtleBody.getTransform().setTranslation( 0, 20, 0 );
         //turtleBody.Velocity.Y = 5;
-        turtleBody.setRotationSpeed( 1f);
+        turtleBody.setRotationSpeed( 1f );
         /* SphereBody */
         dilloBody = new SphereBody( 25, BALL_RADIUS * 2 );
         //dilloBody.Transform.setTranslation( -20, 100, -30 );
         dilloBody.getTransform().setTranslation( 0, 30, 0 );
         //dilloBody.Velocity.Y = -5;
-        dilloBody.setRotationSpeed( 1f);
+        dilloBody.setRotationSpeed( 1f );
         Vector3f fixPoint = new Vector3f( 0, 42, 9 );
         /*
          // spring - vertical harmonic oscillator
-         dilloBody.Forces.Add( delegate( Body obj ) {
+         dilloBody.Forces.Add( ( Body obj ) -> {
          Vector3f disp = obj.Transform.getDisplacement( fixPoint );
          float k = 20.0f;
          disp.scale( k );
@@ -227,8 +225,7 @@ public class PhysicalWindow extends WindowGLUE {
          */
 
         // springy pendulum - 3D harmonic oscillator
-        dilloBody.Forces.Add( delegate( Body obj
-            ) {
+        dilloBody.getForces().add( ( Body obj ) -> {
                 Vector3f disp = obj.getTransform().getDisplacement( fixPoint );
             float k = 10.0f, l = 15.0f;
             disp.scale( k * ( disp.length() - l ) );
@@ -376,7 +373,7 @@ public class PhysicalWindow extends WindowGLUE {
     }
 
     @Override
-    protected void onRenderFrame ( OpenGLUE gl ) {
+    protected void onRenderFrame ( OpenGlUe gl ) {
         gl.glEnable( OpenGlConstants.GL_DEPTH_TEST );
         gl.glEnable( OpenGlConstants.GL_CULL_FACE );
 

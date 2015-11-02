@@ -39,7 +39,7 @@ public class ShaderProgram {
         return shaders;
     }
 
-    public void init ( OpenGLUE gl ) {
+    public void init ( OpenGlUe gl ) {
         shaderProgramHandle = gl.glCreateProgram();
         for( Shader s : shaders ) {
             int shaderHandle = gl.glCreateShader( s.getType() );

@@ -29,7 +29,7 @@ public class UniformManager {
         return uniformMap.get( uniform );
     }
 
-    public void init ( OpenGLUE gl, int shaderProgramHandle ) {
+    public void init ( OpenGlUe gl, int shaderProgramHandle ) {
         for( Uniform.UBase<?> uniform : managedUniforms ) {
             int uniformLocation = gl.glGetUniformLocation( shaderProgramHandle, uniform.getName() );
             uniformMap.put( uniform, uniformLocation );
@@ -38,15 +38,15 @@ public class UniformManager {
         }
     }
 
-    public void updateGl ( OpenGLUE gl, String uniformName ) {
+    public void updateGl ( OpenGlUe gl, String uniformName ) {
         updateGl( gl, getUniform( uniformName ) );
     }
 
-    public void updateGl ( OpenGLUE gl, Uniform.UBase<?> uniform ) {
+    public void updateGl ( OpenGlUe gl, Uniform.UBase<?> uniform ) {
         uniform.updateGl( gl, getLocation( uniform ) );
     }
 
-    public void updateGl ( OpenGLUE gl ) {
+    public void updateGl ( OpenGlUe gl ) {
         for( Uniform.UBase<?> uniform : managedUniforms ) {
             uniform.updateGl( gl, getLocation( uniform ) );
         }

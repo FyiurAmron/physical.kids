@@ -32,4 +32,8 @@ public class SphereBody {
         throw new UnsupportedOperationException( "Not yet implemented." );
     }
 
+    public Object getForces () {
+        throw new UnsupportedOperationException( "Not yet implemented." );
+    }
+
 }
