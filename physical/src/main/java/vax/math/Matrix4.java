@@ -22,7 +22,8 @@ class Matrix4 {
     float M43;
     float M44;
 
-    Matrix4( float data, float data0, float data1, float data2, float data3, float data4, float data5, float data6, float data7, float data8, float data9, float data10, float data11, float data12, float data13, float data14 ) {
+    Matrix4( float data, float data0, float data1, float data2, float data3, float data4, float data5, float data6, float data7,
+            float data8, float data9, float data10, float data11, float data12, float data13, float data14 ) {
         throw new UnsupportedOperationException( "Not supported yet." ); //To change body of generated methods, choose Tools | Templates.
     }
 
