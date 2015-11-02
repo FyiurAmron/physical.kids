@@ -28,7 +28,7 @@ public class Uniform {
     }
 
     protected interface IUniform {
-        void updateGl ( OpenGLUE gl, int uniformLocation );
+        void updateGl ( OpenGlUe gl, int uniformLocation );
 
         String getName ();
 
@@ -50,7 +50,7 @@ public class Uniform {
         }
 
         @Override
-        abstract public void updateGl ( OpenGLUE gl, int uniformLocation );
+        abstract public void updateGl ( OpenGlUe gl, int uniformLocation );
 
         @Override
         abstract public String getPrefix ();
@@ -71,8 +71,8 @@ public class Uniform {
         }
 
         @Override
-        public void updateGl ( OpenGLUE gl, int uniformLocation ) {
-            gl.glUniform1( uniformLocation, value.getValue() );
+        public void updateGl ( OpenGlUe gl, int uniformLocation ) {
+            gl.glUniform1f( uniformLocation, value.getValue() );
         }
 
         @Override
@@ -87,8 +87,8 @@ public class Uniform {
         }
 
         @Override
-        public void updateGl ( OpenGLUE gl, int uniformLocation ) {
-            gl.glUniform2( uniformLocation, 1, value.getData() );
+        public void updateGl ( OpenGlUe gl, int uniformLocation ) {
+            gl.glUniform2fv( uniformLocation,value.getData() );
         }
 
         @Override
@@ -103,8 +103,8 @@ public class Uniform {
         }
 
         @Override
-        public void updateGl ( OpenGLUE gl, int uniformLocation ) {
-            gl.glUniform3( uniformLocation, 1, value.getData() );
+        public void updateGl ( OpenGlUe gl, int uniformLocation ) {
+            gl.glUniform3fv( uniformLocation, value.getData() );
         }
 
         @Override
@@ -119,8 +119,8 @@ public class Uniform {
         }
 
         @Override
-        public void updateGl ( OpenGLUE gl, int uniformLocation ) {
-            gl.glUniform4( uniformLocation, 1, value.getData() );
+        public void updateGl ( OpenGlUe gl, int uniformLocation ) {
+            gl.glUniform4fv( uniformLocation, value.getData() );
         }
 
         @Override
@@ -135,8 +135,8 @@ public class Uniform {
         }
 
         @Override
-        public void updateGl ( OpenGLUE gl, int uniformLocation ) {
-            gl.glUniformMatrix4( uniformLocation, 1, false, value.getData() );
+        public void updateGl ( OpenGlUe gl, int uniformLocation ) {
+            gl.glUniformMatrix4fv( uniformLocation, value.getData() );
         }
 
         @Override
