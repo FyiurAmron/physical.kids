@@ -35,14 +35,13 @@ public class PhysicalWindow extends WindowGLUE {
             modelviewMatrix = new Matrix4f(),
             transformMatrix = new Matrix4f( true );
 
-    Vector3 basePosition = new Vector3();
+    Vector3f basePosition = new Vector3f();
     MouseState lastMouseState;
     KeyboardState lastKeyboardState;
 
     UniformManager uniformManager = new UniformManager();
     BodyManager bodyManager = new BodyManager();
 
-    public static final String[] attribs = { "in_position", "in_normal", "in_uv" };
     public static final HashMap<String, Integer> uniformMap = new HashMap<>();
     public static final String APP_NAME = "Physical";
     static final int SIZE_X = 800, SIZE_Y = 600;
@@ -67,24 +66,24 @@ public class PhysicalWindow extends WindowGLUE {
     protected void onLoad ( OpenGlUe gl ) {
         lastMouseState = OpenTK.Input.Mouse.GetState();
 
-        Texture angrySquirrelTexture, angryTurtleTexture, angryDilloTexture;
-        Texture[] worldTextures;
+        Texture angrySquirrelTextureData, angryTurtleTextureData, angryDilloTextureData;
+        Texture[] worldTextureDatas;
         Mesh squirrelMesh, turtleMesh, dilloMesh;
         RectangleMesh[] worldMeshes;
 
         float aspectRatio = ClientSize.Width / (float) ( ClientSize.Height );
 
-        projectionMatrix.set( Matrix4.CreatePerspectiveFieldOfView( (float) Math.PI / 4, aspectRatio, 1, 1000 ) );
+        projectionMatrix.set( Matrix4f.createPerspectiveFieldOfView( (float) Math.PI / 4, aspectRatio, 1, 1000 ) );
 
         cameraOnFrame = (Matrix4f mvMatrix) -> {
             float radius = 40, y = 20, timeRatio = 0.5f;
-            Vector3 pos = new Vector3(
+            Vector3f pos = new Vector3f(
                     (float) Math.sin( time.getValue() * timeRatio ) * radius,
                     y,
                     (float) Math.cos( time.getValue() * timeRatio ) * radius );
-            mvMatrix.set( Matrix4.LookAt( pos,
-                    new Vector3( 0, y * 0.5f * ( 1.5f + (float) Math.sin( time.getValue() * timeRatio ) ), 0 ),
-                    new Vector3( 0, 1, 0 ) ) );
+            mvMatrix.set( Matrix4f.lookAt( pos,
+                    new Vector3f( 0, y * 0.5f * ( 1.5f + (float) Math.sin( time.getValue() * timeRatio ) ), 0 ),
+                    new Vector3f( 0, 1, 0 ) ) );
         };
         cameraOnFrame( modelviewMatrix );
         cameraOnFrame = null; // enable/disable
@@ -95,11 +94,11 @@ public class PhysicalWindow extends WindowGLUE {
         //lightDirUnit.set( 0.1f, 5.0f, 0.1f );
         lightDirUnit.normalize();
         //texture = new texture( "E:\\drop\\logo-dark.jpg" );
-        angrySquirrelTexture = new Texture( "gfx/angry-squirrel.png" );
-        angryTurtleTexture = new Texture( "gfx/angry-turtle.png" );
-        angryDilloTexture = new Texture( "gfx/angry-armadillo.png" );
+        angrySquirrelTextureData = new Texture( "gfx/angry-squirrel.png" );
+        angryTurtleTextureData = new Texture( "gfx/angry-turtle.png" );
+        angryDilloTextureData = new Texture( "gfx/angry-armadillo.png" );
 
-        worldTextures = new Texture[]{
+        worldTextureDatas = new Texture[]{
             new Texture( "gfx/drzewka-1.png" ),
             new Texture( "gfx/drzewka-3.png" ),
             new Texture( "gfx/sky.png" ),
@@ -124,7 +123,7 @@ public class PhysicalWindow extends WindowGLUE {
         uniformManager.init( gl, shaderProgram.getShaderProgramHandle() );
 
         squirrelMesh = new SphereMesh( BALL_RADIUS, 20, 20, true );
-        squirrelMesh.texture = angrySquirrelTexture;
+        squirrelMesh.texture = angrySquirrelTextureData;
         /*
          squirrelMesh.UpdateAction = ( Mesh model ) -> {
          Matrix4f transform = model.Transform;
@@ -138,7 +137,7 @@ public class PhysicalWindow extends WindowGLUE {
         meshes.add( squirrelMesh );
 
         turtleMesh = new SphereMesh( BALL_RADIUS * 5, 10, 10, true );
-        turtleMesh.texture = angryTurtleTexture;
+        turtleMesh.texture = angryTurtleTextureData;
         /*
          turtleMesh.UpdateAction = ( Mesh model ) -> {
          Matrix4f transform = model.Transform;
@@ -149,7 +148,7 @@ public class PhysicalWindow extends WindowGLUE {
         meshes.add( turtleMesh );
 
         dilloMesh = new SphereMesh( BALL_RADIUS * 2, 20, 20, true );
-        dilloMesh.texture = angryDilloTexture;
+        dilloMesh.texture = angryDilloTextureData;
         /*
          dilloMesh.UpdateAction = ( Mesh model ) -> {
          Matrix4f transform = model.Transform;
@@ -170,7 +169,7 @@ public class PhysicalWindow extends WindowGLUE {
         };
         for( int i = worldMeshes.length - 1; i >= 0; i-- ) {
             Mesh m = worldMeshes[i];
-            m.texture = worldTextures[i];
+            m.texture = worldTextureDatas[i];
             meshes.add( m );
         }
         Matrix4f trans;
@@ -339,16 +338,16 @@ public class PhysicalWindow extends WindowGLUE {
         } else {
             float radius = currentMouseState.Wheel + MIN_RADIUS;
 
-            Vector3 pos = new Vector3(
+            Vector3f pos = new Vector3f(
                     basePosition.X + xFactor * radius,
                     basePosition.Y + BASE_VIEW_HEIGHT,
                     basePosition.Z + zFactor * radius
             );
             //Console.WriteLine( pos );
 
-            modelviewMatrix.set( Matrix4.LookAt( pos,
-                    new Vector3( basePosition.X, BASE_VIEW_HEIGHT + basePosition.Y - radius * currentMouseState.Y / SIZE_Y, basePosition.Z ),
-                    new Vector3( 0, 1, 0 ) ) );
+            modelviewMatrix.set( Matrix4f.lookAt( pos,
+                    new Vector3f( basePosition.X, BASE_VIEW_HEIGHT + basePosition.Y - radius * currentMouseState.Y / SIZE_Y, basePosition.Z ),
+                    new Vector3f( 0, 1, 0 ) ) );
 
             //modelviewMatrix.setTranslation( deltaX, deltaY, deltaZ );
         }

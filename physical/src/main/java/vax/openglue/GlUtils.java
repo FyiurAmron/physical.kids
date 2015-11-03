@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 
  @author toor
  */
-public class GlUtil {
+public class GlUtils {
     public static final int DEFAULT_LOG_BUFFER_SIZE = 4096;
 
     private ByteBuffer logBuffer;
@@ -38,5 +38,4 @@ public class GlUtil {
         singleIntArr[0] = i;
         return singleIntArr;
     }
-
 }

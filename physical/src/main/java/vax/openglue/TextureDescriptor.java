@@ -11,9 +11,8 @@ public class TextureDescriptor {
     private final int pixelFormat, internalFormat, type;
 
     private final String name;
-    private boolean generateMipmaps;
 
-    public TextureDescriptor ( String name, int width, int height, int pixelFormat, int internalFormat, int type, boolean generateMipmaps ) {
+    public TextureDescriptor ( String name, int width, int height, int pixelFormat, int internalFormat, int type ) {
         if ( MiscUtils.isNullOrEmpty( name ) ) {
             throw new IllegalArgumentException( name );
         }
@@ -23,7 +22,6 @@ public class TextureDescriptor {
         this.pixelFormat = pixelFormat;
         this.internalFormat = internalFormat;
         this.type = type;
-        this.generateMipmaps = generateMipmaps;
     }
 
     public String getName () {
@@ -48,9 +46,5 @@ public class TextureDescriptor {
 
     public int getType () {
         return type;
-    }
-
-    public boolean isGenerateMipmaps () {
-        return generateMipmaps;
     }
 }

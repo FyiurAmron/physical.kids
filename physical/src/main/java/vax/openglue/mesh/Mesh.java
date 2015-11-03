@@ -111,20 +111,22 @@ public class Mesh implements Renderable {
         }
         gl.glBindVertexArray( vaoHandle );
 
-        gl.glDrawElements( primitiveType, modelData.getIndices().length, DrawElementsType.UnsignedInt, IntPtr.Zero );
+        gl.glDrawElements( primitiveType.getValue(), modelData.getIndices().length, OpenGlConstants.GL_UNSIGNED_INT, 0 );
     }
 
-    public <T> int genBuffer ( OpenGlUe gl, int bufferTarget, float[] data ) {
+    public int genBuffer ( OpenGlUe gl, int bufferTarget, float[] data ) {
         int handle = gl.glGenBuffer();
         gl.glBindBuffer( bufferTarget, handle );
-        gl.glBufferData( bufferTarget, new IntPtr( data.Length * Marshal.SizeOf( data[0] ) ), data, BufferUsageHint.StaticDraw );
+        FloatBuffer fb = BufferUtils.createFloatBuffer( data );
+        gl.glBufferData( bufferTarget, data.length * Float.BYTES, fb, OpenGlConstants.GL_STATIC_DRAW );
         return handle;
     }
 
-    public <T> int genBuffer ( OpenGlUe gl, int bufferTarget, int[] data ) {
+    public int genBuffer ( OpenGlUe gl, int bufferTarget, int[] data ) {
         int handle = gl.glGenBuffer();
         gl.glBindBuffer( bufferTarget, handle );
-        gl.glBufferData( bufferTarget, new IntPtr( data.Length * Marshal.SizeOf( data[0] ) ), data, BufferUsageHint.StaticDraw );
+        IntBuffer ib = BufferUtils.createIntBuffer( data );
+        gl.glBufferData( bufferTarget, data.length * Integer.BYTES, ib, OpenGlConstants.GL_STATIC_DRAW );
         return handle;
     }
 

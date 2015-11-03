@@ -192,4 +192,15 @@ public class Matrix4f extends VectorFloat {
      );
      }
      */
+    public static Matrix4f setToRotationX ( float rotationAngle ) {
+        throw new UnsupportedOperationException( "Not yet implemented." );
+    }
+
+    public static Matrix4f setToRotationY ( float rotationAngle ) {
+        throw new UnsupportedOperationException( "Not yet implemented." );
+    }
+
+    public static Matrix4f setToRotationZ ( float rotationAngle ) {
+        throw new UnsupportedOperationException( "Not yet implemented." );
+    }
 }
