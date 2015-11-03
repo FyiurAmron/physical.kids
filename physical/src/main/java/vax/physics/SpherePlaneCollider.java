@@ -4,19 +4,22 @@ import vax.math.*;
 
 public class SpherePlaneCollider extends Collider {
     public SpherePlaneCollider () {
-        super( SphereBody.class, PlaneBody.class ) ;
+        super( SphereBody.class, PlaneBody.class );
     }
 
     @Override
     public boolean collide ( Body body1, Body body2 ) {
         SphereBody sb = (SphereBody) body1;
         PlaneBody pb = (PlaneBody) body2;
-        if ( sb == null || pb == null )
+        if ( sb == null || pb == null ) {
             throw new NullPointerException();
+        }
         float dist = pb.plane3f.getDistance( sb.transform );
         float depth = sb.radius - dist;
         if ( depth < 0 || depth > sb.radius ) // a) sphere-to-plane collision occured, b) not too far yet
+        {
             return false;
+        }
         Vector3f normal = pb.plane3f.getNormal();
         sb.transform.addTranslation( normal.getScaled( depth ) );
 

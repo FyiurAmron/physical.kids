@@ -10,18 +10,18 @@ public class SphereBody extends CenteredBody {
 
     public SphereBody(float mass, float radius) {
         super(mass, radius);
-        restitution =  0.75f;
+        restitution = 0.75f;
         rotationVelocityThreshold = 0.15f;
     }
 
     public Matrix4f createRotationMatrix4() {
         switch (rotationAxis) {
             case Vector3f.OX:
-                return Matrix4f.createRotationX(rotationAngle);
+                return Matrix4f.setToRotationX(rotationAngle);
             case Vector3f.OY:
-                return Matrix4f.createRotationY(rotationAngle);
+                return Matrix4f.setToRotationY(rotationAngle);
             case Vector3f.OZ:
-                return Matrix4f.createRotationZ(rotationAngle);
+                return Matrix4f.setToRotationZ(rotationAngle);
         }
         throw new IllegalArgumentException();
     }
@@ -70,6 +70,10 @@ public class SphereBody extends CenteredBody {
 
     public void setRotationVelocityThreshold(float rotationVelocityThreshold) {
         this.rotationVelocityThreshold = rotationVelocityThreshold;
+    }
+
+    Vector3f getForce () {
+        throw new UnsupportedOperationException( "Not yet implemented." );
     }
 }
 

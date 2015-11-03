@@ -25,6 +25,10 @@ abstract public class CenteredBody extends Body {
         this.radius = radius;
     }
 
+    void timeStep ( float deltaT ) {
+        throw new UnsupportedOperationException( "Not yet implemented." );
+    }
+
 
 }
 

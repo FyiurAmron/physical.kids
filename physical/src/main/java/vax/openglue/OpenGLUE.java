@@ -1,9 +1,5 @@
 package vax.openglue;
 
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import vax.openglue.constants.*;
@@ -20,37 +16,7 @@ public interface OpenGlUe extends OpenGl {
      */
 
     // new/signature-incompatible methods
-    GlUtil ueGetGlUtil ();
-
-    default TextureData<?> ueReadTextureUrl ( String urlString ) {
-        try {
-            return ueReadTexture( new URL( urlString ) );
-        } catch (MalformedURLException ex) {
-            throw new IllegalArgumentException( ex );
-        }
-    }
-
-    default TextureData<?> ueReadTextureFile ( String filename ) {
-        return ueReadTexture( new File( filename ) );
-    }
-
-    default TextureData<?> ueReadTexture ( File file ) {
-        try (InputStream is = new BufferedInputStream( new FileInputStream( file ) )) {
-            return ueReadTexture( is );
-        } catch (IOException ex) {
-            throw new RuntimeException( ex );
-        }
-    }
-
-    default TextureData<?> ueReadTexture ( URL url ) {
-        try (InputStream is = new BufferedInputStream( url.openStream() )) {
-            return ueReadTexture( is );
-        } catch (IOException ex) {
-            throw new RuntimeException( ex );
-        }
-    }
-
-    TextureData<?> ueReadTexture ( InputStream inputStream );
+    GlUtils ueGetGlUtil ();
 
     default void ueSetParam ( int glParam, boolean state ) {
         if ( state ) {

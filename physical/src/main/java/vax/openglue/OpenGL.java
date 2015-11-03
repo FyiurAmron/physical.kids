@@ -7,6 +7,8 @@ import java.nio.*;
  @author toor
  */
 public interface OpenGl {
+    void glViewport ( int x, int y, int width, int height );
+
     int glGetUniformLocation ( int shaderProgramHandle, String name );
 
     void glUniform1f ( int uniformLocation, float value );
@@ -32,6 +34,8 @@ public interface OpenGl {
     void glDisable ( int glParam );
 
     void glClear ( int i );
+
+    void glClearColor ( float r, float g, float b, float a );
 
     int glCreateShader ( int shaderType );
 
@@ -85,6 +89,16 @@ public interface OpenGl {
     void glBindVertexArray ( int vaoHandle );
 
     void glVertexAttribPointer ( int attribNr, int size, int typeEnum, boolean normalize, int stride, long pointer );
+
+    void glDrawElements ( int primitiveType, int count, int valueType, long offset );
+    /*
+     // TODO
+     void glDrawElements ( int primitiveType, int count, int valueType, IntBuffer buf );
+
+     void glDrawElements ( int primitiveType, int count, int valueType, int[] data, int offset );
+     */
+
+    void glBufferData ( int bufferTarget, long size, Buffer data, int usageEnum );
 
     int glGetError ();
 }

@@ -35,7 +35,7 @@ public class Uniform {
         String getPrefix ();
     }
 
-    public abstract class UBase<T> implements IUniform {
+    public static abstract class UBase<T> implements IUniform {
         protected T value;
         protected String name;
 

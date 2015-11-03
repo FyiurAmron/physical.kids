@@ -2,12 +2,12 @@ package vax.openglue.mesh;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import vax.openglue.BufferUtils;
 import vax.openglue.constants.PrimitiveType;
-import vax.util.BufferUtils;
 
 public class WireBoxMesh extends Mesh {
-    protected static final IntBuffer box_indices_buf
-            = BufferUtils.wrap( 0, 1, 0, 2, 0, 4, 1, 3, 1, 5, 2, 3, 2, 6, 3, 7, 4, 5, 4, 6, 5, 7, 6, 7 );
+    protected static final IntBuffer BOX_INDICES_BUF
+            = BufferUtils.createIntBuffer( 0, 1, 0, 2, 0, 4, 1, 3, 1, 5, 2, 3, 2, 6, 3, 7, 4, 5, 4, 6, 5, 7, 6, 7 );
     protected static final int OPT_X = 2, OPT_Y = 2, OPT_Z = 2;
 
     static protected MeshData buildWireBox ( float x, float y, float z ) {
@@ -23,7 +23,7 @@ public class WireBoxMesh extends Mesh {
             }
         }
         fb.rewind();
-        return new MeshData( fb, FloatBuffer.allocate( size ), FloatBuffer.allocate( size ), box_indices_buf );
+        return new MeshData( fb, BufferUtils.createFloatBuffer( size ), BufferUtils.createFloatBuffer( size ), BOX_INDICES_BUF );
     }
 
     public WireBoxMesh ( float size_x, float size_y, float size_z ) {

@@ -2,13 +2,14 @@ package vax.openglue;
 
 import java.util.ArrayList;
 import vax.openglue.constants.ShaderType;
-import static vax.physical.PhysicalWindow.attribs;
 
 /**
 
  @author toor
  */
 public class ShaderProgram {
+    public static final String[] attribs = { "in_position", "in_normal", "in_uv" };
+
     private final ArrayList<Shader> shaders = new ArrayList<>( 2 );
     private int shaderProgramHandle;
 

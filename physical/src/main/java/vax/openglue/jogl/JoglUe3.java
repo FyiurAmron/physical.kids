@@ -1,13 +1,10 @@
 package vax.openglue.jogl;
 
-import java.io.InputStream;
 import java.nio.*;
 
-import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.*;
 
-import com.jogamp.opengl.util.texture.TextureIO;
 import vax.openglue.AbstractGlUe;
-import vax.openglue.TextureData;
 
 /**
 
@@ -22,13 +19,6 @@ public class JoglUe3 extends AbstractGlUe {
 
     public void setGl ( GL3 gl ) {
         this.gl = gl;
-    }
-
-    @Override
-    public TextureData<?> ueReadTexture ( InputStream inputStream ) {
-        com.jogamp.opengl.util.texture.TextureData td = TextureIO.newTextureData( null, inputStream, true, null );
-        td.
-        return null;
     }
 
     @Override
@@ -227,8 +217,43 @@ public class JoglUe3 extends AbstractGlUe {
         gl.glGenerateMipmap( targetEnum );
     }
 
+    /*
+
+     @Override
+     public void glDrawElements ( int primitiveType, int count, int valueType, IntBuffer buf ) {
+     //gl.glDraw
+     gl
+     .glDrawElements( primitiveType, count, valueType, i );
+     }
+
+     @Override
+     public void glDrawElements ( int primitiveType, int count, int valueType, int[] data, int offset ) {
+     gl
+     .glDrawElements( primitiveType, count, valueType, i );
+     }
+     */
+    @Override
+    public void glDrawElements ( int primitiveType, int count, int valueType, long offset ) {
+        gl.glDrawElements( primitiveType, count, valueType, offset );
+    }
+
+    @Override
+    public void glBufferData ( int bufferTarget, long size, Buffer data, int usageEnum ) {
+        gl.glBufferData( bufferTarget, size, data, usageEnum );
+    }
+
     @Override
     public int glGetError () {
         return gl.glGetError();
+    }
+
+    @Override
+    public void glClearColor ( float r, float g, float b, float a ) {
+        gl.glClearColor( r, g, b, a );
+    }
+
+    @Override
+    public void glViewport ( int x, int y, int width, int height) {
+        gl.glViewport( x, y, width, height );
     }
 }
