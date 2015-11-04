@@ -1,7 +1,7 @@
 package vax.openglue;
 
 public interface Renderable {
-    void render ( OpenGlUe gl );
+    void render ( OpenGLUE gl );
 
-    void update ( OpenGlUe gl );
+    void update ( OpenGLUE gl );
 }

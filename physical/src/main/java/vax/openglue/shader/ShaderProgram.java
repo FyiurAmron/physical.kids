@@ -1,6 +1,7 @@
-package vax.openglue;
+package vax.openglue.shader;
 
 import java.util.ArrayList;
+import vax.openglue.OpenGLUE;
 import vax.openglue.constants.ShaderType;
 
 /**
@@ -40,7 +41,7 @@ public class ShaderProgram {
         return shaders;
     }
 
-    public void init ( OpenGlUe gl ) {
+    public void init ( OpenGLUE gl ) {
         shaderProgramHandle = gl.glCreateProgram();
         for( Shader s : shaders ) {
             int shaderHandle = gl.glCreateShader( s.getType() );

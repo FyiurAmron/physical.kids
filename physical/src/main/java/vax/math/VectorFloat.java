@@ -279,4 +279,23 @@ public class VectorFloat {
     static public Vector3f getRandom ( float min, float max ) {
         return new Vector3f( MathUtils.nextFloat( min, max ), MathUtils.nextFloat( min, max ), MathUtils.nextFloat( min, max ) );
     }
+
+    @Override
+    public boolean equals ( Object obj ) {
+        if ( obj == null ) {
+            return false;
+        }
+        if ( obj == this ) {
+            return true;
+        }
+        if ( !( obj instanceof VectorFloat ) ) {
+            return false;
+        }
+        return Arrays.equals( data, ( (VectorFloat) obj ).data );
+    }
+
+    @Override
+    public int hashCode () {
+        return Arrays.hashCode( data );
+    }
 }

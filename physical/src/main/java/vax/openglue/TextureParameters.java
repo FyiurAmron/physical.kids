@@ -2,7 +2,7 @@ package vax.openglue;
 
 import java.util.Collection;
 import gnu.trove.map.hash.TIntObjectHashMap;
-import static vax.openglue.OpenGlConstants.*;
+import static vax.openglue.OpenGL.Constants.*;
 
 /**
 
@@ -111,7 +111,7 @@ public class TextureParameters {
         return params.get( paramEnum );
     }
 
-    public void update ( OpenGlUe gl, int targetEnum ) {
+    public void update ( OpenGLUE gl, int targetEnum ) {
         params.forEachEntry( (int paramEnum, ParamValue<?> p) -> p.update( gl, targetEnum, paramEnum ) );
     }
 
@@ -157,7 +157,7 @@ public class TextureParameters {
     }
 
     public abstract static class ParamValue<T> extends Number {
-        abstract public boolean update ( OpenGlUe gl, int targetEnum, int paramEnum );
+        abstract public boolean update ( OpenGLUE gl, int targetEnum, int paramEnum );
 
         abstract public T getValue ();
 
@@ -195,7 +195,7 @@ public class TextureParameters {
         }
 
         @Override
-        public boolean update ( OpenGlUe gl, int targetEnum, int paramEnum ) {
+        public boolean update ( OpenGLUE gl, int targetEnum, int paramEnum ) {
             gl.glTexParameteri( targetEnum, targetEnum, param );
             //return ( gl.glGetError() != ErrorCode.NoError.getValue() );
             return true;
@@ -225,7 +225,7 @@ public class TextureParameters {
         }
 
         @Override
-        public boolean update ( OpenGlUe gl, int targetEnum, int paramEnum ) {
+        public boolean update ( OpenGLUE gl, int targetEnum, int paramEnum ) {
             gl.glTexParameterf( targetEnum, targetEnum, param );
             //return ( gl.glGetError() != ErrorCode.NoError.getValue() );
             return true;

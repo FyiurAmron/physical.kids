@@ -14,7 +14,7 @@ import vax.openglue.TextureDescriptor;
 
  @author toor
  */
-public class JoglImageIoGlUe implements ImageIoGlUe {
+public class JoglImageIoGLUE implements ImageIoGlUe {
     @Override
     public TextureData<?> ueReadTexture ( String name, InputStream inputStream ) {
         com.jogamp.opengl.util.texture.TextureData td;

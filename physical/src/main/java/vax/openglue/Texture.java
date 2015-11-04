@@ -25,11 +25,15 @@ public class Texture {
     }
 
     public Texture ( int handle, TextureDescriptor textureDescriptor, TextureParameters textureParameters ) {
-        this( handle, textureDescriptor, textureParameters, OpenGlConstants.GL_TEXTURE_2D );
+        this( handle, textureDescriptor, textureParameters, OpenGL.Constants.GL_TEXTURE_2D );
     }
 
     public Texture ( int handle, TextureDescriptor textureDescriptor ) {
-        this( handle, textureDescriptor, TextureParameters.DEFAULT, OpenGlConstants.GL_TEXTURE_2D );
+        this( handle, textureDescriptor, TextureParameters.DEFAULT, OpenGL.Constants.GL_TEXTURE_2D );
+    }
+
+    public Texture ( String mock ) {
+        throw new UnsupportedOperationException();
     }
 
     public int getHandle () {
@@ -40,7 +44,7 @@ public class Texture {
         return textureDescriptor;
     }
 
-    public void bind ( OpenGlUe gl ) {
+    public void bind ( OpenGLUE gl ) {
         gl.glBindTexture( targetEnum, handle );
         if ( updateTexParams ) {
             textureParameters.update( gl, targetEnum );
@@ -52,7 +56,7 @@ public class Texture {
 
      @param gl
      */
-    public void unbind ( OpenGlUe gl ) {
+    public void unbind ( OpenGLUE gl ) {
         gl.glBindTexture( targetEnum, 0 );
     }
 

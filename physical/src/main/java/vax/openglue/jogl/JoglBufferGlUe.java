@@ -3,13 +3,13 @@ package vax.openglue.jogl;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import com.jogamp.common.nio.Buffers;
-import vax.openglue.BufferGlUe;
+import vax.openglue.BufferGLUE;
 
 /**
 
  @author toor
  */
-public class JoglBufferGlUe implements BufferGlUe {
+public class JoglBufferGLUE implements BufferGLUE {
     @Override
     public IntBuffer ueCreateIntBuffer ( int size ) {
         return Buffers.newDirectIntBuffer( size );

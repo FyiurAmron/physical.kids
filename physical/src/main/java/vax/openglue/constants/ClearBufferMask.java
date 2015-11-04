@@ -1,6 +1,6 @@
 package vax.openglue.constants;
 
-import static vax.openglue.OpenGlConstants.*;
+import static vax.openglue.OpenGL.Constants.*;
 
 /**
 

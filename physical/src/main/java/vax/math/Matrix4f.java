@@ -203,4 +203,12 @@ public class Matrix4f extends VectorFloat {
     public static Matrix4f setToRotationZ ( float rotationAngle ) {
         throw new UnsupportedOperationException( "Not yet implemented." );
     }
+
+    public static Matrix4f lookAt ( Vector3f pos, Vector3f vector3f, Vector3f vector3f0 ) {
+        throw new UnsupportedOperationException( "Not yet implemented." );
+    }
+
+    public static Matrix4f createPerspectiveFieldOfView ( float f, float aspectRatio, int i, int i0 ) {
+        throw new UnsupportedOperationException( "Not yet implemented." );
+    }
 }

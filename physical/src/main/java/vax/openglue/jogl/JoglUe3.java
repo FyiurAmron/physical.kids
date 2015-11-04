@@ -4,21 +4,30 @@ import java.nio.*;
 
 import com.jogamp.opengl.*;
 
-import vax.openglue.AbstractGlUe;
+import vax.openglue.AbstractGLUE;
 
 /**
 
  @author toor
  */
-public class JoglUe3 extends AbstractGlUe {
+public class JoglUe3 extends AbstractGLUE {
     private GL3 gl;
+
+    public JoglUe3 () {
+    }
 
     public JoglUe3 ( GL3 gl ) {
         this.gl = gl;
     }
 
-    public void setGl ( GL3 gl ) {
+    public JoglUe3 setGl ( GL3 gl ) {
         this.gl = gl;
+        return this;
+    }
+
+    public JoglUe3 setGl( GLAutoDrawable drawable ) {
+        this.gl = drawable.getGL().getGL3();
+        return this;
     }
 
     @Override
@@ -253,7 +262,7 @@ public class JoglUe3 extends AbstractGlUe {
     }
 
     @Override
-    public void glViewport ( int x, int y, int width, int height) {
+    public void glViewport ( int x, int y, int width, int height ) {
         gl.glViewport( x, y, width, height );
     }
 }

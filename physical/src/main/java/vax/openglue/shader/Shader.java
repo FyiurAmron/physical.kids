@@ -1,4 +1,4 @@
-package vax.openglue;
+package vax.openglue.shader;
 
 import vax.openglue.constants.ShaderType;
 

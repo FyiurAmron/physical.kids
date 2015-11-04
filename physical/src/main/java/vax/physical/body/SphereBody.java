@@ -1,7 +1,10 @@
 package vax.physical.body;
 
+import java.util.List;
 import vax.math.Matrix4f;
 import vax.math.Vector3f;
+import vax.physics.Body;
+import vax.util.Action;
 
 /**
 
@@ -32,7 +35,7 @@ public class SphereBody {
         throw new UnsupportedOperationException( "Not yet implemented." );
     }
 
-    public Object getForces () {
+    public List<Action<Body>> getForces () {
         throw new UnsupportedOperationException( "Not yet implemented." );
     }
 

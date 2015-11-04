@@ -18,4 +18,8 @@ public class BodyManager {
         throw new UnsupportedOperationException( "Not yet implemented." );
     }
 
+    public void update ( float TIME_THRESHOLD ) {
+        throw new UnsupportedOperationException( "Not yet implemented." );
+    }
+
 }

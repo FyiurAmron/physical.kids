@@ -7,13 +7,13 @@ import java.nio.*;
  @author toor
  */
 public class BufferUtils {
-    private static BufferGlUe bufferGlUe = BufferGlUe.GLUE_NOT_SET;
+    private static BufferGLUE bufferGlUe = BufferGLUE.GLUE_NOT_SET;
 
-    public static void setBufferGlUe ( BufferGlUe bufferGlUe ) {
+    public static void setBufferGlUe ( BufferGLUE bufferGlUe ) {
         BufferUtils.bufferGlUe = bufferGlUe;
     }
 
-    public static BufferGlUe getBufferGlUe () {
+    public static BufferGLUE getBufferGlUe () {
         return bufferGlUe;
     }
 

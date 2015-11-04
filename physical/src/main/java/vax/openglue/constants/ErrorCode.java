@@ -1,7 +1,7 @@
 package vax.openglue.constants;
 
 import java.util.HashMap;
-import static vax.openglue.OpenGlConstants.*;
+import static vax.openglue.OpenGL.Constants.*;
 
 /**
 
