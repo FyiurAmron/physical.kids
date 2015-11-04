@@ -1,5 +1,21 @@
+syntax: glob
+Thumbs.db
+.DS_Store
+local.properties
+*.log
+*.apk
+*.so
+*.iml
+build
+dist
+.nb-gradle*
+
+syntax: regexp
 \.orig$
 \.orig\..*$
 \.chg\..*$
 \.rej$
 \.conflict\~$
+^.idea$
+^desktop/data/.*$
+^.gradle.*$
