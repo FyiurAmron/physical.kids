@@ -6,8 +6,8 @@ import java.nio.*;
 
  @author toor
  */
-public interface BufferGlUe {
-    public final static BufferGlUe GLUE_NOT_SET = new BufferGlUe() {
+public interface BufferGLUE {
+    public final static BufferGLUE GLUE_NOT_SET = new BufferGLUE() {
         @Override
         public IntBuffer ueCreateIntBuffer ( int size ) {
             throw new IllegalStateException();

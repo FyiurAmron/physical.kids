@@ -8,7 +8,7 @@ import vax.openglue.constants.*;
 
  @author toor
  */
-public interface OpenGlUe extends OpenGl {
+public interface OpenGLUE extends OpenGL {
     /*
      public void glBindTexture ( int GL_TEXTURE_2D, int handle );
 

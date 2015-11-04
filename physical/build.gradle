@@ -18,18 +18,18 @@ dependencies {
     
     // backend deps
     compile "org.jogamp.gluegen:gluegen-rt:$joglVersion"
-    compile "org.jogamp.gluegen:gluegen-rt-main:$joglVersion"
+    //compile "org.jogamp.gluegen:gluegen-rt-main:$joglVersion"
 
     compile "org.jogamp.gluegen:gluegen-rt:$joglVersion:natives-$platform"
         
     compile "org.jogamp.jogl:jogl-all:$joglVersion"
-    compile "org.jogamp.jogl:jogl-all-main:$joglVersion"
+    //compile "org.jogamp.jogl:jogl-all-main:$joglVersion"
 
     compile "org.jogamp.jogl:jogl-all:$joglVersion:natives-$platform"
     //compile "org.jogamp.jogl:jogl-all:$joglVersion:natives-linux-amd64"
     
     compile "org.jogamp.jogl:newt:$joglVersion"
-    compile "org.jogamp.jogl:newt-main:$joglVersion"
+    //compile "org.jogamp.jogl:newt-main:$joglVersion"
     compile "org.jogamp.jogl:newt:$joglVersion:natives-$platform"
     
     compile "org.jogamp.jogl:nativewindow:$joglVersion"

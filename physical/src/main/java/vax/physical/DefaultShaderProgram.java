@@ -1,6 +1,6 @@
 package vax.physical;
 
-import vax.openglue.ShaderProgram;
+import vax.openglue.shader.ShaderProgram;
 
 /**
 

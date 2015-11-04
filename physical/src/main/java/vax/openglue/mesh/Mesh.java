@@ -98,49 +98,49 @@ public class Mesh implements Renderable {
     }
 
     @Override
-    public void update ( OpenGlUe gl ) {
+    public void update ( OpenGLUE gl ) {
         if ( updateAction != null ) {
             updateAction.exec( this );
         }
     }
 
     @Override
-    public void render ( OpenGlUe gl ) {
+    public void render ( OpenGLUE gl ) {
         if ( texture != null ) {
-            gl.glBindTexture( OpenGlConstants.GL_TEXTURE_2D, texture.getHandle() );
+            gl.glBindTexture( OpenGL.Constants.GL_TEXTURE_2D, texture.getHandle() );
         }
         gl.glBindVertexArray( vaoHandle );
 
-        gl.glDrawElements( primitiveType.getValue(), modelData.getIndices().length, OpenGlConstants.GL_UNSIGNED_INT, 0 );
+        gl.glDrawElements( primitiveType.getValue(), modelData.getIndices().length, OpenGL.Constants.GL_UNSIGNED_INT, 0 );
     }
 
-    public int genBuffer ( OpenGlUe gl, int bufferTarget, float[] data ) {
+    public int genBuffer ( OpenGLUE gl, int bufferTarget, float[] data ) {
         int handle = gl.glGenBuffer();
         gl.glBindBuffer( bufferTarget, handle );
         FloatBuffer fb = BufferUtils.createFloatBuffer( data );
-        gl.glBufferData( bufferTarget, data.length * Float.BYTES, fb, OpenGlConstants.GL_STATIC_DRAW );
+        gl.glBufferData( bufferTarget, data.length * Float.BYTES, fb, OpenGL.Constants.GL_STATIC_DRAW );
         return handle;
     }
 
-    public int genBuffer ( OpenGlUe gl, int bufferTarget, int[] data ) {
+    public int genBuffer ( OpenGLUE gl, int bufferTarget, int[] data ) {
         int handle = gl.glGenBuffer();
         gl.glBindBuffer( bufferTarget, handle );
         IntBuffer ib = BufferUtils.createIntBuffer( data );
-        gl.glBufferData( bufferTarget, data.length * Integer.BYTES, ib, OpenGlConstants.GL_STATIC_DRAW );
+        gl.glBufferData( bufferTarget, data.length * Integer.BYTES, ib, OpenGL.Constants.GL_STATIC_DRAW );
         return handle;
     }
 
-    void enableAttribute ( OpenGlUe gl, int attribNr, int handle, int size ) {
+    void enableAttribute ( OpenGLUE gl, int attribNr, int handle, int size ) {
         gl.glEnableVertexAttribArray( attribNr );
-        gl.glBindBuffer( OpenGlConstants.GL_ARRAY_BUFFER, handle );
-        gl.glVertexAttribPointer( attribNr, size, OpenGlConstants.GL_FLOAT, true, size * Float.BYTES, 0 );
+        gl.glBindBuffer( OpenGL.Constants.GL_ARRAY_BUFFER, handle );
+        gl.glVertexAttribPointer( attribNr, size, OpenGL.Constants.GL_FLOAT, true, size * Float.BYTES, 0 );
     }
 
-    public void init ( OpenGlUe gl ) {
-        positionVboHandle = genBuffer( gl, OpenGlConstants.GL_ARRAY_BUFFER, modelData.getVertices() );
-        normalVboHandle = genBuffer( gl, OpenGlConstants.GL_ARRAY_BUFFER, modelData.getNormals() );
-        uvsVboHandle = genBuffer( gl, OpenGlConstants.GL_ARRAY_BUFFER, modelData.getUvs() );
-        eboHandle = genBuffer( gl, OpenGlConstants.GL_ELEMENT_ARRAY_BUFFER, modelData.getIndices() );
+    public void init ( OpenGLUE gl ) {
+        positionVboHandle = genBuffer( gl, OpenGL.Constants.GL_ARRAY_BUFFER, modelData.getVertices() );
+        normalVboHandle = genBuffer( gl, OpenGL.Constants.GL_ARRAY_BUFFER, modelData.getNormals() );
+        uvsVboHandle = genBuffer( gl, OpenGL.Constants.GL_ARRAY_BUFFER, modelData.getUvs() );
+        eboHandle = genBuffer( gl, OpenGL.Constants.GL_ELEMENT_ARRAY_BUFFER, modelData.getIndices() );
         gl.glBindBuffer( BufferTarget.ArrayBuffer, 0 );
         gl.glBindBuffer( BufferTarget.ElementArrayBuffer, 0 );
 
