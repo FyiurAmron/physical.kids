@@ -17,7 +17,7 @@ import vax.math.Vector2i;
 
  @author gbarbieri
  */
-public class JoglTest {
+public class JoglTestWindowWithoutGLUE {
     private int screenIdx = 0;
     private Vector2i windowSize = new Vector2i( 800, 600 );
     private Vector2i windowPosition = new Vector2i( 50, 50 );
@@ -31,7 +31,7 @@ public class JoglTest {
     private final Animator animator;
     private Boolean running;
 
-    public JoglTest () {
+    public JoglTestWindowWithoutGLUE () {
         Display display = NewtFactory.createDisplay( null );
         Screen screen = NewtFactory.createScreen( display, screenIdx );
         GLProfile glProfile = GLProfile.get( GLProfile.GL4 );
