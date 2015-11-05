@@ -3,6 +3,7 @@ package vax.openglue.jogl;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
+import java.util.Arrays;
 import com.jogamp.opengl.*;
 import static com.jogamp.opengl.GL.*;
 import static com.jogamp.opengl.GL2ES2.GL_FRAGMENT_SHADER;
@@ -14,6 +15,7 @@ import com.jogamp.opengl.util.PMVMatrix;
 import com.jogamp.opengl.util.glsl.ShaderCode;
 import com.jogamp.opengl.util.glsl.ShaderProgram;
 import vax.openglue.shader.Shader;
+import vax.util.MiscUtils;
 
 /**
 
@@ -25,13 +27,13 @@ public class JoglTestGlel implements GLEventListener {
     // Position interleaved with colors (to be normalized).
     private float[] vertexData = new float[]{
         -1, -1, 0, 1, 0, 0,
-        -1, +1, 0, 0, 1, 0
-        +2, +0, 0, 0, 0, 1,
-    };
+        -1, 0, 0, 0, 1, 0,
+        0, -1, 0, 0, 0, 1, };
     private short[] indexData = new short[]{
         0, 1, 2
     };
-    private int program, modelToClipMatrixUL;
+    private int program;
+    private int modelToClipMatrixUL, timeUL;
     private final String SHADERS_ROOT = Shader.class.getPackage().getName().replace( ".", "/" );
     /**
      Use pools, you don't want to create and let them cleaned by the garbage
@@ -62,6 +64,8 @@ public class JoglTestGlel implements GLEventListener {
     @Override
     public void display ( GLAutoDrawable drawable ) {
 //        System.out.println("display");
+        now = System.currentTimeMillis();
+        float diff = (float) ( now - start ) / 1000;
 
         GL4 gl4 = drawable.getGL().getGL4();
 
@@ -69,33 +73,37 @@ public class JoglTestGlel implements GLEventListener {
          We set the clear color and depth (although depth is not necessary since
          it is 1 by default).
          */
-        gl4.glClearColor( 0.2f, 0.2f, 0.2f, 1f );
+        //gl4.glClearColor( 0.2f, 0.2f, 0.2f, 1f );
+        //float fc = 0.5f * ( FloatUtil.sin( diff ) + 1 );
+        float fc = 0.2f;
+        gl4.glClearColor( fc, fc, fc, fc );
         //gl4.glClearDepthf( 1f );
         gl4.glClear( GL4.GL_COLOR_BUFFER_BIT | GL4.GL_DEPTH_BUFFER_BIT );
 
         gl4.glUseProgram( program );
         gl4.glBindVertexArray( objects[Semantic.Object.VAO] );
 
-        now = System.currentTimeMillis();
-        float diff = (float) ( now - start ) / 1000;
-
         Matrix4 m4proj = new Matrix4();
         Matrix4 m4view = new Matrix4();
         m4proj.makePerspective( 67.0f / 360 * 2 * FloatUtil.PI, 800f / 600f, 1, 1000 );
         //m4proj.makeOrtho( -10f, 10f, -10f, 10f, -10f, 10f );
-        m4view.translate( 3, 0, -10f );
-        vertexBuffer.position( 2 );
-        vertexBuffer.put(FloatUtil.sin( diff ));
-        vertexBuffer.put(FloatUtil.sin( diff ));
-        vertexBuffer.put(FloatUtil.sin( diff ));
-        vertexBuffer.put(FloatUtil.sin( diff ));vertexBuffer.put(FloatUtil.sin( diff ));vertexBuffer.put(FloatUtil.sin( diff ));
+        //m4view.translate( FloatUtil.sin(diff*2)*3, 0, -10f );
+        float sc = 2f;
+                m4view.scale( sc, sc, sc );
+        m4view.translate( 1, 0, -4f );
 
-        initVbo(gl4);
-
+        float f = FloatUtil.sin( diff ) - 2;
+        //System.out.println( now );
+/*
+        ByteBuffer bb = gl4.glMapBuffer( GL4.GL_ARRAY_BUFFER, GL4.GL_WRITE_ONLY );
+        bb.position( 4 );
+        bb.putFloat( f );
+        gl4.glUnmapBuffer( GL4.GL_ARRAY_BUFFER );
+*/
         //m4view.rotate( diff, 1, 0, 0);
-        m4view.scale( 2.0f, 2.0f, 2.0f );
-        //m4view.translate( 3, 0, -10f );
+        m4view.scale( sc, sc, sc );
         m4proj.multMatrix( m4view );
+        gl4.glUniform1f( timeUL, now % 1000000 );
         gl4.glUniformMatrix4fv( modelToClipMatrixUL, 1, false, m4proj.getMatrix(), 0 );
 
         gl4.glDrawElements( GL4.GL_TRIANGLES, indexData.length, GL4.GL_UNSIGNED_SHORT, 0 );
@@ -137,14 +145,12 @@ public class JoglTestGlel implements GLEventListener {
         gl4.glGenBuffers( 1, objects, Semantic.Object.VBO );
         gl4.glBindBuffer( GL4.GL_ARRAY_BUFFER, objects[Semantic.Object.VBO] );
 
-        int size = vertexData.length * GLBuffers.SIZEOF_FLOAT;
-        gl4.glBufferData( GL4.GL_ARRAY_BUFFER, size, vertexBuffer, GL4.GL_STATIC_DRAW );
+        gl4.glBufferData( GL4.GL_ARRAY_BUFFER, vertexData.length * GLBuffers.SIZEOF_FLOAT, vertexBuffer, GL4.GL_STREAM_DRAW );
 
         checkError( gl4, "initVbo" );
     }
 
     private void initIbo ( GL4 gl4 ) {
-
         gl4.glGenBuffers( 1, objects, Semantic.Object.IBO );
         gl4.glBindBuffer( GL4.GL_ELEMENT_ARRAY_BUFFER, objects[Semantic.Object.IBO] );
         ShortBuffer indexBuffer = GLBuffers.newDirectShortBuffer( indexData );
@@ -215,11 +221,9 @@ public class JoglTestGlel implements GLEventListener {
         gl4.glBindFragDataLocation( program, Semantic.Frag.COLOR, "outputColor" );
 
         shaderProgram.link( gl4, System.out );
-        /**
-         Take in account that JOGL offers a GLUniformData class, here we don't
-         use it, but take a look to it since it may be interesting for you.
-         */
+
         modelToClipMatrixUL = gl4.glGetUniformLocation( program, "modelToClipMatrix" );
+        timeUL = gl4.glGetUniformLocation( program, "time" );
 
         checkError( gl4, "initProgram" );
     }

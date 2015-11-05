@@ -3,25 +3,17 @@
  */
 #version 400
 
-// Incoming vertex position, Model Space.
-in vec2 position;
-// Incoming vertex color.
+in vec3 position;
 in vec3 color;
 
-// Uniform matrix from Model Space to Clip Space.
 uniform mat4 modelToClipMatrix;
 
-// Outgoing color.
 out vec3 interpolatedColor;
 out vec3 outPosition;
 
 void main() {
+    gl_Position = modelToClipMatrix * vec4(position, 1);
+    outPosition = position;
 
-    // Normally gl_Position is in Clip Space and we calculate it by multiplying
-    // it with the modelToClipMatrix.
-    gl_Position = modelToClipMatrix * vec4(position.x,position.y, sin(position.x*3.14)*sin(position.y*3.14), 1);
-    outPosition = vec3(position,sin(position.x)*sin(position.y));
-
-    // We assign the color to the outgoing variable.
     interpolatedColor = color;
 }
