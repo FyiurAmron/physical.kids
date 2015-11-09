@@ -1,14 +1,16 @@
 package vax.physics;
 
-import vax.util.Pair;
+/**
+ * Created by Kuba on 2015-10-28.
+ */
+public class ColliderDescriptor extends Tuple<Type,Type> {
 
-public class ColliderDescriptor extends Pair<Class<?>> {
+public ColliderDescriptor ( Class bodyType1, Class bodyType2 ) {
+        this( bodyType1, bodyType2 );
+        }
 
-    public ColliderDescriptor ( Class<?> bodyType1, Class<?> bodyType2 ) {
-        super( bodyType1, bodyType2 );
-    }
+public bool checkTypes ( Body body1, Body body2 ) {
+        return Item1.IsInstanceOfType( body1 ) && Item2.IsInstanceOfType( body2 );
+        }
+        }
 
-    public boolean checkTypes ( Body body1, Body body2 ) {
-        return ( value1.equals( body1.getClass() ) && value2.equals( body2.getClass() ) );
-    }
-}

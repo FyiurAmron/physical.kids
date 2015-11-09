@@ -1,39 +1,36 @@
 package vax.physics;
 
-import vax.math.*;
+import java.util.*;
+import physical.math;
 
 public class SpherePlaneCollider extends Collider {
     public SpherePlaneCollider () {
-        super( SphereBody.class, PlaneBody.class );
+        super( typeof(SphereBody), typeof(PlaneBody) ) ;
     }
 
-    @Override
-    public boolean collide ( Body body1, Body body2 ) {
-        SphereBody sb = (SphereBody) body1;
-        PlaneBody pb = (PlaneBody) body2;
-        if ( sb == null || pb == null ) {
-            throw new NullPointerException();
-        }
-        float dist = pb.plane3f.getDistance( sb.transform );
-        float depth = sb.radius - dist;
-        if ( depth < 0 || depth > sb.radius ) // a) sphere-to-plane collision occured, b) not too far yet
-        {
+    override public bool collide ( Body body1, Body body2 ) {
+        SphereBody sb = body1 as SphereBody;
+        PlaneBody pb = body2 as PlaneBody;
+        if ( sb == null || pb == null )
+            throw new InvalidOperationException();
+        float dist = pb.Plane3f.getDistance( sb.Transform );
+        float depth = sb.Radius - dist;
+        if ( depth < 0 || depth > sb.Radius ) // a) sphere-to-plane collision occured, b) not too far yet
             return false;
-        }
-        Vector3f normal = pb.plane3f.getNormal();
-        sb.transform.addTranslation( normal.getScaled( depth ) );
+        Vector3f normal = pb.Plane3f.Normal;
+        sb.Transform.addTranslation( normal.getScaled( depth ) );
 
-        float res = sb.restitution * pb.restitution;
-        float vn = sb.velocity.dot( normal );
-        Vector3f vTangent = new Vector3f( sb.velocity );
+        float res = sb.Restitution * pb.Restitution;
+        float vn = sb.Velocity.dot( normal );
+        Vector3f vTangent = new Vector3f( sb.Velocity );
         vTangent.subtract( normal.getScaled( vn ) );
-        sb.velocity.add( normal.getScaled( ( -1f - res ) * vn ) );
+        sb.Velocity.add( normal.getScaled( ( -1f - res ) * vn ) );
 
         Vector3f F = sb.getForce();
         float fn = F.dot( normal );
         F.subtract( normal.getScaled( fn ) ); // surface reaction
         if ( vTangent.lengthSq() > Body.KINEMATIC_EPSILON_SQ ) {
-            vTangent.normalize().scale( fn * pb.friction );
+            vTangent.normalize().scale( fn * pb.Friction );
             sb.applyForce( vTangent );
         }
 
