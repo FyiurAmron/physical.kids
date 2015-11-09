@@ -2,9 +2,9 @@ package vax.physics;
 
 import vax.util.Pair;
 
-public class ColliderDescriptor extends Pair<Class<?>> {
+public class ColliderDescriptor extends Pair<Class<? extends Body>> {
 
-    public ColliderDescriptor ( Class<?> bodyType1, Class<?> bodyType2 ) {
+    public ColliderDescriptor ( Class<? extends Body> bodyType1, Class<? extends Body> bodyType2 ) {
         super( bodyType1, bodyType2 );
     }
 

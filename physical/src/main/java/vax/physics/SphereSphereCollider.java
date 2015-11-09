@@ -2,18 +2,19 @@ package vax.physics;
 
 import vax.math.*;
 
-public class SphereSphereCollider extends Collider {
+public class SphereSphereCollider extends Collider<SphereBody, SphereBody> {
 
     public SphereSphereCollider () {
-        super( SphereBody.class, SphereBody.class);
+        super( SphereBody.class, SphereBody.class );
     }
 
     @Override
-    public boolean collide ( Body body1, Body body2 ) {
-        SphereBody sb1 = (SphereBody) body1  ;
+    public boolean collide ( /* Sphere */ Body body1, /* Sphere */ Body body2 ) {
+        SphereBody sb1 = (SphereBody) body1;
         SphereBody sb2 = (SphereBody) body2;
-        if ( sb1 == null || sb2 == null )
+        if ( sb1 == null || sb2 == null ) {
             throw new NullPointerException();
+        }
 
         float res = sb1.restitution * sb2.restitution;
         Vector3f disp = sb1.transform.getDisplacement( sb2.transform );
@@ -21,8 +22,9 @@ public class SphereSphereCollider extends Collider {
         float dist = disp.length();
         //System.out.println( totalRadius + " " + dist );
         float depth = totalRadius - dist;
-        if ( depth < 0 /* || depth > totalRadius */ /* <- has to be false*/ )
+        if ( depth < 0 /* || depth > totalRadius */ /* <- has to be false */ ) {
             return false;
+        }
         disp.normalize();
         Vector3f normal = disp;
         depth *= 0.5f;

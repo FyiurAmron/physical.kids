@@ -1,10 +1,9 @@
 package vax.physics;
 
-public abstract class Collider {
-    /* <T1,T2> where T1 : Body where T2 : Body */
+public abstract class Collider<T1 extends Body, T2 extends Body> {
     final ColliderDescriptor colliderDescriptor;
 
-    public Collider ( Class t1, Class t2 ) {
+    public Collider ( Class<T1> t1, Class<T2> t2 ) {
         colliderDescriptor = new ColliderDescriptor( t1, t2 );
     }
 
