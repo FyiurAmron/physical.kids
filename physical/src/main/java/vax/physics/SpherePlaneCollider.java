@@ -2,13 +2,13 @@ package vax.physics;
 
 import vax.math.*;
 
-public class SpherePlaneCollider extends Collider {
+public class SpherePlaneCollider extends Collider<SphereBody, PlaneBody> {
     public SpherePlaneCollider () {
         super( SphereBody.class, PlaneBody.class );
     }
 
     @Override
-    public boolean collide ( Body body1, Body body2 ) {
+    public boolean collide ( /* Sphere */ Body body1, /* Plane */ Body body2 ) {
         SphereBody sb = (SphereBody) body1;
         PlaneBody pb = (PlaneBody) body2;
         if ( sb == null || pb == null ) {
