@@ -47,20 +47,20 @@ public class VectorFloat {
             return;
         }
         int absOffset = Math.abs( offset ), len2 = data.length - absOffset;
-        float[] tmp;
+        float[] tmp = new float[absOffset];
         if ( offset > 0 ) {
-            tmp = Arrays.copyOfRange( data, len2, 0 );
-            data = Arrays.copyOfRange( data, 0, absOffset );
-            data = Arrays.copyOfRange( tmp, 0, 0 );
+            System.arraycopy( data, len2, tmp, 0, absOffset );
+            System.arraycopy( data, 0, data, absOffset, len2 );
+            System.arraycopy( tmp, 0, data, 0, absOffset );
         } else {
-            tmp = Arrays.copyOfRange( data, 0, 0 );
-            data = Arrays.copyOfRange( data, absOffset, 0 );
-            data = Arrays.copyOfRange( tmp, 0, len2 );
+            System.arraycopy( data, 0, tmp, 0, absOffset );
+            System.arraycopy( data, absOffset, data, 0, len2 );
+            System.arraycopy( tmp, 0, data, len2, absOffset );
         }
-        for( float item : data ) {
-            System.out.print( item + " " );
-        }
-        System.out.println();
+//        for(float item : data) {
+//            System.out.print( item + " ");
+//        }
+//        System.out.println();
     }
 
     public void setValue ( float value ) {
@@ -69,8 +69,8 @@ public class VectorFloat {
         }
     }
 
-    public void setZero () {
-        setValue( (float) 0 );
+    public void setZero() {
+        setValue( 0 );
     }
 
     public boolean isZero () {
