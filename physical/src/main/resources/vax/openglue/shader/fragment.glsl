@@ -34,9 +34,9 @@ void main() {
     //outputColor = vec4(interpolatedColor, 1);
 int itime;
 float nois;
-    nois = 0.5*(sin(outPosition.x*outPosition.y*time)+1); // magic swirls
+    nois = 0.5*(sin(outPosition.x*outPosition.y*3*time)+1); // magic swirls
 //nois = noise(vec2(outPosition.x,0))*noise(vec2(0,outPosition.y)); // lines pattern
-itime = int(time) % 1000; // least blinks, "dynamic"
+//itime = int(time) % 1000; // least blinks, "dynamic"
 //itime = int(time) % 100;
 //itime = int(time) % 10; // blinks often, kind of "static"
 //nois = noise(vec2(outPosition.x,itime))*noise(vec2(itime,outPosition.y))*0.5*(sin(time)+1); // lines noise

@@ -5,8 +5,6 @@ import java.util.HashSet;
 
 import vax.physics.*;
 import vax.physics.BodyManager;
-import vax.physical.body.PlaneBody;
-import vax.physical.body.SphereBody;
 import vax.math.*;
 import vax.openglue.*;
 import vax.openglue.mesh.*;
