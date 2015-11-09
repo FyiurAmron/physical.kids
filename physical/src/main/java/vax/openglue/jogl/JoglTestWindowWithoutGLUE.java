@@ -19,7 +19,7 @@ import vax.math.Vector2i;
  */
 public class JoglTestWindowWithoutGLUE {
     private int screenIdx = 0;
-    private Vector2i windowSize = new Vector2i( 800, 600 );
+    private Vector2i windowSize = new Vector2i( 1000, 800 );
     private Vector2i windowPosition = new Vector2i( 50, 50 );
     private boolean undecorated = false;
     private boolean alwaysOnTop = false;

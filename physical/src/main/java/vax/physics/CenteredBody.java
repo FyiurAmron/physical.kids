@@ -1,4 +1,4 @@
-﻿package vax.physics;
+package vax.physics;
 
 import vax.math.*;
 
@@ -23,6 +23,10 @@ abstract public class CenteredBody extends Body {
 
     public void setRadius(float radius) {
         this.radius = radius;
+    }
+
+    public void timeStep ( float deltaT ) {
+        throw new UnsupportedOperationException( "Not yet implemented." );
     }
 
 

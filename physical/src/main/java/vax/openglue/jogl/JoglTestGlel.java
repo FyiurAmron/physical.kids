@@ -28,9 +28,12 @@ public class JoglTestGlel implements GLEventListener {
     private float[] vertexData = new float[]{
         -1, -1, 0, 1, 0, 0,
         -1, 0, 0, 0, 1, 0,
-        0, -1, 0, 0, 0, 1, };
+        0, -1, 0, 0, 0, 1,
+        -1, 0, 0, 0, 1, 0,
+        0, -1, 0, 0, 0, 1,
+        0, 0, 0, 0, 0, 1, };
     private short[] indexData = new short[]{
-        0, 1, 2
+        0, 1, 2, 3, 4, 5
     };
     private int program;
     private int modelToClipMatrixUL, timeUL;
@@ -75,7 +78,7 @@ public class JoglTestGlel implements GLEventListener {
          */
         //gl4.glClearColor( 0.2f, 0.2f, 0.2f, 1f );
         //float fc = 0.5f * ( FloatUtil.sin( diff ) + 1 );
-        float fc = 0.2f;
+        float fc = 0.0f;
         gl4.glClearColor( fc, fc, fc, fc );
         //gl4.glClearDepthf( 1f );
         gl4.glClear( GL4.GL_COLOR_BUFFER_BIT | GL4.GL_DEPTH_BUFFER_BIT );
@@ -88,19 +91,19 @@ public class JoglTestGlel implements GLEventListener {
         m4proj.makePerspective( 67.0f / 360 * 2 * FloatUtil.PI, 800f / 600f, 1, 1000 );
         //m4proj.makeOrtho( -10f, 10f, -10f, 10f, -10f, 10f );
         //m4view.translate( FloatUtil.sin(diff*2)*3, 0, -10f );
-        float sc = 2f;
-                m4view.scale( sc, sc, sc );
+        float sc =5f;
+        m4view.scale( sc, sc, sc );
         m4view.translate( 1, 0, -4f );
 
         float f = FloatUtil.sin( diff ) - 2;
         //System.out.println( now );
 /*
-        ByteBuffer bb = gl4.glMapBuffer( GL4.GL_ARRAY_BUFFER, GL4.GL_WRITE_ONLY );
-        bb.position( 4 );
-        bb.putFloat( f );
-        gl4.glUnmapBuffer( GL4.GL_ARRAY_BUFFER );
-*/
-        //m4view.rotate( diff, 1, 0, 0);
+         ByteBuffer bb = gl4.glMapBuffer( GL4.GL_ARRAY_BUFFER, GL4.GL_WRITE_ONLY );
+         bb.position( 4 );
+         bb.putFloat( f );
+         gl4.glUnmapBuffer( GL4.GL_ARRAY_BUFFER );
+         */
+        m4view.rotate( diff, 1, 0, 0 );
         m4view.scale( sc, sc, sc );
         m4proj.multMatrix( m4view );
         gl4.glUniform1f( timeUL, now % 1000000 );

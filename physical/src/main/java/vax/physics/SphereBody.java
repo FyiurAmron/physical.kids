@@ -1,4 +1,4 @@
-﻿package vax.physics;
+package vax.physics;
 
 import vax.math.*;
 
@@ -8,68 +8,67 @@ public class SphereBody extends CenteredBody {
     protected int rotationAxis;
     protected float rotationVelocityThreshold;
 
-    public SphereBody(float mass, float radius) {
-        super(mass, radius);
-        restitution =  0.75f;
+    public SphereBody ( float mass, float radius ) {
+        super( mass, radius );
+        restitution = 0.75f;
         rotationVelocityThreshold = 0.15f;
     }
 
-    public Matrix4f createRotationMatrix4() {
-        switch (rotationAxis) {
+    public Matrix4f createRotationMatrix4 () {
+        switch ( rotationAxis ) {
             case Vector3f.OX:
-                return Matrix4f.createRotationX(rotationAngle);
+                return Matrix4f.setToRotationX( rotationAngle );
             case Vector3f.OY:
-                return Matrix4f.createRotationY(rotationAngle);
+                return Matrix4f.setToRotationY( rotationAngle );
             case Vector3f.OZ:
-                return Matrix4f.createRotationZ(rotationAngle);
+                return Matrix4f.setToRotationZ( rotationAngle );
         }
         throw new IllegalArgumentException();
     }
 
-
     @Override
-    public void timeStep(float deltaT) {
-        super.timeStep(deltaT);
+    public void timeStep ( float deltaT ) {
+        super.timeStep( deltaT );
         float v = velocity.length();
-        if (v < rotationVelocityThreshold)
+        if ( v < rotationVelocityThreshold ) {
             return;
+        }
         //Console.WriteLine( Velocity.length() );
-            /*
-            rotationAngle += v * deltaT * rotationSpeed;
-            transform.setScaleAndRotation( createRotationMatrix4() );
-            */
+        /*
+         rotationAngle += v * deltaT * rotationSpeed;
+         transform.setScaleAndRotation( createRotationMatrix4() );
+         */
     }
 
-    public float getRotationAngle() {
+    public float getRotationAngle () {
         return rotationAngle;
     }
 
-    public void setRotationAngle(float rotationAngle) {
+    public void setRotationAngle ( float rotationAngle ) {
         this.rotationAngle = rotationAngle;
     }
 
-    public float getRotationSpeed() {
+    public float getRotationSpeed () {
         return rotationSpeed;
     }
 
-    public void setRotationSpeed(float rotationSpeed) {
+    public void setRotationSpeed ( float rotationSpeed ) {
         this.rotationSpeed = rotationSpeed;
     }
 
-    public int getRotationAxis() {
+    public int getRotationAxis () {
         return rotationAxis;
     }
 
-    public void setRotationAxis(int rotationAxis) {
+    public void setRotationAxis ( int rotationAxis ) {
         this.rotationAxis = rotationAxis;
     }
 
-    public float getRotationVelocityThreshold() {
+    public float getRotationVelocityThreshold () {
         return rotationVelocityThreshold;
     }
 
-    public void setRotationVelocityThreshold(float rotationVelocityThreshold) {
+    public void setRotationVelocityThreshold ( float rotationVelocityThreshold ) {
         this.rotationVelocityThreshold = rotationVelocityThreshold;
     }
 }
-

@@ -1,11 +1,11 @@
-﻿package vax.physics;
+package vax.physics;
 
 import java.util.*;
 import vax.math.*;
 import vax.util.*;
 
 public abstract class Body {
-    public final float KINEMATIC_EPSILON_SQ = 1E-2f;
+    public static final float KINEMATIC_EPSILON_SQ = 1E-2f;
 
     public float mass;
     protected Vector3f velocity = new Vector3f();
@@ -15,8 +15,8 @@ public abstract class Body {
     protected float friction;
     protected Matrix4f transform;
 
-    List<Action<Body>> constraints = new ArrayList<Action<Body>>();
-    List<Action<Body>> forces = new ArrayList<Action<Body>>();
+    List<Action<Body>> constraints = new ArrayList<>();
+    List<Action<Body>> forces = new ArrayList<>();
 
     //        Vector3f oldPosition = new Vector3f();
 //        Vector3f position;
@@ -69,7 +69,7 @@ public abstract class Body {
 
     public void timeStep ( float deltaT ) {
         for ( Action<Body> force : forces ) {
-//            force(this);
+            force.exec( this );
         }
 
         //oldPosition.set( position );
@@ -82,7 +82,7 @@ public abstract class Body {
         acceleration.setZero();
 
         for ( Action<Body> constraint : constraints ) {
-//            constraint( this );
+            constraint.exec( this );
         }
     }
 
