@@ -5,18 +5,18 @@ package vax.openglue;
  @author toor
  */
 public abstract class AbstractGLUE implements OpenGLUE {
-    private GlUtils glUtil;
+    private GLUtils glUtil;
 
     public AbstractGLUE () {
-        this( new GlUtils() );
+        this( new GLUtils() );
     }
 
-    public AbstractGLUE ( GlUtils glUtil ) {
+    public AbstractGLUE ( GLUtils glUtil ) {
         this.glUtil = glUtil;
     }
 
     @Override
-    public GlUtils ueGetGlUtil () {
+    public GLUtils ueGetGlUtil () {
         return glUtil;
     }
 }
