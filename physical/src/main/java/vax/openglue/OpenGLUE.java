@@ -1,5 +1,8 @@
 package vax.openglue;
 
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import vax.openglue.constants.*;
@@ -16,7 +19,7 @@ public interface OpenGLUE extends OpenGL {
      */
 
     // new/signature-incompatible methods
-    GlUtils ueGetGlUtil ();
+    GLUtils ueGetGlUtil ();
 
     default void ueSetParam ( int glParam, boolean state ) {
         if ( state ) {
@@ -104,4 +107,45 @@ public interface OpenGLUE extends OpenGL {
         glGenBuffers( 1, intArr, 0 );
         return intArr[0];
     }
+
+    public interface ImageIO {
+        @SuppressWarnings( "Convert2Lambda" )
+        public final static ImageIO GLUE_NOT_SET = new ImageIO() {
+            @Override
+            public TextureData<?> ueReadTexture ( String name, InputStream inputStream ) {
+                throw new IllegalArgumentException();
+            }
+        };
+
+        default TextureData<?> ueReadTextureUrl ( String urlString ) {
+            try {
+                return ueReadTexture( new URL( urlString ) );
+            } catch (MalformedURLException ex) {
+                throw new IllegalArgumentException( ex );
+            }
+        }
+
+        default TextureData<?> ueReadTextureFile ( String filename ) {
+            return ueReadTexture( new File( filename ) );
+        }
+
+        default TextureData<?> ueReadTexture ( File file ) {
+            try (InputStream is = new BufferedInputStream( new FileInputStream( file ) )) {
+                return ueReadTexture( file.toString(), is );
+            } catch (IOException ex) {
+                throw new RuntimeException( ex );
+            }
+        }
+
+        default TextureData<?> ueReadTexture ( URL url ) {
+            try (InputStream is = new BufferedInputStream( url.openStream() )) {
+                return ueReadTexture( url.toString(), is );
+            } catch (IOException ex) {
+                throw new RuntimeException( ex );
+            }
+        }
+
+        TextureData<?> ueReadTexture ( String name, InputStream inputStream );
+    }
+
 }

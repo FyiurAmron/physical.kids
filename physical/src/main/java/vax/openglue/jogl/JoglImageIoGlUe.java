@@ -6,7 +6,7 @@ import java.io.InputStream;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.util.texture.TextureIO;
 
-import vax.openglue.ImageIoGlUe;
+import vax.openglue.OpenGLUE;
 import vax.openglue.TextureData;
 import vax.openglue.TextureDescriptor;
 
@@ -14,7 +14,7 @@ import vax.openglue.TextureDescriptor;
 
  @author toor
  */
-public class JoglImageIoGLUE implements ImageIoGlUe {
+public class JoglImageIoGLUE implements OpenGLUE.ImageIO {
     @Override
     public TextureData<?> ueReadTexture ( String name, InputStream inputStream ) {
         com.jogamp.opengl.util.texture.TextureData td;
