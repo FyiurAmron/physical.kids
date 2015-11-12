@@ -1,8 +1,5 @@
 package vax.openglue;
 
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import vax.openglue.constants.*;
@@ -19,7 +16,7 @@ public interface OpenGLUE extends OpenGL {
      */
 
     // new/signature-incompatible methods
-    GLUtils ueGetGlUtil ();
+    GLUtils ueGetGLUtils ();
 
     default void ueSetParam ( int glParam, boolean state ) {
         if ( state ) {
@@ -34,13 +31,13 @@ public interface OpenGLUE extends OpenGL {
     }
 
     default boolean ueGetProgramInfoLog ( int shaderProgramHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf ) {
-        ByteBuffer bb = ueGetGlUtil().getLogBuffer();
+        ByteBuffer bb = ueGetGLUtils().getLogBuffer();
         glGetProgramInfoLog( shaderProgramHandle, bb.capacity(), null, bb );
         return ( glGetError() != ErrorCode.NoError.getValue() );
     }
 
     default boolean ueGetShaderInfoLog ( int vertexShaderHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf ) {
-        ByteBuffer bb = ueGetGlUtil().getLogBuffer();
+        ByteBuffer bb = ueGetGLUtils().getLogBuffer();
         glGetShaderInfoLog( vertexShaderHandle, bb.capacity(), null, bb );
         return ( glGetError() != ErrorCode.NoError.getValue() );
     }
@@ -75,7 +72,7 @@ public interface OpenGLUE extends OpenGL {
     }
 
     default void glShaderSource ( int shaderHandle, String source ) {
-        glShaderSource( shaderHandle, 1, ueGetGlUtil().toArray( source ), null );
+        glShaderSource(shaderHandle, 1, ueGetGLUtils().toArray( source ), null );
     }
 
     default void glGenVertexArrays ( int count, int[] outBuffer ) {
@@ -83,7 +80,7 @@ public interface OpenGLUE extends OpenGL {
     }
 
     default int glGenVertexArray () {
-        int[] intArr = ueGetGlUtil().getSingleIntArray();
+        int[] intArr = ueGetGLUtils().getSingleIntArray();
         glGenVertexArrays( 1, intArr, 0 );
         return intArr[0];
     }
@@ -93,7 +90,7 @@ public interface OpenGLUE extends OpenGL {
     }
 
     default int glGenTexture () {
-        int[] intArr = ueGetGlUtil().getSingleIntArray();
+        int[] intArr = ueGetGLUtils().getSingleIntArray();
         glGenTextures( 1, intArr, 0 );
         return intArr[0];
     }
@@ -103,49 +100,8 @@ public interface OpenGLUE extends OpenGL {
     }
 
     default int glGenBuffer () {
-        int[] intArr = ueGetGlUtil().getSingleIntArray();
+        int[] intArr = ueGetGLUtils().getSingleIntArray();
         glGenBuffers( 1, intArr, 0 );
         return intArr[0];
     }
-
-    public interface ImageIO {
-        @SuppressWarnings( "Convert2Lambda" )
-        public final static ImageIO GLUE_NOT_SET = new ImageIO() {
-            @Override
-            public TextureData<?> ueReadTexture ( String name, InputStream inputStream ) {
-                throw new IllegalArgumentException();
-            }
-        };
-
-        default TextureData<?> ueReadTextureUrl ( String urlString ) {
-            try {
-                return ueReadTexture( new URL( urlString ) );
-            } catch (MalformedURLException ex) {
-                throw new IllegalArgumentException( ex );
-            }
-        }
-
-        default TextureData<?> ueReadTextureFile ( String filename ) {
-            return ueReadTexture( new File( filename ) );
-        }
-
-        default TextureData<?> ueReadTexture ( File file ) {
-            try (InputStream is = new BufferedInputStream( new FileInputStream( file ) )) {
-                return ueReadTexture( file.toString(), is );
-            } catch (IOException ex) {
-                throw new RuntimeException( ex );
-            }
-        }
-
-        default TextureData<?> ueReadTexture ( URL url ) {
-            try (InputStream is = new BufferedInputStream( url.openStream() )) {
-                return ueReadTexture( url.toString(), is );
-            } catch (IOException ex) {
-                throw new RuntimeException( ex );
-            }
-        }
-
-        TextureData<?> ueReadTexture ( String name, InputStream inputStream );
-    }
-
 }

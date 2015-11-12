@@ -16,7 +16,7 @@ public abstract class AbstractGLUE implements OpenGLUE {
     }
 
     @Override
-    public GLUtils ueGetGlUtil () {
+    public GLUtils ueGetGLUtils () {
         return glUtil;
     }
 }
