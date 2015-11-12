@@ -21,28 +21,29 @@ public class Vector3f extends VectorFloat {
     }
 
     //
-    public void setX ( float val ) {
-        data[0] = val;
-    }
 
     public float getX () {
         return data[0];
-    }
-
-    public void setY ( float val ) {
-        data[1] = val;
     }
 
     public float getY () {
         return data[1];
     }
 
-    public void setZ ( float val ) {
-        data[2] = val;
-    }
-
     public float getZ () {
         return data[2];
+    }
+
+    public void setX ( float val ) {
+        data[0] = val;
+    }
+
+    public void setY ( float val ) {
+        data[1] = val;
+    }
+
+    public void setZ ( float val ) {
+        data[2] = val;
     }
 
     /*
