@@ -3,22 +3,6 @@ package vax.math;
 public class Vector2f extends VectorFloat {
     public final static int SIZE = 2;
 
-    public void setX ( float val ) {
-        data[0] = val;
-    }
-
-    public float getX () {
-        return data[0];
-    }
-
-    public void setY ( float val ) {
-        data[1] = val;
-    }
-
-    public float getY () {
-        return data[1];
-    }
-
     public Vector2f ( Vector2f vector ) {
         super( vector );
     }
@@ -33,6 +17,22 @@ public class Vector2f extends VectorFloat {
 
     public Vector2f ( float x, float y ) {
         super( new float[]{ x, y } );
+    }
+
+    public float getX () {
+        return data[0];
+    }
+
+    public float getY () {
+        return data[1];
+    }
+
+    public void setX ( float val ) {
+        data[0] = val;
+    }
+
+    public void setY ( float val ) {
+        data[1] = val;
     }
 
     /*

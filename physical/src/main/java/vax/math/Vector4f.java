@@ -19,36 +19,36 @@ public class Vector4f extends VectorFloat {
         super( new float[]{ x, y, z, w } );
     }
 
-    public void setX ( float val ) {
-        data[0] = val;
-    }
-
     public float getX () {
         return data[0];
-    }
-
-    public void setY ( float val ) {
-        data[1] = val;
     }
 
     public float getY () {
         return data[1];
     }
 
-    public void setZ ( float val ) {
-        data[2] = val;
-    }
-
     public float getZ () {
         return data[2];
     }
 
-    public void setW ( float val ) {
-        data[3] = val;
-    }
-
     public float getW () {
         return data[3];
+    }
+
+    public void setX ( float val ) {
+        data[0] = val;
+    }
+
+    public void setY ( float val ) {
+        data[1] = val;
+    }
+
+    public void setZ ( float val ) {
+        data[2] = val;
+    }
+
+    public void setW ( float val ) {
+        data[3] = val;
     }
 
     /*
