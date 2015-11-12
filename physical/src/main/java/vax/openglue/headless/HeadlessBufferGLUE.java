@@ -1,32 +1,32 @@
-package vax.openglue.jogl;
+package vax.openglue.headless;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import com.jogamp.common.nio.Buffers;
 import vax.openglue.BufferGLUE;
 
 /**
 
  @author toor
  */
-public class JoglBufferGLUE implements BufferGLUE {
+public class HeadlessBufferGLUE implements BufferGLUE {
     @Override
     public IntBuffer createIntBuffer ( int size ) {
-        return Buffers.newDirectIntBuffer( size );
+        return IntBuffer.allocate( size );
     }
 
     @Override
     public IntBuffer createIntBuffer ( int[] data ) {
-        return Buffers.newDirectIntBuffer( data );
+        return IntBuffer.wrap( data );
     }
 
     @Override
     public FloatBuffer createFloatBuffer ( int size ) {
-        return Buffers.newDirectFloatBuffer( size );
+        return FloatBuffer.allocate( size );
     }
 
     @Override
     public FloatBuffer createFloatBuffer ( float[] data ) {
-        return Buffers.newDirectFloatBuffer( data );
+        return FloatBuffer.wrap( data );
     }
+
 }

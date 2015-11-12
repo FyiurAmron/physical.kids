@@ -9,32 +9,32 @@ import java.nio.*;
 public interface BufferGLUE {
     public final static BufferGLUE GLUE_NOT_SET = new BufferGLUE() {
         @Override
-        public IntBuffer ueCreateIntBuffer ( int size ) {
+        public IntBuffer createIntBuffer ( int size ) {
             throw new IllegalStateException();
         }
 
         @Override
-        public IntBuffer ueCreateIntBuffer ( int[] data ) {
+        public IntBuffer createIntBuffer ( int[] data ) {
             throw new IllegalStateException();
         }
 
         @Override
-        public FloatBuffer ueCreateFloatBuffer ( int size ) {
+        public FloatBuffer createFloatBuffer ( int size ) {
             throw new IllegalStateException();
         }
 
         @Override
-        public FloatBuffer ueCreateFloatBuffer ( float[] data ) {
+        public FloatBuffer createFloatBuffer ( float[] data ) {
             throw new IllegalStateException();
         }
     };
 
-    IntBuffer ueCreateIntBuffer ( int size );
+    IntBuffer createIntBuffer ( int size );
 
-    IntBuffer ueCreateIntBuffer ( int[] data );
+    IntBuffer createIntBuffer ( int[] data );
 
-    FloatBuffer ueCreateFloatBuffer ( int size );
+    FloatBuffer createFloatBuffer ( int size );
 
-    FloatBuffer ueCreateFloatBuffer ( float[] data );
+    FloatBuffer createFloatBuffer ( float[] data );
 
 }

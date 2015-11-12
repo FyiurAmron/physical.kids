@@ -18,19 +18,19 @@ public class BufferUtils {
     }
 
     public static IntBuffer createIntBuffer ( int size ) {
-        return bufferGlUe.ueCreateIntBuffer( size );
+        return bufferGlUe.createIntBuffer( size );
     }
 
     public static IntBuffer createIntBuffer ( int... data ) {
-        return bufferGlUe.ueCreateIntBuffer( data );
+        return bufferGlUe.createIntBuffer( data );
     }
 
     public static FloatBuffer createFloatBuffer ( int size ) {
-        return bufferGlUe.ueCreateFloatBuffer( size );
+        return bufferGlUe.createFloatBuffer( size );
     }
 
     public static FloatBuffer createFloatBuffer ( float... data ) {
-        return bufferGlUe.ueCreateFloatBuffer( data );
+        return bufferGlUe.createFloatBuffer( data );
     }
 
     private BufferUtils () {
