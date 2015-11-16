@@ -76,10 +76,10 @@ public abstract class Body {
         velocity.add( acceleration.getScaled( deltaT ) );
         //position.add( velocity.getScaled( deltaT ) );
         if ( velocity.lengthSq() < KINEMATIC_EPSILON_SQ )
-            velocity.setZero();
+            velocity.setToZero();
         else
             transform.addTranslation( velocity.getScaled( deltaT ) );
-        acceleration.setZero();
+        acceleration.setToZero();
 
         for ( Action<Body> constraint : constraints ) {
             constraint.exec( this );

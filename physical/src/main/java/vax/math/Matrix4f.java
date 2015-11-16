@@ -150,17 +150,17 @@ public class Matrix4f extends VectorFloat {
      data[10] = matrix4.M33;
      }
      */
-    /*
+ /*
      public void setValue ( float value ) {
      for ( int i = data.Length - 1; i >= 0; i-- )
      data[i] = value;
      }
 
-     public void setZero () {
+     public void setToZero () {
      setValue( 0 );
      }
      */
-    /*
+ /*
      public void set ( Matrix4 matrix4 ) {
      data[0] = matrix4.M11;
      data[1] = matrix4.M12;

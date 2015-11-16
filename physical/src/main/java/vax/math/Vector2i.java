@@ -1,20 +1,27 @@
 package vax.math;
 
-import java.util.Arrays;
-
 /**
 
  @author toor
  */
-public class Vector2i {
-    private final int[] data = new int[2];
+public class Vector2i extends VectorInt {
+
+    public final static int SIZE = 2;
 
     public Vector2i () {
+        super( new int[SIZE] );
+    }
+
+    public Vector2i ( Vector2i vector ) {
+        super( vector );
+    }
+
+    public Vector2i ( int[] data ) {
+        super( SIZE, data );
     }
 
     public Vector2i ( int x, int y ) {
-        data[0] = x;
-        data[1] = y;
+        super( new int[]{ x, y } );
     }
 
     public int getX () {
@@ -44,8 +51,8 @@ public class Vector2i {
     }
 
     public void add ( Vector2i v2i ) {
-        data[0] *= v2i.data[0];
-        data[1] *= v2i.data[1];
+        data[0] += v2i.data[0];
+        data[1] += v2i.data[1];
     }
 
     public void scale ( float f ) {
@@ -54,22 +61,7 @@ public class Vector2i {
     }
 
     @Override
-    public boolean equals ( Object obj ) {
-        if ( obj == null ) {
-            return false;
-        }
-        if ( obj == this ) {
-            return true;
-        }
-        if ( !( obj instanceof VectorFloat ) ) {
-            return false;
-        }
-        return Arrays.equals( data, ( (Vector2i) obj ).data );
+    public Vector2i copy () {
+        return new Vector2i( this );
     }
-
-    @Override
-    public int hashCode () {
-        return Arrays.hashCode( data );
-    }
-
 }

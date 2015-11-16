@@ -3,18 +3,26 @@ package vax.math;
 import java.util.Random;
 
 public class MathUtils {
-    static final private Random rng = new Random();
+    static final private Random RNG = new Random();
 
     private MathUtils () {
         throw new IllegalStateException();
     }
 
     static public float nextFloat () {
-        return rng.nextFloat();
+        return RNG.nextFloat();
     }
 
     static public float nextFloat ( float min, float max ) {
-        return rng.nextFloat() * ( max - min ) + min;
+        return RNG.nextFloat() * ( max - min ) + min;
+    }
+
+    static public int nextInt () {
+        return RNG.nextInt();
+    }
+
+    static public int nextInt ( int min, int max ) {
+        return RNG.nextInt( max - min ) + min;
     }
 
     /*
