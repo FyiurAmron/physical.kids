@@ -4,16 +4,16 @@ public class Vector3f extends VectorFloat {
     public final static int SIZE = 3,
             OX = 0, OY = 1, OZ = 2;
 
+    public Vector3f () {
+        super( new float[SIZE] );
+    }
+
     public Vector3f ( Vector3f vector ) {
         super( vector );
     }
 
-    public Vector3f ( float... data ) {
+    public Vector3f ( float[] data ) {
         super( SIZE, data );
-    }
-
-    public Vector3f () {
-        super( new float[SIZE] );
     }
 
     public Vector3f ( float x, float y, float z ) {
@@ -21,7 +21,6 @@ public class Vector3f extends VectorFloat {
     }
 
     //
-
     public float getX () {
         return data[0];
     }
@@ -82,9 +81,18 @@ public class Vector3f extends VectorFloat {
         return new Vector3f( getNormal( data, v1.data, v2.data ) );
     }
 
+    @Override
+    public Vector3f copy () {
+        return new Vector3f( this );
+    }
+
     /*
      static methods
      */
+    static public Vector3f getRandom ( float min, float max ) {
+        return new Vector3f( getRandomArray( SIZE, min, max ) );
+    }
+
     static public float[] cross ( float[] v1, float[] v2 ) {
         return new float[]{
             v1[1] * v2[2] - v1[2] * v2[1],

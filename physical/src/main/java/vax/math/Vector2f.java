@@ -3,16 +3,16 @@ package vax.math;
 public class Vector2f extends VectorFloat {
     public final static int SIZE = 2;
 
+    public Vector2f () {
+        super( new float[SIZE] );
+    }
+
     public Vector2f ( Vector2f vector ) {
         super( vector );
     }
 
     public Vector2f ( float[] data ) {
         super( SIZE, data );
-    }
-
-    public Vector2f () {
-        super( new float[SIZE] );
     }
 
     public Vector2f ( float x, float y ) {
@@ -33,6 +33,11 @@ public class Vector2f extends VectorFloat {
 
     public void setY ( float val ) {
         data[1] = val;
+    }
+
+    @Override
+    public Vector2f copy () {
+        return new Vector2f( this );
     }
 
     /*

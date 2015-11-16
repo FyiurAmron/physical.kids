@@ -3,16 +3,16 @@ package vax.math;
 public class Vector4f extends VectorFloat {
     public final static int SIZE = 4;
 
+    public Vector4f () {
+        super( new float[SIZE] );
+    }
+
     public Vector4f ( Vector4f vector ) {
         super( vector );
     }
 
     public Vector4f ( float[] data ) {
         super( SIZE, data );
-    }
-
-    public Vector4f () {
-        super( new float[SIZE] );
     }
 
     public Vector4f ( float x, float y, float z, float w ) {

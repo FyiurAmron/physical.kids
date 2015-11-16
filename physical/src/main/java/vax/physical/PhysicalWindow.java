@@ -174,14 +174,14 @@ public class PhysicalWindow {
             }
             Matrix4f trans;
             trans = worldMeshes[0].getTransform();
-            trans.setZero();
+            trans.setToZero();
             trans.getData()[2] = 1;
             trans.getData()[5] = 1;
             trans.getData()[8] = 1;
             trans.getData()[15] = 1;
             trans.setTranslation( shiftX, shiftY, 0 );
             trans = worldMeshes[1].getTransform();
-            trans.setZero();
+            trans.setToZero();
             trans.getData()[2] = -1;
             trans.getData()[5] = -1;
             trans.getData()[8] = -1;
@@ -196,7 +196,7 @@ public class PhysicalWindow {
                 m.init( gl );
             }
 
-            //bodyManager.Gravity.setZero();
+            //bodyManager.Gravity.setToZero();
             /* SphereBody */
             squirrelBody = new SphereBody( 1, BALL_RADIUS );
             squirrelBody.getTransform().setTranslation( 40, 40, 40 );

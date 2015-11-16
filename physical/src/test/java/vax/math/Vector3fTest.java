@@ -54,6 +54,26 @@ public class Vector3fTest {
         assertEquals( v1.dot( v2 ),
                 testNum[0][0] * testNum[1][0]
                 + testNum[0][1] * testNum[1][1]
-                + testNum[0][2] * testNum[1][2], DELTA );
+                + testNum[0][2] * testNum[1][2],
+                DELTA );
+    }
+
+    @Test
+    public void rotateTest () {
+        Vector3f //
+                v0 = new Vector3f( 0, 34, 3 ),
+                v1 = v0.copy(),
+                v2 = new Vector3f( 34, 3, 0 ),
+                v3 = new Vector3f( 3, 0, 34 );
+        v1.rotate( -1 );
+        assertEquals( v1, v2 );
+        v1.rotate( 1 );
+        assertEquals( v1, v0 );
+        v1.rotate( 0 );
+        assertEquals( v1, v0 );
+        v1.rotate( 1 );
+        assertEquals( v1, v3 );
+        v1.rotate( 15 );
+        assertEquals( v1, v3 );
     }
 }

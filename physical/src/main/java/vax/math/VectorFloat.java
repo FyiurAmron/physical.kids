@@ -25,27 +25,24 @@ public class VectorFloat {
     }
 
     public VectorFloat ( VectorFloat vector ) {
-        set( vector );
+        int len = vector.data.length;
+        this.data = new float[len];
+        System.arraycopy( vector.data, 0, this.data, 0, len );
     }
 
     public final void set ( float... data ) {
-        for( int i = Math.min( this.data.length, data.length ) - 1; i >= 0; i-- ) {
-            this.data[i] = data[i];
-        }
+        System.arraycopy( data, 0, this.data, 0, Math.min( this.data.length, data.length ) );
     }
 
     public final void set ( VectorFloat vector ) {
-        float[] src = vector.data;
-        for( int i = Math.min( data.length, vector.data.length ) - 1; i >= 0; i-- ) {
-            data[i] = src[i];
-        }
+        System.arraycopy( vector.data, 0, this.data, 0, Math.min( this.data.length, vector.data.length ) );
     }
 
-    // FIXME
     public void rotate ( int offset ) {
         if ( offset == 0 ) {
             return;
         }
+        offset %= data.length;
         int absOffset = Math.abs( offset ), len2 = data.length - absOffset;
         float[] tmp = new float[absOffset];
         if ( offset > 0 ) {
@@ -57,10 +54,6 @@ public class VectorFloat {
             System.arraycopy( data, absOffset, data, 0, len2 );
             System.arraycopy( tmp, 0, data, len2, absOffset );
         }
-//        for(float item : data) {
-//            System.out.print( item + " ");
-//        }
-//        System.out.println();
     }
 
     public void setValue ( float value ) {
@@ -69,7 +62,11 @@ public class VectorFloat {
         }
     }
 
-    public void setZero() {
+    public void setValue ( float value, int index ) {
+        data[index] = value;
+    }
+
+    public void setToZero () {
         setValue( 0 );
     }
 
@@ -155,13 +152,30 @@ public class VectorFloat {
         return distanceSq( data, vector.data );
     }
 
-    public String ToString () {
+    @Override
+    public String toString () {
         return String.join( ",", Arrays.toString( data ) );
+    }
+
+    public VectorFloat copy () {
+        return new VectorFloat( this );
     }
 
     /*
      static methods
      */
+    static public float[] getRandomArray ( int length, float min, float max ) {
+        float[] ret = new float[length];
+        for( int i = 0; i < length; i++ ) {
+            ret[i] = MathUtils.nextFloat( min, max );
+        }
+        return ret;
+    }
+
+    static public VectorFloat getRandom ( int length, float min, float max ) {
+        return new VectorFloat( getRandomArray( length, min, max ) );
+    }
+
     static public float lengthSq ( float... data ) {
         float lenSum = 0;
         for( int i = data.length - 1; i >= 0; i-- ) {
@@ -274,10 +288,6 @@ public class VectorFloat {
             sum += diff * diff;
         }
         return sum;
-    }
-
-    static public Vector3f getRandom ( float min, float max ) {
-        return new Vector3f( MathUtils.nextFloat( min, max ), MathUtils.nextFloat( min, max ), MathUtils.nextFloat( min, max ) );
     }
 
     @Override
