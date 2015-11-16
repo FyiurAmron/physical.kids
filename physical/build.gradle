@@ -10,6 +10,9 @@ ext {
     joglVersion = "+"
     //joglVersion = "2.3.2"
     platform = "windows-amd64"
+    //platform = "windows-i586"
+    //platform = "linux-amd64"
+    //platform = "macosx-universal"
 }
 
 dependencies {
@@ -26,7 +29,6 @@ dependencies {
     //compile "org.jogamp.jogl:jogl-all-main:$joglVersion"
 
     compile "org.jogamp.jogl:jogl-all:$joglVersion:natives-$platform"
-    //compile "org.jogamp.jogl:jogl-all:$joglVersion:natives-linux-amd64"
     
     compile "org.jogamp.jogl:newt:$joglVersion"
     //compile "org.jogamp.jogl:newt-main:$joglVersion"
