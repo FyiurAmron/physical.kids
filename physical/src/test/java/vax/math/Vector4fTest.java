@@ -12,7 +12,7 @@ public class Vector4fTest {
 
     @Test
     public void addTest () {
-        float[][] testNum = { { 1, 2, 3, 4 }, { 5, 13, 37, 7 } };
+        float[][] testNum = { { 1, 2.56f, 3, 4 }, { 5, 13, 37.6f, 7 } };
         VectorFloat //
                 v1 = new VectorFloat( testNum[0] ),
                 v2 = new VectorFloat( testNum[1] ),
@@ -27,7 +27,7 @@ public class Vector4fTest {
 
     @Test
     public void scaleTest () {
-        float[][] testNum = { { 1, 2, 3, 4 }, { 5, 13, 37, 7 } };
+        float[][] testNum = { { 1, 2.6508f, 3, 4 }, { 5, 13, 37.853f, 7 } };
         float scale = 3.14f;
         VectorFloat //
                 v1 = new VectorFloat( testNum[0] ),
@@ -52,7 +52,7 @@ public class Vector4fTest {
 
     @Test
     public void dotTest () {
-        float[][] testNum = { { 1, 2, 3, 4 }, { 5, 13, 37, 7 } };
+        float[][] testNum = { { 1, 2, 3.567f, 4 }, { 5, 13, 37, 7.765f } };
         VectorFloat //
                 v1 = new VectorFloat( testNum[0] ),
                 v2 = new VectorFloat( testNum[1] );
@@ -67,10 +67,10 @@ public class Vector4fTest {
     @Test
     public void rotateTest () {
         VectorFloat //
-                v0 = new VectorFloat( 0, 34, 3, 5 ),
+                v0 = new VectorFloat( 0.23f, 34, 3, 5 ),
                 v1 = v0.copy(),
-                v2 = new VectorFloat( 34, 3, 5, 0 ),
-                v3 = new VectorFloat( 3, 5, 0, 34 );
+                v2 = new VectorFloat( 34, 3, 5, 0.23f ),
+                v3 = new VectorFloat( 3, 5, 0.23f, 34 );
         v1.rotate( -1 );
         assertEquals( v1, v2 );
         v1.rotate( 1 );
