@@ -12,7 +12,7 @@ public class Vector2fTest {
 
     @Test
     public void addTest () {
-        float[][] testNum = { { 1, 2 }, { 5, 13 } };
+        float[][] testNum = { { 1.27134610f, 2 }, { 5, 13 } };
         Vector2f //
                 v1 = new Vector2f( testNum[0] ),
                 v2 = new Vector2f( testNum[1] ),
@@ -25,7 +25,7 @@ public class Vector2fTest {
 
     @Test
     public void scaleTest () {
-        float[][] testNum = { { 1, 2 }, { 5, 13 } };
+        float[][] testNum = { { 1, 2.37258f }, { 5.4452f, 13 } };
         float scale = 3.14f;
         Vector2f //
                 v1 = new Vector2f( testNum[0] ),
@@ -44,7 +44,7 @@ public class Vector2fTest {
 
     @Test
     public void dotTest () {
-        float[][] testNum = { { 1, 2, 3 }, { 5, 0, 37 } };
+        float[][] testNum = { { 1, 2, 3.5704f }, { 5, 0, 37 } };
         Vector2f //
                 v1 = new Vector2f( testNum[0] ),
                 v2 = new Vector2f( testNum[1] );
@@ -58,9 +58,9 @@ public class Vector2fTest {
     @Test
     public void rotateTest () {
         Vector2f //
-                v0 = new Vector2f( 0, 34 ),
+                v0 = new Vector2f( 0, 34.900000002f ),
                 v1 = v0.copy(),
-                v2 = new Vector2f( 34, 0 );
+                v2 = new Vector2f( 34.900000001f, 0 );
         v1.rotate( -1 );
         assertEquals( v1, v2 );
         v1.rotate( 1 );
