@@ -9,7 +9,7 @@ import vax.openglue.constants.ShaderType;
  @author toor
  */
 public class ShaderProgram {
-    public static final String[] attribs = { "in_position", "in_normal", "in_uv" };
+    public static final String[] ATTRIBS = { "in_position", "in_normal", "in_uv" };
 
     private final ArrayList<Shader> shaders = new ArrayList<>( 2 );
     private int shaderProgramHandle;
@@ -51,8 +51,8 @@ public class ShaderProgram {
             gl.glAttachShader( shaderProgramHandle, shaderHandle );
         }
 
-        for( int i = 0; i < attribs.length; i++ ) {
-            gl.glBindAttribLocation( shaderProgramHandle, i, attribs[i] );
+        for( int i = 0; i < ATTRIBS.length; i++ ) {
+            gl.glBindAttribLocation(shaderProgramHandle, i, ATTRIBS[i] );
         }
 
         gl.glLinkProgram( shaderProgramHandle );
