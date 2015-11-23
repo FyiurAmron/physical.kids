@@ -37,7 +37,7 @@ public class JoglTestGlel implements GLEventListener {
     };
     private int program;
     private int modelToClipMatrixUL, timeUL;
-    private final String SHADERS_ROOT = Shader.class.getPackage().getName().replace( ".", "/" );
+    private final String SHADERS_ROOT = Shader.getPath();
     /**
      Use pools, you don't want to create and let them cleaned by the garbage
      collector continuously in the display() method.
@@ -91,7 +91,7 @@ public class JoglTestGlel implements GLEventListener {
         m4proj.makePerspective( 67.0f / 360 * 2 * FloatUtil.PI, 800f / 600f, 1, 1000 );
         //m4proj.makeOrtho( -10f, 10f, -10f, 10f, -10f, 10f );
         //m4view.translate( FloatUtil.sin(diff*2)*3, 0, -10f );
-        float sc =5f;
+        float sc = 5f;
         m4view.scale( sc, sc, sc );
         m4view.translate( 1, 0, -4f );
 
@@ -192,7 +192,7 @@ public class JoglTestGlel implements GLEventListener {
          Color needs three coordinates. We show the usage of normalization,
          where signed value get normalized [-1, 1] like in this case.
          unsigned will get normalized in the [0, 1] instead, but take
-         in account java use always signed, althought you can trick it.
+         in account java use always signed, although you can trick it.
          Vec3 color will be padded to (x, y, z, 1) in the fragment
          shader.
          */
@@ -204,8 +204,8 @@ public class JoglTestGlel implements GLEventListener {
     }
 
     private void initProgram ( GL4 gl4 ) {
-        ShaderCode vertShader = ShaderCode.create( gl4, GL_VERTEX_SHADER, this.getClass(), SHADERS_ROOT, null, "vertex", "glsl", null, true );
-        ShaderCode fragShader = ShaderCode.create( gl4, GL_FRAGMENT_SHADER, this.getClass(), SHADERS_ROOT, null, "fragment", "glsl", null, true );
+        ShaderCode vertShader = ShaderCode.create( gl4, GL_VERTEX_SHADER, this.getClass(), SHADERS_ROOT, null, "vertex_1", "glsl", null, true );
+        ShaderCode fragShader = ShaderCode.create( gl4, GL_FRAGMENT_SHADER, this.getClass(), SHADERS_ROOT, null, "fragment_1", "glsl", null, true );
 
         ShaderProgram shaderProgram = new ShaderProgram();
         shaderProgram.add( vertShader );

@@ -5,6 +5,8 @@ import java.nio.*;
 import com.jogamp.opengl.*;
 
 import vax.openglue.AbstractGLUE;
+import vax.openglue.BufferGLUE;
+import vax.openglue.ImageIO;
 
 /**
 
@@ -25,9 +27,19 @@ public class JoglUe3 extends AbstractGLUE {
         return this;
     }
 
-    public JoglUe3 setGl( GLAutoDrawable drawable ) {
+    public JoglUe3 setGl ( GLAutoDrawable drawable ) {
         this.gl = drawable.getGL().getGL3();
         return this;
+    }
+
+    @Override
+    public Class<? extends BufferGLUE> getClassBufferGLUE () {
+        return JoglBufferGLUE.class;
+    }
+
+    @Override
+    public Class<? extends ImageIO.GLUE> getClassImageIO_GLUE () {
+        return JoglImageIoGLUE.class;
     }
 
     @Override
@@ -167,7 +179,7 @@ public class JoglUe3 extends AbstractGLUE {
 
     @Override
     public void glGenVertexArrays ( int count, int[] outBuffer, int offset ) {
-        gl.glGenVertexArrays( count, outBuffer, count );
+        gl.glGenVertexArrays( count, outBuffer, offset );
     }
 
     @Override

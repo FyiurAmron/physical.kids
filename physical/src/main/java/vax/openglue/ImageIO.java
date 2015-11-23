@@ -11,11 +11,11 @@ import java.net.URL;
 public class ImageIO {
     private static GLUE imageIO = GLUE.GLUE_NOT_SET;
 
-    public static void setBufferGLUE ( GLUE bufferGLUE ) {
+    public static void setGLUE ( GLUE bufferGLUE ) {
         ImageIO.imageIO = bufferGLUE;
     }
 
-    public static GLUE getImageIO () {
+    public static GLUE getGLUE () {
         return imageIO;
     }
 
@@ -28,7 +28,7 @@ public class ImageIO {
         public final static GLUE GLUE_NOT_SET = new GLUE() {
             @Override
             public TextureData<?> ueReadTexture ( String name, InputStream inputStream ) {
-                throw new IllegalArgumentException();
+                throw new IllegalStateException( "GLUE not set yet" );
             }
         };
 
