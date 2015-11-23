@@ -32,6 +32,10 @@ public class JoglTestWindowWithoutGLUE {
     private Boolean running;
 
     public JoglTestWindowWithoutGLUE () {
+        this( new JoglTestGlel() );
+    }
+
+    public JoglTestWindowWithoutGLUE ( GLEventListener glel ) {
         Display display = NewtFactory.createDisplay( null );
         Screen screen = NewtFactory.createScreen( display, screenIdx );
         GLProfile glProfile = GLProfile.get( GLProfile.GL4 );
@@ -47,7 +51,7 @@ public class JoglTestWindowWithoutGLUE {
         glWindow.confinePointer( mouseConfined );
         glWindow.setVisible( true );
 
-        glWindow.addGLEventListener( new JoglTestGlel() );
+        glWindow.addGLEventListener( glel );
         glWindow.addGLEventListener( new GLEventListener() {
             @Override
             public void init ( GLAutoDrawable drawable ) {
@@ -77,7 +81,7 @@ public class JoglTestWindowWithoutGLUE {
         } );
         running = true;
 
-        animator = new Animator(  glWindow );
+        animator = new Animator( glWindow );
         animator.setUpdateFPSFrames( 100, null );
         animator.start();
         glWindow.setDefaultCloseOperation( WindowClosingProtocol.WindowClosingMode.DO_NOTHING_ON_CLOSE );

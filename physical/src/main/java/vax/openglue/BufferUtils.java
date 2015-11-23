@@ -7,30 +7,30 @@ import java.nio.*;
  @author toor
  */
 public class BufferUtils {
-    private static BufferGLUE bufferGlUe = BufferGLUE.GLUE_NOT_SET;
+    private static BufferGLUE bufferGlue = BufferGLUE.GLUE_NOT_SET;
 
-    public static void setBufferGlUe ( BufferGLUE bufferGlUe ) {
-        BufferUtils.bufferGlUe = bufferGlUe;
+    public static void setBufferGLUE ( BufferGLUE bufferGlue ) {
+        BufferUtils.bufferGlue = bufferGlue;
     }
 
-    public static BufferGLUE getBufferGlUe () {
-        return bufferGlUe;
+    public static BufferGLUE getBufferGLUE () {
+        return bufferGlue;
     }
 
     public static IntBuffer createIntBuffer ( int size ) {
-        return bufferGlUe.createIntBuffer( size );
+        return bufferGlue.createIntBuffer( size );
     }
 
     public static IntBuffer createIntBuffer ( int... data ) {
-        return bufferGlUe.createIntBuffer( data );
+        return bufferGlue.createIntBuffer( data );
     }
 
     public static FloatBuffer createFloatBuffer ( int size ) {
-        return bufferGlUe.createFloatBuffer( size );
+        return bufferGlue.createFloatBuffer( size );
     }
 
     public static FloatBuffer createFloatBuffer ( float... data ) {
-        return bufferGlUe.createFloatBuffer( data );
+        return bufferGlue.createFloatBuffer( data );
     }
 
     private BufferUtils () {

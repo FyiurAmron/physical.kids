@@ -8,24 +8,26 @@ import java.nio.*;
  */
 public interface BufferGLUE {
     public final static BufferGLUE GLUE_NOT_SET = new BufferGLUE() {
+        private final String GLUE_NOT_SET_YET = "GLUE not set yet";
+
         @Override
         public IntBuffer createIntBuffer ( int size ) {
-            throw new IllegalStateException();
+            throw new IllegalStateException( GLUE_NOT_SET_YET );
         }
 
         @Override
         public IntBuffer createIntBuffer ( int[] data ) {
-            throw new IllegalStateException();
+            throw new IllegalStateException( GLUE_NOT_SET_YET );
         }
 
         @Override
         public FloatBuffer createFloatBuffer ( int size ) {
-            throw new IllegalStateException();
+            throw new IllegalStateException( GLUE_NOT_SET_YET );
         }
 
         @Override
         public FloatBuffer createFloatBuffer ( float[] data ) {
-            throw new IllegalStateException();
+            throw new IllegalStateException( GLUE_NOT_SET_YET );
         }
     };
 
