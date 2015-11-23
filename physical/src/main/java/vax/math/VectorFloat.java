@@ -303,7 +303,38 @@ public class VectorFloat {
         }
         return Arrays.equals( data, ( (VectorFloat) obj ).data );
     }
-
+    
+    public boolean equals ( VectorFloat v, float epsilon ) {
+        int len = data.length;
+        float[] data2 = v.data;
+        if ( v.data.length != len ) {
+            return false;
+        }
+        for( int i = 0; i < len; i++ ) {
+            if ( Math.abs( data[i] - data2[i] ) > epsilon )
+                return false;
+        }
+        return true;
+    }
+    
+    /*
+    public boolean equalsWithRatio ( VectorFloat v, float epsilonRatio ) {
+        int len = data.length;
+        float[] data2 = v.data;
+        if ( v.data.length != len ) {
+            return false;
+        }
+        for( int i = 0; i < len; i++ ) {
+    if (data[i] == 0 && data2[i] != 0 )
+    return false;
+    }
+            if ( 1.0f - Math.abs( data2[i] / data[i] ) > epsilonRatio )
+                return false;
+        }
+        return true;
+    }
+*/
+    
     @Override
     public int hashCode () {
         return Arrays.hashCode( data );
