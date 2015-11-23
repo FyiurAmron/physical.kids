@@ -1,14 +1,23 @@
 package vax.openglue.headless;
 
 import java.nio.*;
-import vax.openglue.AbstractGLUE;
-import vax.openglue.OpenGLUE;
+import vax.openglue.*;
 
 /**
 
  @author toor
  */
 public class HeadlessGLUE extends AbstractGLUE {
+    @Override
+    public Class<? extends BufferGLUE> getClassBufferGLUE () {
+        return HeadlessBufferGLUE.class;
+    }
+
+    @Override
+    public Class<? extends ImageIO.GLUE> getClassImageIO_GLUE () {
+        return HeadlessImageIO.class;
+    }
+
     @Override
     public void glViewport ( int x, int y, int width, int height ) {
     }
@@ -188,5 +197,4 @@ public class HeadlessGLUE extends AbstractGLUE {
     public int glGetError () {
         return OpenGLUE.Constants.GL_NO_ERROR;
     }
-
 }
