@@ -134,6 +134,113 @@ public class Matrix4f extends VectorFloat {
                 matrix4.getTranslationX(), matrix4.getTranslationY(), matrix4.getTranslationZ()
         );
     }
+    
+    public Matrix4f setToProjection ( float near, float far, float fovy, float aspectRatio ) {
+        setToIdentity();
+        float l_fd = ( float )( 1.0 / Math.tan( ( fovy * ( Math.PI / 180 ) ) / 2.0 ) );
+        float l_a1 = ( far + near ) / ( near - far );
+        float l_a2 = ( 2 * far * near ) / ( near - far );
+        
+        data[0] = l_fd / aspectRatio;
+        data[1] = 0;
+        data[2] = 0;
+        data[3] = 0;
+        
+        data[4] = 0;
+        data[5] = l_fd;
+        data[6] = 0;
+        data[7] = 0;
+        
+        data[8] = 0;
+        data[9] = 0;
+        data[10] = l_a1;
+        data[11] = -1;
+        
+        data[12] = 0;
+        data[13] = 0;
+        data[14] = l_a2;
+        data[15] = 0;
+        
+        return this;
+
+    }
+    
+    public Matrix4f setToProjection ( float left, float right, float bottom, float top, float near, float far ) {
+        float x = 2.0f * near / ( right - left );
+        float y = 2.0f * near / ( top - bottom );
+        
+        float a = ( right + left ) / ( right - left );
+        float b = ( top + bottom ) / ( top - bottom );
+        float l_a1 = ( far + near ) / ( near - far );
+        float l_a2 = ( 2 * far * near ) / ( near - far );
+        
+        data[0] = x;
+        data[1] = 0;
+        data[2] = 0;
+        data[3] = 0;
+        
+        data[4] = 0;
+        data[5] = y;
+        data[6] = 0;
+        data[7] = 0;
+        
+        data[8] = a;
+        data[9] = b;
+        data[10] = l_a1;
+        data[11] = -1;
+        
+        data[12] = 0;
+        data[13] = 0;
+        data[14] = l_a2;
+        data[15] = 0;
+        
+        return this;
+    }
+    
+    public Matrix4f setToOrtho2D ( float x, float y, float width, float height ) {
+        setToOrtho( x, x + width, y, y + height, 0, 1 );
+        return this;
+    }
+    
+    public Matrix4f setToOrtho2D ( float x, float y, float width, float height, float near, float far ) {
+        setToOrtho( x, x + width, y, y + height, near, far );
+        return this;
+    }
+    
+    
+    public Matrix4f setToOrtho ( float left, float right, float bottom, float top, float near, float far ) {
+        setToIdentity();
+        float x_orth = 2 / ( right - left );
+        float y_orth = 2 / ( top - bottom );
+        float z_orth = -2 / ( far - near );
+
+        float tx = -( right + left ) / ( right - left );
+        float ty = -( top + bottom ) / ( top - bottom );
+        float tz = -( far + near ) / ( far - near );
+
+        data[0] = x_orth;
+        data[1] = 0;
+        data[2] = 0;
+        data[3] = 0;
+        
+        data[4] = 0;
+        data[5] = y_orth;
+        data[6] = 0;
+        data[7] = 0;
+        
+        data[8] = 0;
+        data[9] = 0;
+        data[10] = z_orth;
+        data[11] = 0;
+        
+        data[12] = tx;
+        data[13] = ty;
+        data[14] = tz;
+        data[15] = 1;
+
+        return this;
+    }
+
 
     /*
      public void setScaleAndRotation ( Matrix4 matrix4 ) {
