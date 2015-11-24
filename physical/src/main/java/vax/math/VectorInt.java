@@ -5,10 +5,6 @@ import java.util.Arrays;
 public class VectorInt {
     protected int[] data;
 
-    public int[] getData () {
-        return data;
-    }
-
     public VectorInt ( int requiredSize ) {
         this.data = new int[requiredSize];
     }
@@ -28,6 +24,15 @@ public class VectorInt {
         int len = vector.data.length;
         this.data = new int[len];
         System.arraycopy( vector.data, 0, this.data, 0, len );
+    }
+
+    public int[] getData () {
+        return data;
+    }
+
+    @Deprecated
+    public void setData ( int[] data ) {
+        this.data = data;
     }
 
     public final void set ( int... data ) {
@@ -54,6 +59,10 @@ public class VectorInt {
             System.arraycopy( data, absOffset, data, 0, len2 );
             System.arraycopy( tmp, 0, data, len2, absOffset );
         }
+    }
+
+    public int getValue ( int index ) {
+        return data[index];
     }
 
     public void setValue ( int value ) {

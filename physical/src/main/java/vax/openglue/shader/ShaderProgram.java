@@ -52,7 +52,7 @@ public class ShaderProgram {
         }
 
         for( int i = 0; i < ATTRIBS.length; i++ ) {
-            gl.glBindAttribLocation(shaderProgramHandle, i, ATTRIBS[i] );
+            gl.glBindAttribLocation( shaderProgramHandle, i, ATTRIBS[i] );
         }
 
         gl.glLinkProgram( shaderProgramHandle );

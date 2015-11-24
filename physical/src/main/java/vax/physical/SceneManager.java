@@ -16,7 +16,7 @@ public class SceneManager implements CanvasGLUE.EventListener {
     private final UniformManager uniformManager = new UniformManager();
     private final HashSet<Mesh> meshes = new HashSet<>();
 
-    private final ShaderProgram shaderProgram = new DefaultShaderProgram();
+    private final ShaderProgram shaderProgram;
 
     private final Value1f //
             time = new Value1f(),
@@ -33,7 +33,8 @@ public class SceneManager implements CanvasGLUE.EventListener {
 
     private Uniform.UMatrix4f transformMatrixUniform;
 
-    public SceneManager () {
+    public SceneManager ( String shadername ) {
+        shaderProgram = new ResourceShaderProgram( shadername );
     }
 
     public void addMesh ( Mesh mesh ) {
@@ -44,9 +45,11 @@ public class SceneManager implements CanvasGLUE.EventListener {
     public void init ( OpenGLUE gl ) {
         //float aspectRatio = ( (float) settings.windowSize.getX() ) / settings.windowSize.getY();
 
-        //projectionMatrix.set( Matrix4f.createPerspectiveFieldOfView( (float) Math.PI / 4, aspectRatio, 1, 1000 ) );
-        projectionMatrix.setToIdentity(); // TEMP!
+        float aspectRatio = 4f / 3;
+        gl.glPolygonMode( OpenGLUE.Constants.GL_FRONT_AND_BACK, OpenGLUE.Constants.GL_LINE );
+        projectionMatrix.setToPerspective( 0.1f, 100f, 67, aspectRatio );
         modelviewMatrix.setToIdentity();
+        modelviewMatrix.setTranslationZ( -3f );
 
         ambientColor.set( 0.4f, 0.4f, 0.4f );
         lightColor.set( 1.0f, 1.0f, 1.0f );

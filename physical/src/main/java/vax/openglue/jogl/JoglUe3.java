@@ -259,6 +259,11 @@ public class JoglUe3 extends AbstractGLUE {
     }
 
     @Override
+    public void glPolygonMode ( int faceEnum, int modeEnum ) {
+        gl.glPolygonMode( faceEnum, modeEnum );
+    }
+
+    @Override
     public void glBufferData ( int bufferTarget, long size, Buffer data, int usageEnum ) {
         gl.glBufferData( bufferTarget, size, data, usageEnum );
     }

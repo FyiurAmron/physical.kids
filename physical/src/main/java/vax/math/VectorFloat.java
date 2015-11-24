@@ -5,10 +5,6 @@ import java.util.Arrays;
 public class VectorFloat {
     protected float[] data;
 
-    public float[] getData () {
-        return data;
-    }
-
     public VectorFloat ( int requiredSize ) {
         this.data = new float[requiredSize];
     }
@@ -28,6 +24,15 @@ public class VectorFloat {
         int len = vector.data.length;
         this.data = new float[len];
         System.arraycopy( vector.data, 0, this.data, 0, len );
+    }
+
+    public float[] getData () {
+        return data;
+    }
+
+    @Deprecated
+    public void setData ( float[] data ) {
+        this.data = data;
     }
 
     public final void set ( float... data ) {
@@ -54,6 +59,10 @@ public class VectorFloat {
             System.arraycopy( data, absOffset, data, 0, len2 );
             System.arraycopy( tmp, 0, data, len2, absOffset );
         }
+    }
+
+    public float getValue( int index ) {
+        return data[index];
     }
 
     public void setValue ( float value ) {
@@ -303,7 +312,7 @@ public class VectorFloat {
         }
         return Arrays.equals( data, ( (VectorFloat) obj ).data );
     }
-    
+
     public boolean equals ( VectorFloat v, float epsilon ) {
         int len = data.length;
         float[] data2 = v.data;
@@ -311,30 +320,30 @@ public class VectorFloat {
             return false;
         }
         for( int i = 0; i < len; i++ ) {
-            if ( Math.abs( data[i] - data2[i] ) > epsilon )
+            if ( Math.abs( data[i] - data2[i] ) > epsilon ) {
                 return false;
+            }
         }
         return true;
     }
-    
+
     /*
-    public boolean equalsWithRatio ( VectorFloat v, float epsilonRatio ) {
-        int len = data.length;
-        float[] data2 = v.data;
-        if ( v.data.length != len ) {
-            return false;
-        }
-        for( int i = 0; i < len; i++ ) {
-    if (data[i] == 0 && data2[i] != 0 )
-    return false;
-    }
-            if ( 1.0f - Math.abs( data2[i] / data[i] ) > epsilonRatio )
-                return false;
-        }
-        return true;
-    }
-*/
-    
+     public boolean equalsWithRatio ( VectorFloat v, float epsilonRatio ) {
+     int len = data.length;
+     float[] data2 = v.data;
+     if ( v.data.length != len ) {
+     return false;
+     }
+     for( int i = 0; i < len; i++ ) {
+     if (data[i] == 0 && data2[i] != 0 )
+     return false;
+     }
+     if ( 1.0f - Math.abs( data2[i] / data[i] ) > epsilonRatio )
+     return false;
+     }
+     return true;
+     }
+     */
     @Override
     public int hashCode () {
         return Arrays.hashCode( data );
