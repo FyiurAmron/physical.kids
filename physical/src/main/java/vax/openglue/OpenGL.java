@@ -27,6 +27,9 @@ public interface OpenGL {
                 GL_ZERO = 0,
                 GL_ONE = 1,
                 //
+                GL_LINE = 0x1b01,
+                GL_FILL = 0x1b02,
+                //
                 GL_SRC_COLOR = 0x0300,
                 GL_ONE_MINUS_SRC_COLOR = 0x0301,
                 GL_SRC_ALPHA = 0x0302,
@@ -420,6 +423,8 @@ public interface OpenGL {
     void glVertexAttribPointer ( int attribNr, int size, int typeEnum, boolean normalize, int stride, long pointer );
 
     void glDrawElements ( int primitiveType, int count, int valueType, long offset );
+
+    void glPolygonMode ( int faceEnum, int modeEnum );
     /*
      // TODO
      void glDrawElements ( int primitiveType, int count, int valueType, IntBuffer buf );

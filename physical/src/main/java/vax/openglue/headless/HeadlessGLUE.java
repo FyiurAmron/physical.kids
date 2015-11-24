@@ -190,6 +190,10 @@ public class HeadlessGLUE extends AbstractGLUE {
     }
 
     @Override
+    public void glPolygonMode ( int faceEnum, int modeEnum ) {
+    }
+
+    @Override
     public void glBufferData ( int bufferTarget, long size, Buffer data, int usageEnum ) {
     }
 
