@@ -1,7 +1,6 @@
 package vax.physical;
 
 import java.util.HashSet;
-import java.util.Random;
 import vax.math.*;
 import vax.openglue.*;
 import vax.openglue.constants.ClearBufferMask;

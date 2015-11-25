@@ -1,44 +1,46 @@
 package vax.physics;
 
-import vax.math.*;
-
+//import vax.math.*;
 public class SphereBody extends CenteredBody {
+    /*
     protected float rotationAngle;
     protected float rotationSpeed;
     protected int rotationAxis;
     protected float rotationVelocityThreshold;
+    */
 
     public SphereBody ( float mass, float radius ) {
         super( mass, radius );
-        restitution = 0.75f;
-        rotationVelocityThreshold = 0.15f;
+        //restitution = 0.75f;
+        //rotationVelocityThreshold = 0.15f;
     }
 
-    public Matrix4f createRotationMatrix4 () {
-        switch ( rotationAxis ) {
-            case Vector3f.OX:
-                return Matrix4f.setToRotationX( rotationAngle );
-            case Vector3f.OY:
-                return Matrix4f.setToRotationY( rotationAngle );
-            case Vector3f.OZ:
-                return Matrix4f.setToRotationZ( rotationAngle );
-        }
-        throw new IllegalArgumentException();
-    }
+    /*
+     public Matrix4f createRotationMatrix4 () {
+     switch ( rotationAxis ) {
+     case Vector3f.OX:
+     return Matrix4f.setToRotationX( rotationAngle );
+     case Vector3f.OY:
+     return Matrix4f.setToRotationY( rotationAngle );
+     case Vector3f.OZ:
+     return Matrix4f.setToRotationZ( rotationAngle );
+     }
+     throw new IllegalArgumentException();
+     }
+     */
+ /* // TODO should be replaced with proper angular velocity
+     @Override
+     public void timeStep ( float deltaT ) {
+     super.timeStep( deltaT );
+     float v = velocity.length();
 
-    @Override
-    public void timeStep ( float deltaT ) {
-        super.timeStep( deltaT );
-        float v = velocity.length();
-        if ( v < rotationVelocityThreshold ) {
-            return;
-        }
-        //Console.WriteLine( Velocity.length() );
-        /*
-         rotationAngle += v * deltaT * rotationSpeed;
-         transform.setScaleAndRotation( createRotationMatrix4() );
-         */
-    }
+     if ( v < rotationVelocityThreshold ) {
+     return;
+     }
+     //Console.WriteLine( Velocity.length() );
+     rotationAngle += v * deltaT * rotationSpeed;
+     transform.setScaleAndRotation( createRotationMatrix4() );
+     }
 
     public float getRotationAngle () {
         return rotationAngle;
@@ -71,4 +73,5 @@ public class SphereBody extends CenteredBody {
     public void setRotationVelocityThreshold ( float rotationVelocityThreshold ) {
         this.rotationVelocityThreshold = rotationVelocityThreshold;
     }
+     */
 }
