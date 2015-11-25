@@ -4,7 +4,7 @@ import java.util.*;
 import vax.math.*;
 import vax.util.*;
 
-public abstract class Body {
+public class Body {
     public static final float KINEMATIC_EPSILON_SQ = 1E-2f;
 
     public float mass;
