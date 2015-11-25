@@ -5,12 +5,12 @@ import vax.math.*;
 import vax.openglue.mesh.*;
 
 public class BodyManager {
-    List<Body> bodies = new ArrayList<>();
-    HashSet<Body> bodySet = new HashSet<>();
-    Map<Body, Mesh> bodyMeshMap = new HashMap<>();
-    Vector3f gravity = new Vector3f( 0, -9.81f, 0 );
-    Map<ColliderDescriptor, Collider<?, ?>> colliderMap = new HashMap<>();
-    Map<Body, HashSet<Body>> contactMap = new HashMap<>();
+    private final List<Body> bodies = new ArrayList<>();
+    private final HashSet<Body> bodySet = new HashSet<>();
+    private final Map<Body, Mesh> bodyMeshMap = new HashMap<>();
+    private final Vector3f gravity = new Vector3f( 0, -9.81f, 0 );
+    private final Map<ColliderDescriptor, Collider<?, ?>> colliderMap = new HashMap<>();
+    private final Map<Body, HashSet<Body>> contactMap = new HashMap<>();
     private final ColliderDescriptor tmpDescriptor = new ColliderDescriptor( null, null );
 
     public BodyManager () {
@@ -22,7 +22,7 @@ public class BodyManager {
         colliderMap.put( collider.getDescriptor(), collider );
     }
 
-    public void addCollider ( Collider collider ) {
+    public void addCollider ( Collider<?, ?> collider ) {
         _addCollider( collider );
     }
 
@@ -40,7 +40,7 @@ public class BodyManager {
         bodyMeshMap.put( body, mesh );
     }
 
-    void addContact ( Body b1, Body b2 ) {
+    private void addContact ( Body b1, Body b2 ) {
         HashSet<Body> contacts = contactMap.getOrDefault( b1, null );
         if ( contacts == null ) {
             contacts = new HashSet<>();
@@ -56,7 +56,7 @@ public class BodyManager {
         contacts.add( b1 ); // b2->b1, idemp.
     }
 
-    void removeContact ( Body b1, Body b2 ) {
+    private void removeContact ( Body b1, Body b2 ) {
         HashSet<Body> contacts = contactMap.getOrDefault( b1, null );
         if ( contacts != null ) {
             contacts.remove( b2 );
@@ -69,7 +69,7 @@ public class BodyManager {
 
     }
 
-    boolean hasContact ( Body b1, Body b2 ) {
+    public boolean hasContact ( Body b1, Body b2 ) {
         HashSet<Body> contacts = contactMap.getOrDefault( b1, null );
         if ( contacts != null && contacts.contains( b2 ) ) {
             return true;
@@ -79,7 +79,7 @@ public class BodyManager {
         return contacts != null && contacts.contains( b1 );
     }
 
-    void collide ( Collider<?, ?> collider, boolean contact, Body body1, Body body2, int i, int j ) {
+    private void collide ( Collider<?, ?> collider, boolean contact, Body body1, Body body2 /*, int i, int j*/ ) {
         if ( collider.collide( body1, body2 ) ) {
             if ( contact ) {
                 //Console.WriteLine( "contact continued: " + body1 + " [" + i + "] vs " + body2 + " [" + j + "]" );
@@ -118,14 +118,14 @@ public class BodyManager {
                 Collider<?, ?> collider = colliderMap.getOrDefault( tmpDescriptor, null );
 
                 if ( collider != null ) {
-                    collide( collider, contact, body1, body2, i, j );
+                    collide( collider, contact, body1, body2/*, i, j*/ );
                     continue;
                 }
 
                 tmpDescriptor.set( c1, c2 );
                 collider = colliderMap.getOrDefault( tmpDescriptor, null );
                 if ( collider != null ) {
-                    collide( collider, contact, body2, body1, i, j );
+                    collide( collider, contact, body2, body1/*, i, j*/ );
                 }
             }
 

@@ -149,18 +149,18 @@ public class PhysicalWindow {
         /* SphereBody */
         squirrelBody = new SphereBody( 1, BALL_RADIUS );
         squirrelBody.getTransform().setTranslation( 40, 40, 40 );
-        squirrelBody.setRotationSpeed( 1f );
+        //squirrelBody.setRotationSpeed( 1f );
         /* SphereBody */
         turtleBody = new SphereBody( 25, BALL_RADIUS * 5 );
         turtleBody.getTransform().setTranslation( 0, 20, 0 );
         //turtleBody.Velocity.Y = 5;
-        turtleBody.setRotationSpeed( 1f );
+        //turtleBody.setRotationSpeed( 1f );
         /* SphereBody */
         dilloBody = new SphereBody( 25, BALL_RADIUS * 2 );
         //dilloBody.Transform.setTranslation( -20, 100, -30 );
         dilloBody.getTransform().setTranslation( 0, 30, 0 );
         //dilloBody.Velocity.Y = -5;
-        dilloBody.setRotationSpeed( 1f );
+        //dilloBody.setRotationSpeed( 1f );
         Vector3f fixPoint = new Vector3f( 0, 42, 9 );
         /*
          // spring - vertical harmonic oscillator

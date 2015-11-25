@@ -11,20 +11,18 @@ public class PlaneBody extends Body {
     }
 
     public PlaneBody () {
-        this(new Plane3f());
+        this( new Plane3f() );
     }
 
     public PlaneBody ( Vector3f normal, float distanceToOrigin ) {
         this( new Plane3f( normal, distanceToOrigin ) );
     }
 
-    public Plane3f getPlane3f() {
+    public Plane3f getPlane3f () {
         return plane3f;
     }
 
-    public void setPlane3f(Plane3f plane3f) {
+    public void setPlane3f ( Plane3f plane3f ) {
         this.plane3f = plane3f;
     }
 }
-
-

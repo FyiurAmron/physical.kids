@@ -8,40 +8,44 @@ public class Body {
     public static final float KINEMATIC_EPSILON_SQ = 1E-2f;
 
     public float mass;
-    protected Vector3f velocity = new Vector3f();
-    protected Vector3f acceleration = new Vector3f();
+    protected final Vector3f velocity = new Vector3f();
+    protected final Vector3f acceleration = new Vector3f();
 
     protected float restitution;
     protected float friction;
-    protected Matrix4f transform;
+    protected final Matrix4f transform;
 
-    List<Action<Body>> constraints = new ArrayList<>();
-    List<Action<Body>> forces = new ArrayList<>();
+    private final List<Action<Body>> constraints = new ArrayList<>();
+    private final List<Action<Body>> forces = new ArrayList<>();
 
     //        Vector3f oldPosition = new Vector3f();
 //        Vector3f position;
 //        public Vector3f position { get { return position; } set { position.set( value ); } }
 //        public bool FixedPosition { get; set; } // use mass = float.PositiveInfinity instead
+    public Body () {
+        this( Float.POSITIVE_INFINITY, 1.0f );
+    }
 
     public Body ( float mass ) {
+        this( mass, 1.0f );
+    }
+
+    public Body ( float mass, float restitution ) {
         this.mass = mass;
+        this.restitution = restitution;
         transform = new Matrix4f( true );
-        restitution = 1.0f;
     }
 
-    public Body () {
-        this(Float.POSITIVE_INFINITY);
-    }
-        /*
-        public Body ( float mass, Vector3f initialPosition ) : this( mass ) {
-            position = new Vector3f( initialPosition );
-        }*/
 
-    public Body ( float mass, Matrix4f initialTransform ) {
-     this( mass );
+    /*
+     public Body ( float mass, Vector3f initialPosition ) : this( mass ) {
+     position = new Vector3f( initialPosition );
+     } */
+    public Body ( float mass, float restitution, Matrix4f initialTransform ) {
+        this.mass = mass;
+        this.restitution = restitution;
         transform = new Matrix4f( initialTransform );
     }
-
 
     public void applyForce ( float forceX, float forceY, float forceZ ) {
         float scale = 1f / mass;
@@ -68,86 +72,87 @@ public class Body {
     }
 
     public void timeStep ( float deltaT ) {
-        for ( Action<Body> force : forces ) {
+        for( Action<Body> force : forces ) {
             force.exec( this );
         }
 
         //oldPosition.set( position );
         velocity.add( acceleration.getScaled( deltaT ) );
         //position.add( velocity.getScaled( deltaT ) );
-        if ( velocity.lengthSq() < KINEMATIC_EPSILON_SQ )
+        if ( velocity.lengthSq() < KINEMATIC_EPSILON_SQ ) {
             velocity.setToZero();
-        else
+        } else {
             transform.addTranslation( velocity.getScaled( deltaT ) );
+        }
         acceleration.setToZero();
 
-        for ( Action<Body> constraint : constraints ) {
+        for( Action<Body> constraint : constraints ) {
             constraint.exec( this );
         }
     }
 
-    public Vector3f getVelocity() {
+    public Vector3f getVelocity () {
         return velocity;
     }
 
-    public void setVelocity(Vector3f velocity) {
-        this.velocity = velocity;
+    public void setVelocity ( Vector3f velocity ) {
+        velocity.set( velocity );
     }
 
-    public Vector3f getAcceleration() {
+    public Vector3f getAcceleration () {
         return acceleration;
     }
 
-    public void setAcceleration(Vector3f acceleration) {
-        this.acceleration = acceleration;
+    public void setAcceleration ( Vector3f acceleration ) {
+        this.acceleration.set( acceleration );
     }
 
-    public float getRestitution() {
+    public float getRestitution () {
         return restitution;
     }
 
-    public void setRestitution(float restitution) {
+    public void setRestitution ( float restitution ) {
         this.restitution = restitution;
     }
 
-    public float getFriction() {
+    public float getFriction () {
         return friction;
     }
 
-    public void setFriction(float friction) {
+    public void setFriction ( float friction ) {
         this.friction = friction;
     }
 
-    public Matrix4f getTransform() {
+    public Matrix4f getTransform () {
         return transform;
     }
 
-    public void setTransform(Matrix4f transform) {
-        this.transform = transform;
+    public void setTransform ( Matrix4f transform ) {
+        this.transform.set( transform );
     }
 
-    public List<Action<Body>> getConstraints() {
+    public List<Action<Body>> getConstraints () {
         return constraints;
     }
-
-    public void setConstraints(List<Action<Body>> constraints) {
+/*
+    public void setConstraints ( List<Action<Body>> constraints ) {
         this.constraints = constraints;
     }
-
-    public List<Action<Body>> getForces() {
+*/
+    public List<Action<Body>> getForces () {
         return forces;
     }
-
-    public void setForces(List<Action<Body>> forces) {
+/*
+    public void setForces ( List<Action<Body>> forces ) {
         this.forces = forces;
     }
+*/
 
-    public float getMass() {
+    public float getMass () {
         return mass;
     }
 
-    public void setMass(float mass) {
+    public void setMass ( float mass ) {
         this.mass = mass;
     }
 }
-
