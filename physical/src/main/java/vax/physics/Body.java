@@ -1,6 +1,7 @@
 package vax.physics;
 
 import java.util.*;
+
 import vax.math.*;
 import vax.util.*;
 
@@ -31,9 +32,7 @@ public class Body {
     }
 
     public Body ( float mass, float restitution ) {
-        this.mass = mass;
-        this.restitution = restitution;
-        transform = new Matrix4f( true );
+        this( mass, restitution, new Matrix4f( true ) );
     }
 
 
@@ -42,7 +41,11 @@ public class Body {
      position = new Vector3f( initialPosition );
      } */
     public Body ( float mass, float restitution, Matrix4f initialTransform ) {
-        this.mass = mass;
+        if ( mass > 0 ) {
+            this.mass = mass;
+        } else {
+            throw new IllegalArgumentException();
+        }
         this.restitution = restitution;
         transform = new Matrix4f( initialTransform );
     }
@@ -72,7 +75,7 @@ public class Body {
     }
 
     public void timeStep ( float deltaT ) {
-        for( Action<Body> force : forces ) {
+        for ( Action<Body> force : forces ) {
             force.exec( this );
         }
 
@@ -86,7 +89,7 @@ public class Body {
         }
         acceleration.setToZero();
 
-        for( Action<Body> constraint : constraints ) {
+        for ( Action<Body> constraint : constraints ) {
             constraint.exec( this );
         }
     }
@@ -134,11 +137,12 @@ public class Body {
     public List<Action<Body>> getConstraints () {
         return constraints;
     }
-/*
-    public void setConstraints ( List<Action<Body>> constraints ) {
-        this.constraints = constraints;
-    }
-*/
+
+    /*
+        public void setConstraints ( List<Action<Body>> constraints ) {
+            this.constraints = constraints;
+        }
+    */
     public List<Action<Body>> getForces () {
         return forces;
     }
