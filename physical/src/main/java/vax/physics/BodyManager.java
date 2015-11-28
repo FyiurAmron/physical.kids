@@ -1,6 +1,7 @@
 package vax.physics;
 
 import java.util.*;
+
 import vax.math.*;
 import vax.openglue.mesh.*;
 
