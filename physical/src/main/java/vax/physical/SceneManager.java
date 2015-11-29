@@ -1,11 +1,14 @@
 package vax.physical;
 
 import java.util.HashSet;
+import com.jogamp.opengl.GL;
 import vax.math.*;
 import vax.openglue.*;
 import vax.openglue.constants.ClearBufferMask;
 import vax.openglue.mesh.Mesh;
+import vax.openglue.mesh.SphereMesh;
 import vax.openglue.shader.ShaderProgram;
+import vax.physical.resource.Resource;
 
 /**
 
@@ -42,11 +45,19 @@ public class SceneManager implements CanvasGLUE.EventListener {
 
     @Override
     public void init ( OpenGLUE gl ) {
-        //float aspectRatio = ( (float) settings.windowSize.getX() ) / settings.windowSize.getY();
+        TextureData<?> td = ImageIO.getGLUE().readTextureData( "angry-armadillo.png", Resource.class );
+        SphereMesh ball = new SphereMesh( 1, 12, 12, true );
+        ball.setTexture( td.createTexture( gl, TextureParameters.DEFAULT, OpenGLUE.Constants.GL_TEXTURE_2D, true ) );
+        addMesh( ball );
 
-        float aspectRatio = 4f / 3;
-        gl.glPolygonMode( OpenGLUE.Constants.GL_FRONT_AND_BACK, OpenGLUE.Constants.GL_LINE );
+        //float aspectRatio = ( (float) settings.windowSize.getX() ) / settings.windowSize.getY();
+        float aspectRatio = 4f / 3; // TODO infer this from window size
+        //gl.glPolygonMode( OpenGLUE.Constants.GL_FRONT_AND_BACK, OpenGLUE.Constants.GL_LINE ); // DEBUG
+        gl.glCullFace( OpenGLUE.Constants.GL_BACK );
+        gl.glEnable( GL.GL_CULL_FACE );
         projectionMatrix.setToPerspective( 0.1f, 100f, 67, aspectRatio );
+        //projectionMatrix.setToOrthoWindow( -5, -5, 10, 10 );
+        //projectionMatrix.setToIdentity();
         modelviewMatrix.setToIdentity();
         modelviewMatrix.setTranslationZ( -3f );
 
@@ -75,12 +86,14 @@ public class SceneManager implements CanvasGLUE.EventListener {
         for( Mesh m : meshes ) {
             m.init( gl );
         }
+
+        gl.ueCheckError();
     }
 
     @Override
     public void display ( OpenGLUE gl ) {
         gl.glClearColor( 0.2f, 0.2f, 0.2f, 1f );
-        //gl.glClearColor( backgroundColor );
+        // TODO //gl.glClearColor( backgroundColor );
         gl.glClear( ClearBufferMask.ColorBufferBit, ClearBufferMask.DepthBufferBit );
 
         random.setValue( MathUtils.nextFloat() );
@@ -89,6 +102,8 @@ public class SceneManager implements CanvasGLUE.EventListener {
         //System.out.println( ftime );
         time.setValue( ftime );
         uniformManager.updateGl( gl );
+        modelviewMatrix.setTranslationX( (float) Math.sin( ftime ) );
+        modelviewMatrix.setTranslationY( (float) Math.cos( ftime ) );
 
         for( Mesh m : meshes ) {
             transformMatrix.set( m.getTransform() );
@@ -96,17 +111,25 @@ public class SceneManager implements CanvasGLUE.EventListener {
             m.render( gl );
         }
 
-        int errorCode = gl.glGetError();
-        if ( errorCode != OpenGL.Constants.GL_NO_ERROR ) {
-            throw new RuntimeException( "glGetError() = " + errorCode );
-        }
+        gl.ueCheckError();
     }
 
     @Override
     public void reshape ( OpenGLUE gl, int x, int y, int width, int height ) {
+        // TODO if aspect changed: recalc persp. matrix
+
+        gl.ueCheckError();
     }
 
     @Override
     public void dispose ( OpenGLUE gl ) {
+        /*
+         for( Mesh mesh : meshes )
+         mesh.dispose();
+         */ // TODO implement
+
+        //shaderProgram.dispose(); // TODO implement
+        //uniformManager.dispose(); // TODO implement
+        gl.ueCheckError();
     }
 }

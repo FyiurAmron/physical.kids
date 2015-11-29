@@ -424,14 +424,22 @@ public interface OpenGL {
 
     void glDrawElements ( int primitiveType, int count, int valueType, long offset );
 
+    /**
+     desktop OpenGL only (not in ES)
+
+     @param faceEnum
+     @param modeEnum
+     */
     void glPolygonMode ( int faceEnum, int modeEnum );
+
+    void glCullFace ( int cullFaceEnum );
+
     /*
      // TODO
      void glDrawElements ( int primitiveType, int count, int valueType, IntBuffer buf );
 
      void glDrawElements ( int primitiveType, int count, int valueType, int[] data, int offset );
      */
-
     void glBufferData ( int bufferTarget, long size, Buffer data, int usageEnum );
 
     int glGetError ();

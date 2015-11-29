@@ -14,7 +14,7 @@ import vax.openglue.*;
  */
 public class JoglImageIoGLUE implements ImageIO.GLUE {
     @Override
-    public TextureData<?> ueReadTexture ( String name, InputStream inputStream ) {
+    public TextureData<?> readTextureDataImpl ( String name, InputStream inputStream ) {
         com.jogamp.opengl.util.texture.TextureData td;
         try {
             td = TextureIO.newTextureData( GLProfile.getDefault(), inputStream, false, null );

@@ -16,12 +16,19 @@ public class Shader {
         return path;
     }
 
-    private final String source;
-    private final int type;
+    static public String createFromResource ( String filename ) {
+        if ( path == null ) {
+            path = Shader.class.getPackage().getName().replace( ".", "/" );
+        }
+        return path;
+    }
 
-    public Shader ( String source, int type ) {
+    private final String source;
+    private final int typeEnum;
+
+    public Shader ( String source, int typeEnum ) {
         this.source = source;
-        this.type = type;
+        this.typeEnum = typeEnum;
     }
 
     public Shader ( String source, ShaderType shaderType ) {
@@ -33,6 +40,14 @@ public class Shader {
     }
 
     public int getType () {
-        return type;
+        return typeEnum;
+    }
+
+    public boolean isType ( int typeEnum ) {
+        return this.typeEnum == typeEnum;
+    }
+
+    public boolean isType ( ShaderType shaderType ) {
+        return isType( shaderType.getValue() );
     }
 }

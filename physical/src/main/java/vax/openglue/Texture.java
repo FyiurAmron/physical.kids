@@ -12,12 +12,13 @@ public class Texture {
     private int targetEnum;
     private TextureDescriptor textureDescriptor;
     private TextureParameters textureParameters;
-    private boolean updateTexParams;
+    private boolean updateTexParams = true;
 
     public Texture ( int handle, TextureDescriptor textureDescriptor, TextureParameters textureParameters, int targetEnum ) {
         this.handle = handle;
         this.textureDescriptor = textureDescriptor;
         this.targetEnum = targetEnum;
+        this.textureParameters = textureParameters;
     }
 
     public Texture ( int handle, TextureDescriptor textureDescriptor, TextureParameters textureParameters, TextureTarget textureTarget ) {
@@ -52,7 +53,7 @@ public class Texture {
     }
 
     /**
-     useful to mimic disabling the texturing unit at all.
+     useful to mimic disabling the texturing unit at all [i.e. glDisable(GL_TEXTURE_2D)].
 
      @param gl
      */

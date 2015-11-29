@@ -9,13 +9,6 @@ import static vax.openglue.OpenGL.Constants.*;
  @author toor
  */
 public class TextureParameters {
-    public static final TextureParameters DEFAULT = new TextureParameters(
-            new Param( GL_TEXTURE_MIN_FILTER, GL_LINEAR ),
-            new Param( GL_TEXTURE_MAG_FILTER, GL_LINEAR ),
-            new Param( GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE ),
-            new Param( GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE )
-    );
-
     private static final int[] ALLOWED_PARAMS = {
         GL_TEXTURE_MIN_FILTER,
         GL_TEXTURE_MAG_FILTER,
@@ -42,6 +35,13 @@ public class TextureParameters {
         GL_TEXTURE_MAX_ANISOTROPY_EXT // ubiquitous extension
     //GL_GENERATE_MIPMAP // use glGenerateMipmap(targetEnum)
     };
+
+    public static final TextureParameters DEFAULT = new TextureParameters(
+            new Param( GL_TEXTURE_MIN_FILTER, GL_LINEAR ),
+            new Param( GL_TEXTURE_MAG_FILTER, GL_LINEAR ),
+            new Param( GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE ),
+            new Param( GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE )
+    );
 
     private final TIntObjectHashMap<ParamValue<?>> params = new TIntObjectHashMap<>( ALLOWED_PARAMS.length );
 
@@ -196,7 +196,7 @@ public class TextureParameters {
 
         @Override
         public boolean update ( OpenGLUE gl, int targetEnum, int paramEnum ) {
-            gl.glTexParameteri( targetEnum, targetEnum, param );
+            gl.glTexParameteri( targetEnum, paramEnum, param );
             //return ( gl.glGetError() != ErrorCode.NoError.getValue() );
             return true;
         }
@@ -226,7 +226,7 @@ public class TextureParameters {
 
         @Override
         public boolean update ( OpenGLUE gl, int targetEnum, int paramEnum ) {
-            gl.glTexParameterf( targetEnum, targetEnum, param );
+            gl.glTexParameterf( targetEnum, paramEnum, param );
             //return ( gl.glGetError() != ErrorCode.NoError.getValue() );
             return true;
         }

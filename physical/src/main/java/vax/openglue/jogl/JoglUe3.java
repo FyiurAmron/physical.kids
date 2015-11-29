@@ -13,22 +13,23 @@ import vax.openglue.ImageIO;
  @author toor
  */
 public class JoglUe3 extends AbstractGLUE {
-    private GL3 gl;
+    public static final GLProfile DEFAULT_PROFILE = GLProfile.getGL2GL3();
+    private GL2GL3 gl;
 
     public JoglUe3 () {
     }
 
-    public JoglUe3 ( GL3 gl ) {
+    public JoglUe3 ( GL2GL3 gl ) {
         this.gl = gl;
     }
 
-    public JoglUe3 setGl ( GL3 gl ) {
+    public JoglUe3 setGl ( GL2GL3 gl ) {
         this.gl = gl;
         return this;
     }
 
     public JoglUe3 setGl ( GLAutoDrawable drawable ) {
-        this.gl = drawable.getGL().getGL3();
+        this.gl = drawable.getGL().getGL2GL3();
         return this;
     }
 
@@ -209,7 +210,7 @@ public class JoglUe3 extends AbstractGLUE {
 
     @Override
     public void glGenTextures ( int count, int[] outBuffer, int offset ) {
-        gl.glGenBuffers( count, outBuffer, offset );
+        gl.glGenTextures( count, outBuffer, offset );
     }
 
     @Override
@@ -261,6 +262,11 @@ public class JoglUe3 extends AbstractGLUE {
     @Override
     public void glPolygonMode ( int faceEnum, int modeEnum ) {
         gl.glPolygonMode( faceEnum, modeEnum );
+    }
+
+    @Override
+    public void glCullFace ( int cullFaceEnum ) {
+        gl.glCullFace( cullFaceEnum );
     }
 
     @Override
