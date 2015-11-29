@@ -7,10 +7,9 @@ import vax.math.Matrix4f;
 import vax.math.Vector3f;
 
 /**
- * Created by Kuba on 2015-11-17.
+ Created by Kuba on 2015-11-17.
  */
 public class BodyTest {
-
 
     @Test
     public void applyForceTest () {
@@ -18,13 +17,12 @@ public class BodyTest {
         b1.applyForce( 3f, 52f, -7f );
         b1.applyForce( new Vector3f( -3f, -52f, 7f ) );
 
-
         float massB2 = 2.5f;
         Body b2 = new Body( massB2 );
         b2.applyForce( 3.5f, -5.2f, 7.88f );
 
         assertEquals( b1.getAcceleration(), new Vector3f( 0f, 0f, 0f ) );
-        assertEquals( b2.getAcceleration(), ( new Vector3f( 3.5f, -5.2f, 7.88f ).getScaled( 1 / massB2 ) ) );
+        assertEquals( b2.getAcceleration(), ( new Vector3f( 3.5f, -5.2f, 7.88f ).getScaled( 1f / massB2 ) ) );
     }
 
     @Test
@@ -38,9 +36,8 @@ public class BodyTest {
         b2.applyImpulse( 3.5f, -5.2f, 7.88f );
 
         assertEquals( b1.getVelocity(), new Vector3f( 0f, 0f, 0f ) );
-        assertEquals( b2.getVelocity(), ( new Vector3f( 3.5f, -5.2f, 7.88f ) ).getScaled( 1 / massB2 ) );
+        assertEquals( b2.getVelocity(), ( new Vector3f( 3.5f, -5.2f, 7.88f ) ).getScaled( 1f / massB2 ) );
     }
-
 
     @Test
     public void timeStepTest () {
@@ -63,23 +60,28 @@ public class BodyTest {
         Vector3f vector = new Vector3f( 1f, 0f, -1f );
         Body b1 = new Body( mass );
 
-        boolean bool = true;
-        for ( int i = 0; i <= 7; i++ ) {
-            //VectorFloat cannot be cast to Vector3f (on getScaled)
-            b1.applyForce( bool ? vector : (Vector3f) vector.scale( -1f ) );
+        boolean shouldInvert = false;
+        for( int i = 0; i <= 7; i++ ) {
+            if ( shouldInvert ) {
+                vector.invert();
+            }
+            b1.applyForce( vector );
             b1.timeStep( 1f );
-            bool = !bool;
+            shouldInvert = !shouldInvert;
         }
-        for ( int i = 0; i <= 7; i++ ) {
-            b1.applyImpulse( bool ? vector : (Vector3f) vector.scale( -1f ) );
+        for( int i = 0; i <= 7; i++ ) {
+            if ( shouldInvert ) {
+                vector.invert();
+            }
+            b1.applyImpulse( vector );
             b1.timeStep( 1f );
-            bool = !bool;
+            shouldInvert = !shouldInvert;
         }
 
         b1.applyImpulse( 1f, 0f, -1f );
         b1.applyImpulse( -1f, 1f, 0f );
         b1.applyImpulse( 0f, -1f, 1f );
-        for ( int i = 0; i <= 99; i++ ) {
+        for( int i = 0; i <= 99; i++ ) {
             b1.timeStep( 1.01f );
         }
 
@@ -90,13 +92,13 @@ public class BodyTest {
 
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test( expected = IllegalArgumentException.class )
     public void illegalArgumentsTest1 () {
-        Body body = new Body( -5f );
+        new Body( -5f );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test( expected = IllegalArgumentException.class )
     public void illegalArgumentsTest2 () {
-        Body body = new Body( 0f );
+        new Body( 0f );
     }
 }
