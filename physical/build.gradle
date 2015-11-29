@@ -9,10 +9,10 @@ if (!hasProperty('mainClass')) {
 ext {
     joglVersion = "+"
     //joglVersion = "2.3.2"
-    platform = "windows-amd64"
+    //platform = "windows-amd64"
     //platform = "windows-i586"
     //platform = "linux-amd64"
-    //platform = "macosx-universal"
+    platform = "macosx-universal"
 }
 
 dependencies {
