@@ -30,6 +30,13 @@ public interface OpenGLUE extends OpenGL {
         return ErrorCode.forValue( glGetError() );
     }
 
+    default void ueCheckError () {
+        int error = glGetError();
+        if ( error != Constants.GL_NO_ERROR ) {
+            throw new GLException( ErrorCode.forValue( error ) );
+        }
+    }
+
     default boolean ueGetProgramInfoLog ( int shaderProgramHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf ) {
         ByteBuffer bb = ueGetGLUtils().getLogBuffer();
         glGetProgramInfoLog( shaderProgramHandle, bb.capacity(), null, bb );
@@ -72,7 +79,7 @@ public interface OpenGLUE extends OpenGL {
     }
 
     default void glShaderSource ( int shaderHandle, String source ) {
-        glShaderSource(shaderHandle, 1, ueGetGLUtils().toArray( source ), null );
+        glShaderSource( shaderHandle, 1, ueGetGLUtils().toArray( source ), null );
     }
 
     default void glGenVertexArrays ( int count, int[] outBuffer ) {

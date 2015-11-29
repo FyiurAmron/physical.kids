@@ -53,4 +53,14 @@ public interface WindowGLUE {
         }
 
     }
+
+    void dispose ();
+
+    /**
+     Note: the GL context returned here may be unsuitable for instant use (outdated, disposed etc.).
+     Rely on the listener implementation to always get valid, fresh context.
+
+     @return
+     */
+    OpenGLUE getOpenGLUE ();
 }

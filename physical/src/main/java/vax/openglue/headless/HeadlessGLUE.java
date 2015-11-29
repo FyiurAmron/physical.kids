@@ -194,6 +194,10 @@ public class HeadlessGLUE extends AbstractGLUE {
     }
 
     @Override
+    public void glCullFace ( int cullFaceEnum ) {
+    }
+
+    @Override
     public void glBufferData ( int bufferTarget, long size, Buffer data, int usageEnum ) {
     }
 

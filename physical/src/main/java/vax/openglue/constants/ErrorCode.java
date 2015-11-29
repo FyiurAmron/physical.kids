@@ -19,7 +19,7 @@ public enum ErrorCode implements OpenGlConstantWrapper {
     ContextLost( GL_CONTEXT_LOST ),
     TableTooLarge( GL_TABLE_TOO_LARGE ),
     TextureTooLargeExt( GL_TEXTURE_TOO_LARGE_EXT ),
-    Unknown( -1 ), //
+    UnknownError( -1 ), //
     ;
 
     private final int value;
@@ -33,7 +33,7 @@ public enum ErrorCode implements OpenGlConstantWrapper {
 
     public static ErrorCode forValue ( int value ) {
         ErrorCode ec = valueMap.get( value );
-        return ( ec == null ) ? Unknown : ec;
+        return ( ec == null ) ? UnknownError : ec;
     }
 
     private ErrorCode ( int value ) {

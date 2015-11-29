@@ -99,9 +99,14 @@ public class JoglWindowGLUE implements WindowGLUE {
         return animator;
     }
 
+    @Override
+    public JoglUe3 getOpenGLUE () {
+        return ue;
+    }
+
+    @Override
     public void dispose () {
         animator.stop();
         glWindow.destroy();
     }
-
 }

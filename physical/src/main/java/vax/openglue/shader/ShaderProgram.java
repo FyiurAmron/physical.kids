@@ -17,6 +17,14 @@ public class ShaderProgram {
     public ShaderProgram () {
     }
 
+    public ShaderProgram ( Shader vertexShader, Shader fragmentShader ) {
+        if ( !vertexShader.isType( ShaderType.VertexShader ) || fragmentShader.isType( ShaderType.FragmentShader ) ) {
+            throw new IllegalArgumentException( "shader(s) type(s) invalid" );
+        }
+        shaders.add( vertexShader );
+        shaders.add( fragmentShader );
+    }
+
     public ShaderProgram ( String vertexShaderSource, String fragmentShaderSource ) {
         shaders.add( new Shader( vertexShaderSource, ShaderType.VertexShader ) );
         shaders.add( new Shader( fragmentShaderSource, ShaderType.FragmentShader ) );

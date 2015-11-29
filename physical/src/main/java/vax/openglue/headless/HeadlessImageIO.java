@@ -10,7 +10,7 @@ import vax.openglue.TextureData;
  */
 public class HeadlessImageIO implements ImageIO.GLUE {
     @Override
-    public TextureData<?> ueReadTexture ( String name, InputStream inputStream ) {
+    public TextureData<?> readTextureDataImpl ( String name, InputStream inputStream ) {
         throw new UnsupportedOperationException( "not yet implemented" ); // use Java's ImageIO here
     }
 }
