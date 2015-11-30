@@ -13,6 +13,11 @@ public class VectorInt {
         this.data = data;
     }
 
+    /**
+
+     @param requiredSize
+     @param data
+     */
     public VectorInt ( int requiredSize, int[] data ) {
         if ( data.length < requiredSize ) {
             throw new IllegalStateException();
@@ -88,12 +93,12 @@ public class VectorInt {
         return true;
     }
 
-    public int lengthSq () {
-        return lengthSq( data );
+    public int calcLengthSq () {
+        return calcLengthSq( data );
     }
 
-    public int length () {
-        return length( data );
+    public int calcLength () {
+        return calcLength( data );
     }
 
     public int dot ( VectorInt vector ) {
@@ -110,7 +115,7 @@ public class VectorInt {
         return this;
     }
 
-    public VectorInt invert () {
+    public VectorInt setToOpposite () {
         return scale( -1 );
     }
 
@@ -124,28 +129,33 @@ public class VectorInt {
         return this;
     }
 
-    public VectorInt getSum ( VectorInt vector ) {
-        return new VectorInt( getSum( data, vector.data ) );
+    public VectorInt createSum ( VectorInt vector ) {
+        return new VectorInt( createSum( data, vector.data ) );
     }
 
-    public VectorInt getDiff ( VectorInt vector ) {
-        return new VectorInt( getDiff( data, vector.data ) );
+    public VectorInt createDiff ( VectorInt vector ) {
+        return new VectorInt( createDiff( data, vector.data ) );
     }
 
-    public VectorInt getScaled ( int scaler ) {
+    public VectorInt createScaled ( int scaler ) {
         return new VectorInt( getScaled( data, scaler ) );
     }
 
-    public VectorInt getScaled ( VectorInt scaler ) {
+    public VectorInt createScaled ( VectorInt scaler ) {
         return new VectorInt( getScaled( data, scaler.data ) );
     }
 
-    public int distance ( VectorInt vector ) {
-        return distance( data, vector.data );
+    public int calcDistance ( VectorInt vector ) {
+        return calcDistance( data, vector.data );
     }
 
-    public int distanceSq ( VectorInt vector ) {
-        return distanceSq( data, vector.data );
+    public int calcDistanceSq ( VectorInt vector ) {
+        return calcDistanceSq( data, vector.data );
+    }
+
+    public VectorInt setToRandom ( int min, int max ) {
+        setArrayToRandom( data, min, max );
+        return this;
     }
 
     @Override
@@ -160,7 +170,7 @@ public class VectorInt {
     /*
      static methods
      */
-    static public int lengthSq ( int... data ) {
+    static public int calcLengthSq ( int... data ) {
         int lenSum = 0;
         for( int i = data.length - 1; i >= 0; i-- ) {
             lenSum += data[i] * data[i];
@@ -168,8 +178,8 @@ public class VectorInt {
         return lenSum;
     }
 
-    static public int length ( int... data ) {
-        return (int) Math.sqrt( lengthSq( data ) );
+    static public int calcLength ( int... data ) {
+        return (int) Math.sqrt( calcLengthSq( data ) );
     }
 
     static public int dot ( int[] v1, int[] v2 ) { // simple regardless of dimension count
@@ -194,22 +204,26 @@ public class VectorInt {
         return v;
     }
 
-    static public int[] getSum ( int[] v, int[] t ) {
-        int len = v.length;
-        int[] ret = new int[len];
-        for( len--; len >= 0; len-- ) {
-            ret[len] = v[len] + t[len];
-        }
-        return ret;
+    static public int[] createSum ( int[] v, int[] t ) {
+        return getSum( v, t, new int[v.length] );
     }
 
-    static public int[] getDiff ( int[] v, int[] t ) {
-        int i = v.length;
-        int[] ret = new int[i];
-        for( i--; i >= 0; i-- ) {
-            ret[i] = v[i] - t[i];
+    static public int[] getSum ( int[] v, int[] t, int[] target ) {
+        for( int i = v.length; i >= 0; i-- ) {
+            target[i] = v[i] + t[i];
         }
-        return ret;
+        return target;
+    }
+
+    static public int[] createDiff ( int[] v, int[] t ) {
+        return getDiff( v, t, new int[v.length] );
+    }
+
+    static public int[] getDiff ( int[] v, int[] t, int[] target ) {
+        for( int i = v.length - 1; i >= 0; i-- ) {
+            target[i] = v[i] - t[i];
+        }
+        return target;
     }
 
     static public int[] scale ( int[] v, int f ) {
@@ -227,28 +241,32 @@ public class VectorInt {
     }
 
     static public int[] getScaled ( int[] v, int f ) {
-        int i = v.length;
-        int[] ret = new int[i];
-        for( i--; i >= 0; i-- ) {
-            ret[i] = v[i] * f;
+        return getScaled( v, f, new int[v.length] );
+    }
+
+    static public int[] getScaled ( int[] v, int f, int[] target ) {
+        for( int i = v.length - 1; i >= 0; i-- ) {
+            target[i] = v[i] * f;
         }
-        return ret;
+        return target;
     }
 
     static public int[] getScaled ( int[] v, int[] f ) {
-        int i = v.length;
-        int[] ret = new int[i];
-        for( i--; i >= 0; i-- ) {
-            ret[i] = v[i] * f[i];
+        return getScaled( v, f, new int[v.length] );
+    }
+
+    static public int[] getScaled ( int[] v, int[] f, int[] target ) {
+        for( int i = v.length - 1; i >= 0; i-- ) {
+            target[i] = v[i] * f[i];
         }
-        return ret;
+        return target;
     }
 
-    static public int distance ( int[] v1, int[] v2 ) {
-        return (int) Math.sqrt( distanceSq( v1, v2 ) );
+    static public int calcDistance ( int[] v1, int[] v2 ) {
+        return (int) Math.sqrt( calcDistanceSq( v1, v2 ) );
     }
 
-    static public int distanceSq ( int[] v1, int[] v2 ) {
+    static public int calcDistanceSq ( int[] v1, int[] v2 ) {
         int sum = 0;
         for( int i = v1.length - 1; i >= 0; i-- ) {
             int diff = v2[i] - v1[i];
@@ -257,16 +275,30 @@ public class VectorInt {
         return sum;
     }
 
-    static public int[] getRandomArray ( int length, int min, int max ) {
-        int[] ret = new int[length];
-        for( int i = 0; i < length; i++ ) {
-            ret[i] = MathUtils.nextInt( min, max );
-        }
-        return ret;
+    /*
+     static methods
+     */
+    static public int[] createRandomArray ( int length, int min, int max ) {
+        return setArrayToRandom( new int[length], min, max );
     }
 
-    static public VectorInt getRandom ( int length, int min, int max ) {
-        return new VectorInt( getRandomArray( length, min, max ) );
+    static public int[] setArrayToRandom ( int[] array, int min, int max ) {
+        for( int i = array.length - 1; i >= 0; i-- ) {
+            array[i] = MathUtils.nextInt( min, max );
+        }
+        return array;
+    }
+
+    /**
+     Note: since this method allocated a new VectorFloat, in looped contexts reusing a vector with setToRandom is recommended.
+
+     @param length
+     @param min
+     @param max
+     @return
+     */
+    static public VectorInt createRandom ( int length, int min, int max ) {
+        return new VectorInt( createRandomArray( length, min, max ) );
     }
 
     @Override

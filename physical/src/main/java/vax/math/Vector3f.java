@@ -12,8 +12,34 @@ public class Vector3f extends VectorFloat {
         super( vector );
     }
 
+    /**
+     Note: this constructor doesn't copy the values provided, but wraps the array instead.
+
+     @param data
+     */
     public Vector3f ( float[] data ) {
         super( SIZE, data );
+    }
+
+    /**
+     Creates a getCross product.
+
+     @param v1
+     @param v2
+     */
+    public Vector3f ( Vector3f v1, Vector3f v2 ) {
+        super( createCross( v1.data, v2.data ) );
+    }
+
+    /**
+     Creates a getNormal vector, utilizing getCross product.
+
+     @param point1
+     @param point2
+     @param point3
+     */
+    public Vector3f ( Vector3f point1, Vector3f point2, Vector3f point3 ) {
+        super( createNormal( point1.data, point2.data, point3.data ) );
     }
 
     public Vector3f ( float x, float y, float z ) {
@@ -74,11 +100,31 @@ public class Vector3f extends VectorFloat {
     }
 
     public Vector3f cross ( Vector3f vector ) {
-        return new Vector3f( cross( data, vector.data ) );
+        Vector3f.getCross( data, vector.data, data );
+        return this;
     }
 
-    public Vector3f getNormal ( Vector3f v1, Vector3f v2 ) {
-        return new Vector3f( getNormal( data, v1.data, v2.data ) );
+    public Vector3f normal ( Vector3f v1, Vector3f v2 ) {
+        getNormal( data, v1.data, v2.data, data );
+        return this;
+    }
+
+    public Vector3f setToCross ( Vector3f v1, Vector3f v2 ) {
+        Vector3f.getCross( v1.data, v2.data, data );
+        return this;
+    }
+
+    public Vector3f setToNormal ( Vector3f v1, Vector3f v2, Vector3f v3 ) {
+        Vector3f.getNormal( v1.data, v2.data, v3.data, data );
+        return this;
+    }
+
+    public Vector3f createCross ( Vector3f vector ) {
+        return new Vector3f( createCross( data, vector.data ) );
+    }
+
+    public Vector3f createNormal ( Vector3f v1, Vector3f v2 ) {
+        return new Vector3f( createNormal( data, v1.data, v2.data ) );
     }
 
     @Override
@@ -89,24 +135,54 @@ public class Vector3f extends VectorFloat {
     /*
      static methods
      */
-    static public Vector3f getRandom ( float min, float max ) {
-        return new Vector3f( getRandomArray( SIZE, min, max ) );
+    static public float[] getCross ( float v10, float v11, float v12, float v20, float v21, float v22, float[] target ) {
+        target[0] = v11 * v22 - v12 * v21;
+        target[1] = v12 * v20 - v10 * v22;
+        target[2] = v10 * v21 - v11 * v20;
+        return target;
     }
 
-    static public float[] cross ( float[] v1, float[] v2 ) {
-        return new float[]{
-            v1[1] * v2[2] - v1[2] * v2[1],
-            v1[2] * v2[0] - v1[0] * v2[2],
-            v1[0] * v2[1] - v1[1] * v2[0]
-        };
+    /**
+     Note: target <b>may</b> be equal to v1 or v2 without any errors.
+
+     @param v1
+     @param v2
+     @param target
+     @return
+     */
+    static public float[] getCross ( float[] v1, float[] v2, float[] target ) {
+        return getCross( v1[0], v1[1], v1[2], v2[0], v2[1], v2[2], target );
     }
 
-    static public float[] getNormal ( float[] v1, float[] v2, float[] v3 ) {
-        float[] norm = cross(
-                new float[]{ v2[0] - v1[0], v2[1] - v1[1], v2[2] - v1[2] },
-                new float[]{ v3[0] - v1[0], v3[1] - v1[1], v3[2] - v1[2] } );
-        normalize( norm );
-        return norm;
+    static public float[] createCross ( float[] v1, float[] v2 ) {
+        return Vector3f.getCross( v1, v2, new float[SIZE] );
+    }
+
+    static public float[] getNormal ( float v10, float v11, float v12, float v20, float v21, float v22, float v30, float v31, float v32,
+            float[] target ) {
+        getCross(
+                v20 - v10, v21 - v11, v22 - v12,
+                v30 - v10, v31 - v11, v32 - v12,
+                target );
+        normalize( target );
+        return target;
+    }
+
+    /**
+     Note: target <b>may</b> be equal to v1 or v2 without any errors.
+
+     @param v1
+     @param v2
+     @param v3
+     @param target
+     @return
+     */
+    static public float[] getNormal ( float[] v1, float[] v2, float[] v3, float[] target ) {
+        return Vector3f.getNormal( v1[0], v1[1], v1[2], v2[0], v2[1], v2[2], v3[0], v3[1], v3[2], target );
+    }
+
+    static public float[] createNormal ( float[] v1, float[] v2, float[] v3 ) {
+        return getNormal( v1, v2, v3, new float[SIZE] );
     }
 
     static public float distance ( float x1, float y1, float z1, float x2, float y2, float z2 ) {

@@ -11,6 +11,11 @@ public class Vector2f extends VectorFloat {
         super( vector );
     }
 
+    /**
+     Note: this constructor doesn't copy the values provided, but wraps the array instead.
+
+     @param data
+     */
     public Vector2f ( float[] data ) {
         super( SIZE, data );
     }
@@ -35,16 +40,14 @@ public class Vector2f extends VectorFloat {
         data[1] = val;
     }
 
+    public Vector2f set ( float x, float y ) {
+        data[0] = x;
+        data[1] = y;
+        return this;
+    }
+
     @Override
     public Vector2f copy () {
         return new Vector2f( this );
     }
-
-    /*
-     public Vector2f set ( float x, float y ) {
-     data[0] = x;
-     data[1] = y;
-     return this;
-     }
-     */
 }

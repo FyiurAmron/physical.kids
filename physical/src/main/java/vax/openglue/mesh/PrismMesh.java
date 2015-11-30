@@ -21,12 +21,12 @@ public class PrismMesh extends Mesh {
             r[i] = new float[Mesh.V_DIMS];
         }
 
-        float[] base_norm = Vector3f.getNormal( p[0], p[1], p[2] ),
-                rev_norm = { -base_norm[0], -base_norm[1], -base_norm[2] };
+        float[] norm = Vector3f.createNormal( p[0], p[1], p[2] ),
+                rev_norm = Vector3f.createOpposite( norm );
 
         for( int i = 0; i < Mesh.VERTEX_COUNT; i++ ) {
             for( int j = 0; j < Mesh.V_DIMS; j++ ) {
-                r[i][j] = p[i][j] + rev_norm[j] * height; // since rev normal is set to 'inside', it goes up from the base
+                r[i][j] = p[i][j] + rev_norm[j] * height; // since rev getNormal is set to 'inside', it goes up from the base
             }
         }
         ArrayCompiler.Floats vx = new ArrayCompiler.Floats( Mesh.V_DIMS * PRISM_VERTEX_COUNT ),
@@ -35,11 +35,10 @@ public class PrismMesh extends Mesh {
 
         for( int i = 0; i < Mesh.VERTEX_COUNT; i++ ) {
             vx.put( p[i] );
-            vn.put( base_norm );
+            vn.put( norm );
         }
         vt.put( Mesh.TRI_VT_PROTO );
 
-        float[] n;
         for( int i = 0, j = 1; i < 3; i++, j++ ) {
             if ( j == 3 ) {
                 j = 0;
@@ -53,9 +52,9 @@ public class PrismMesh extends Mesh {
             vx.put( r[i] );
             vx.put( r[j] );
 
-            n = Vector3f.getNormal( p[i], r[i], p[j] );
+            Vector3f.getNormal( p[i], r[i], p[j], norm );
             for( int k = 0; k < 2 * Mesh.VERTEX_COUNT; k++ ) {
-                vn.put( n );
+                vn.put( norm );
             }
 
             vt.put( RECT_VT_PROTO );

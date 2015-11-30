@@ -55,10 +55,13 @@ public class SceneManager implements CanvasGLUE.EventListener {
         //gl.glPolygonMode( OpenGLUE.Constants.GL_FRONT_AND_BACK, OpenGLUE.Constants.GL_LINE ); // DEBUG
         gl.glCullFace( OpenGLUE.Constants.GL_BACK );
         gl.glEnable( GL.GL_CULL_FACE );
+        gl.glEnable( GL.GL_DEPTH_TEST );
         projectionMatrix.setToPerspective( 0.1f, 100f, 67, aspectRatio );
         //projectionMatrix.setToOrthoWindow( -5, -5, 10, 10 );
         //projectionMatrix.setToIdentity();
         modelviewMatrix.setToIdentity();
+        modelviewMatrix.scaleZ( -1f );
+        modelviewMatrix.scaleY( -1f );
         modelviewMatrix.setTranslationZ( -3f );
 
         ambientColor.set( 0.4f, 0.4f, 0.4f );

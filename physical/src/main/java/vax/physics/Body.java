@@ -56,7 +56,7 @@ public class Body {
     }
 
     public void applyForce ( Vector3f force ) {
-        acceleration.add( force.getScaled( 1 / mass ) );
+        acceleration.add( force.createScaled( 1 / mass ) );
     }
 
     public void applyImpulse ( float velocityX, float velocityY, float velocityZ ) {
@@ -65,7 +65,7 @@ public class Body {
     }
 
     public void applyImpulse ( Vector3f impulse ) {
-        velocity.add( impulse.getScaled( 1 / mass ) );
+        velocity.add( impulse.createScaled( 1 / mass ) );
     }
 
     Vector3f getForce () {
@@ -80,12 +80,12 @@ public class Body {
         }
 
         //oldPosition.set( position );
-        velocity.add( acceleration.getScaled( deltaT ) );
-        //position.add( velocity.getScaled( deltaT ) );
-        if ( velocity.lengthSq() < KINEMATIC_EPSILON_SQ ) {
+        velocity.add( acceleration.createScaled( deltaT ) );
+        //position.add( velocity.createScaled( deltaT ) );
+        if ( velocity.calcLengthSq() < KINEMATIC_EPSILON_SQ ) {
             velocity.setToZero();
         } else {
-            transform.addTranslation( velocity.getScaled( deltaT ) );
+            transform.addTranslation( velocity.createScaled( deltaT ) );
         }
         acceleration.setToZero();
 

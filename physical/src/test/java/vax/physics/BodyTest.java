@@ -22,7 +22,7 @@ public class BodyTest {
         b2.applyForce( 3.5f, -5.2f, 7.88f );
 
         assertEquals( b1.getAcceleration(), new Vector3f( 0f, 0f, 0f ) );
-        assertEquals( b2.getAcceleration(), ( new Vector3f( 3.5f, -5.2f, 7.88f ).getScaled( 1f / massB2 ) ) );
+        assertEquals( b2.getAcceleration(), ( new Vector3f( 3.5f, -5.2f, 7.88f ).createScaled( 1f / massB2 ) ) );
     }
 
     @Test
@@ -36,7 +36,7 @@ public class BodyTest {
         b2.applyImpulse( 3.5f, -5.2f, 7.88f );
 
         assertEquals( b1.getVelocity(), new Vector3f( 0f, 0f, 0f ) );
-        assertEquals( b2.getVelocity(), ( new Vector3f( 3.5f, -5.2f, 7.88f ) ).getScaled( 1f / massB2 ) );
+        assertEquals( b2.getVelocity(), ( new Vector3f( 3.5f, -5.2f, 7.88f ) ).createScaled( 1f / massB2 ) );
     }
 
     @Test
@@ -63,7 +63,7 @@ public class BodyTest {
         boolean shouldInvert = false;
         for( int i = 0; i <= 7; i++ ) {
             if ( shouldInvert ) {
-                vector.invert();
+                vector.setToOpposite();
             }
             b1.applyForce( vector );
             b1.timeStep( 1f );
@@ -71,7 +71,7 @@ public class BodyTest {
         }
         for( int i = 0; i <= 7; i++ ) {
             if ( shouldInvert ) {
-                vector.invert();
+                vector.setToOpposite();
             }
             b1.applyImpulse( vector );
             b1.timeStep( 1f );

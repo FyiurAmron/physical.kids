@@ -3,11 +3,13 @@ package vax.math;
 public class Matrix4f extends VectorFloat {
     public final static int SIZE = 4 * 4;
 
-    public static final float //
-            M11 = 0, M12 = 1, M13 = 2, M14 = 3,
-            M21 = 4, M22 = 5, M23 = 6, M24 = 7,
-            M31 = 8, M32 = 9, M33 = 10, M34 = 11,
-            M41 = 12, M42 = 13, M43 = 14, M44 = 15;
+    public static final int // column-row
+            M11 = 0, M12 = 1, M13 = 2, M14 = 3, // column 1
+            M21 = 4, M22 = 5, M23 = 6, M24 = 7, // column 2
+            M31 = 8, M32 = 9, M33 = 10, M34 = 11, // column 3
+            M41 = 12, M42 = 13, M43 = 14, M44 = 15, // column 4 - translation
+            SCALE_X = M11, SCALE_Y = M22, SCALE_Z = M33, SCALE_W = M44,
+            TRANSLATION_X = M41, TRANSLATION_Y = M42, TRANSLATION_Z = M43;
 
     public final static Matrix4f IDENTITY = new Matrix4f( true );
 
@@ -18,13 +20,18 @@ public class Matrix4f extends VectorFloat {
     public Matrix4f ( boolean identity ) {
         this();
         if ( identity ) {
-            data[0] = 1;
-            data[5] = 1;
-            data[10] = 1;
-            data[15] = 1;
+            data[SCALE_X] = 1;
+            data[SCALE_Y] = 1;
+            data[SCALE_Z] = 1;
+            data[SCALE_W] = 1;
         }
     }
 
+    /**
+     Note: if <code>data</code> is an explicit array, this constructor doesn't copy the values provided, but wraps the array instead.
+
+     @param data
+     */
     public Matrix4f ( float... data ) {
         super( SIZE, data );
     }
@@ -34,27 +41,27 @@ public class Matrix4f extends VectorFloat {
     }
 
     public void setTranslationX ( float transX ) {
-        this.data[12] = transX;
+        this.data[TRANSLATION_X] = transX;
     }
 
     public float getTranslationX () {
-        return data[12];
+        return data[TRANSLATION_X];
     }
 
     public void setTranslationY ( float transY ) {
-        this.data[13] = transY;
+        this.data[TRANSLATION_Y] = transY;
     }
 
     public float getTranslationY () {
-        return data[13];
+        return data[TRANSLATION_Y];
     }
 
     public void setTranslationZ ( float transZ ) {
-        this.data[14] = transZ;
+        this.data[TRANSLATION_Z] = transZ;
     }
 
     public float getTranslationZ () {
-        return data[14];
+        return data[TRANSLATION_Z];
     }
 
     public void setToIdentity () {
@@ -80,9 +87,9 @@ public class Matrix4f extends VectorFloat {
     }
 
     public void addTranslation ( float x, float y, float z ) {
-        data[12] += x;
-        data[13] += y;
-        data[14] += z;
+        data[TRANSLATION_X] += x;
+        data[TRANSLATION_Y] += y;
+        data[TRANSLATION_Z] += z;
     }
 
     public void addTranslation ( float... translation ) {
@@ -94,9 +101,9 @@ public class Matrix4f extends VectorFloat {
     }
 
     public void setTranslation ( float x, float y, float z ) {
-        data[12] = x;
-        data[13] = y;
-        data[14] = z;
+        data[TRANSLATION_X] = x;
+        data[TRANSLATION_Y] = y;
+        data[TRANSLATION_Z] = z;
     }
 
     public void setTranslation ( float... translation ) {
@@ -115,9 +122,9 @@ public class Matrix4f extends VectorFloat {
          target.getZ() - getTranslationZ() );
          */
         return new Vector3f(
-                target.data[0] - data[12],
-                target.data[1] - data[13],
-                target.data[2] - data[14] );
+                target.data[0] - data[TRANSLATION_X],
+                target.data[1] - data[TRANSLATION_Y],
+                target.data[2] - data[TRANSLATION_Z] );
     }
 
     public Vector3f getDisplacement ( Matrix4f target ) {
@@ -128,47 +135,47 @@ public class Matrix4f extends VectorFloat {
          target.getTranslationZ() - getTranslationZ() );
          */
         return new Vector3f(
-                target.data[12] - data[12],
-                target.data[13] - data[13],
-                target.data[14] - data[14] );
+                target.data[TRANSLATION_X] - data[TRANSLATION_X],
+                target.data[TRANSLATION_Y] - data[TRANSLATION_Y],
+                target.data[TRANSLATION_Z] - data[TRANSLATION_Z] );
     }
 
     public float translationDistance ( Vector3f v ) {
         /*
-         return Vector3f.distance(
+         return Vector3f.calcDistance(
          getTranslationX(), getTranslationY(), getTranslationZ(),
          v.getX(), v.getY(), v.getZ()
          );
          */
         return Vector3f.distance(
-                data[12], data[13], data[14],
+                data[TRANSLATION_X], data[TRANSLATION_Y], data[TRANSLATION_Z],
                 v.data[0], v.data[1], v.data[2]
         );
     }
 
     public float translationDistance ( Matrix4f matrix4 ) {
         /*
-         return Vector3f.distance(
+         return Vector3f.calcDistance(
          getTranslationX(), getTranslationY(), getTranslationZ(),
          matrix4.getTranslationX(), matrix4.getTranslationY(), matrix4.getTranslationZ()
          );
          */
         return Vector3f.distance(
-                data[12], data[13], data[14],
-                matrix4.data[12], matrix4.data[13], matrix4.data[14]
+                data[TRANSLATION_X], data[TRANSLATION_Y], data[TRANSLATION_Z],
+                matrix4.data[TRANSLATION_X], matrix4.data[TRANSLATION_Y], matrix4.data[TRANSLATION_Z]
         );
     }
 
     public float translationDistanceSq ( Matrix4f matrix4 ) {
         /*
-         return Vector3f.distanceSq(
+         return Vector3f.calcDistanceSq(
          getTranslationX(), getTranslationY(), getTranslationZ(),
          matrix4.getTranslationX(), matrix4.getTranslationY(), matrix4.getTranslationZ()
          );
          */
         return Vector3f.distanceSq(
-                data[12], data[13], data[14],
-                matrix4.data[12], matrix4.data[13], matrix4.data[14]
+                data[TRANSLATION_X], data[TRANSLATION_Y], data[TRANSLATION_Z],
+                matrix4.data[TRANSLATION_X], matrix4.data[TRANSLATION_Y], matrix4.data[TRANSLATION_Z]
         );
     }
 
@@ -198,7 +205,37 @@ public class Matrix4f extends VectorFloat {
         data[15] = 0;
 
         return this;
+    }
 
+    public Matrix4f scaleXYZ ( float x, float y, float z ) {
+        data[SCALE_X] *= x;
+        data[SCALE_Y] *= y;
+        data[SCALE_Z] *= z;
+        return this;
+    }
+
+    public Matrix4f scaleXYZ ( Vector3f scale ) {
+        scaleXYZ( scale.data[0], scale.data[1], scale.data[2] );
+        return this;
+    }
+
+    public Matrix4f scaleXYZ ( float scale ) {
+        return scaleXYZ( scale, scale, scale );
+    }
+
+    public Matrix4f scaleX ( float scale ) {
+        data[SCALE_X] *= scale;
+        return this;
+    }
+
+    public Matrix4f scaleY ( float scale ) {
+        data[SCALE_Y] *= scale;
+        return this;
+    }
+
+    public Matrix4f scaleZ ( float scale ) {
+        data[SCALE_Z] *= scale;
+        return this;
     }
 
     /**
