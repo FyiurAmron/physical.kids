@@ -52,12 +52,12 @@ public class SphereSphereColliderTest {
             b1 = new SphereBody( 1f, 1f );
             bR = new SphereBody( 1f, 1f );
             bR.getTransform().addTranslation( f );
-            float distance = Vector3f.length( f );
+            float distance = Vector3f.calcLength( f );
 //            try {
             assertEquals( distance <= 2 * 1f, collider.collide( b1, bR ) );
-//                System.out.println( "WIN\t dist: " + distance + " \t coll: " + collider.collide( b1, bR ) + "\t b1: " + b1.getTransform() + "\t bR: " + bR.getTransform());
+//                System.out.println( "WIN\t dist: " + calcDistance + " \t coll: " + collider.collide( b1, bR ) + "\t b1: " + b1.getTransform() + "\t bR: " + bR.getTransform());
 //            } catch (AssertionError ae) {
-//                System.out.println( "LOSE\t dist: " + distance + " \t coll: " + collider.collide( b1, bR ) + "\t b1: " + b1.getTransform() + "\t bR: " + bR.getTransform());
+//                System.out.println( "LOSE\t dist: " + calcDistance + " \t coll: " + collider.collide( b1, bR ) + "\t b1: " + b1.getTransform() + "\t bR: " + bR.getTransform());
 //            }
         }
 

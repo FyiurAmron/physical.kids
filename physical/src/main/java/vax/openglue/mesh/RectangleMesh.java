@@ -44,8 +44,8 @@ public class RectangleMesh extends Mesh {
         float[] vx = new float[Mesh.V_DIMS * v_total],
                 vn = new float[Mesh.VN_DIMS * v_total],
                 vt = new float[Mesh.VT_DIMS * v_total],
-                u = VectorFloat.getDiff( p2, p1 ),
-                v = VectorFloat.getDiff( p3, p1 );
+                u = VectorFloat.createDiff( p2, p1 ),
+                v = VectorFloat.createDiff( p3, p1 );
 
         float u0, u1, v0, v1; // calculated in-place to avoid loss of precision for large surfaces
         for( int i = 0, i_step = 2 * Mesh.VERTEX_COUNT * Mesh.V_DIMS, i_u = 0, k; i_u < seg_u; i_u++ ) {
@@ -71,7 +71,7 @@ public class RectangleMesh extends Mesh {
             System.arraycopy( Mesh.RECT_VT_PROTO, 0, vt, i, vt_step );
         }
 
-        float[] n = Vector3f.getNormal( p1, p2, p3 ); // the normal should be equal for the whole rectangle
+        float[] n = Vector3f.createNormal( p1, p2, p3 ); // the getNormal should be equal for the whole rectangle
         for( int i = 0, max = Mesh.VN_DIMS * v_total; i < max; i += Mesh.VN_DIMS ) {
             System.arraycopy( n, 0, vn, i, Mesh.VN_DIMS );
         }

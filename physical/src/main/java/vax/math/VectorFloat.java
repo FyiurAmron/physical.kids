@@ -9,10 +9,21 @@ public class VectorFloat {
         this.data = new float[requiredSize];
     }
 
+    /**
+     Note: if <code>data</code> is an explicit array, this constructor doesn't copy the values provided, but wraps the array instead.
+
+     @param data
+     */
     public VectorFloat ( float... data ) {
         this.data = data;
     }
 
+    /**
+     Note: this constructor doesn't copy the values provided, but wraps the array instead.
+
+     @param requiredSize
+     @param data
+     */
     public VectorFloat ( int requiredSize, float[] data ) {
         if ( data.length < requiredSize ) {
             throw new IllegalStateException();
@@ -30,22 +41,33 @@ public class VectorFloat {
         return data;
     }
 
-    @Deprecated
-    public void setData ( float[] data ) {
+    /**
+     Note: this method doesn't copy the data into the vector - it forces it to use external array as its data instead.
+     Intended for debugging uses.
+
+     @param data
+     @return
+     //@deprecated
+     */
+    //@Deprecated
+    public VectorFloat setData ( float[] data ) {
         this.data = data;
+        return this;
     }
 
-    public final void set ( float... data ) {
+    public final VectorFloat set ( float... data ) {
         System.arraycopy( data, 0, this.data, 0, Math.min( this.data.length, data.length ) );
+        return this;
     }
 
-    public final void set ( VectorFloat vector ) {
+    public final VectorFloat set ( VectorFloat vector ) {
         System.arraycopy( vector.data, 0, this.data, 0, Math.min( this.data.length, vector.data.length ) );
+        return this;
     }
 
-    public void rotate ( int offset ) {
+    public VectorFloat rotate ( int offset ) {
         if ( offset == 0 ) {
-            return;
+            return this;
         }
         offset %= data.length;
         int absOffset = Math.abs( offset ), len2 = data.length - absOffset;
@@ -59,24 +81,27 @@ public class VectorFloat {
             System.arraycopy( data, absOffset, data, 0, len2 );
             System.arraycopy( tmp, 0, data, len2, absOffset );
         }
+        return this;
     }
 
-    public float getValue( int index ) {
+    public float getValue ( int index ) {
         return data[index];
     }
 
-    public void setValue ( float value ) {
+    public VectorFloat setValue ( float value ) {
         for( int i = data.length - 1; i >= 0; i-- ) {
             data[i] = value;
         }
+        return this;
     }
 
-    public void setValue ( float value, int index ) {
+    public VectorFloat setValue ( float value, int index ) {
         data[index] = value;
+        return this;
     }
 
-    public void setToZero () {
-        setValue( 0 );
+    public VectorFloat setToZero () {
+        return setValue( 0 );
     }
 
     public boolean isZero () {
@@ -88,12 +113,12 @@ public class VectorFloat {
         return true;
     }
 
-    public float lengthSq () {
-        return lengthSq( data );
+    public float calcLengthSq () {
+        return calcLengthSq( data );
     }
 
-    public float length () {
-        return length( data );
+    public float calcLength () {
+        return calcLength( data );
     }
 
     public VectorFloat normalize () {
@@ -115,12 +140,17 @@ public class VectorFloat {
         return this;
     }
 
-    public VectorFloat invert () {
+    /*
+     public VectorFloat reverse ( VectorFloat vector ) { // etc.
+
+     }
+     */
+    public VectorFloat setToOpposite () {
         return scale( -1f );
     }
 
-    public VectorFloat getInverted () {
-        return getScaled( -1f );
+    public VectorFloat createOpposite () {
+        return VectorFloat.this.createScaled( -1f );
     }
 
     public VectorFloat scale ( float scaler ) {
@@ -133,32 +163,32 @@ public class VectorFloat {
         return this;
     }
 
-    public VectorFloat getSum ( VectorFloat vector ) {
-        return new VectorFloat( getSum( data, vector.data ) );
+    public VectorFloat createSum ( VectorFloat vector ) {
+        return new VectorFloat( createSum( data, vector.data ) );
     }
 
-    public VectorFloat getDiff ( VectorFloat vector ) {
-        return new VectorFloat( getDiff( data, vector.data ) );
+    public VectorFloat createDiff ( VectorFloat vector ) {
+        return new VectorFloat( createDiff( data, vector.data ) );
     }
 
-    public VectorFloat getScaled ( float scaler ) {
-        return new VectorFloat( getScaled( data, scaler ) );
+    public VectorFloat createScaled ( float scaler ) {
+        return new VectorFloat( createScaled( data, scaler ) );
     }
 
-    public VectorFloat getScaled ( VectorFloat scaler ) {
-        return new VectorFloat( getScaled( data, scaler.data ) );
+    public VectorFloat createScaled ( VectorFloat scaler ) {
+        return new VectorFloat( createScaled( data, scaler.data ) );
     }
 
-    public VectorFloat getNormalized () {
-        return new VectorFloat( getNormalized( data ) );
+    public VectorFloat createNormalized () {
+        return new VectorFloat( createNormalized( data ) );
     }
 
-    public float distance ( VectorFloat vector ) {
-        return distance( data, vector.data );
+    public float calcDistance ( VectorFloat vector ) {
+        return calcDistance( data, vector.data );
     }
 
-    public float distanceSq ( VectorFloat vector ) {
-        return distanceSq( data, vector.data );
+    public float calcDistanceSq ( VectorFloat vector ) {
+        return calcDistanceSq( data, vector.data );
     }
 
     @Override
@@ -170,22 +200,38 @@ public class VectorFloat {
         return new VectorFloat( this );
     }
 
+    public VectorFloat setToRandom ( float min, float max ) {
+        setArrayToRandom( data, min, max );
+        return this;
+    }
+
     /*
      static methods
      */
-    static public float[] getRandomArray ( int length, float min, float max ) {
-        float[] ret = new float[length];
-        for( int i = 0; i < length; i++ ) {
-            ret[i] = MathUtils.nextFloat( min, max );
+    static public float[] createRandomArray ( int length, float min, float max ) {
+        return setArrayToRandom( new float[length], min, max );
+    }
+
+    static public float[] setArrayToRandom ( float[] array, float min, float max ) {
+        for( int i = array.length - 1; i >= 0; i-- ) {
+            array[i] = MathUtils.nextFloat( min, max );
         }
-        return ret;
+        return array;
     }
 
-    static public VectorFloat getRandom ( int length, float min, float max ) {
-        return new VectorFloat( getRandomArray( length, min, max ) );
+    /**
+     Note: since this method allocated a new VectorFloat, in looped contexts reusing a vector with setToRandom is recommended.
+
+     @param length
+     @param min
+     @param max
+     @return
+     */
+    static public VectorFloat createRandom ( int length, float min, float max ) {
+        return new VectorFloat( createRandomArray( length, min, max ) );
     }
 
-    static public float lengthSq ( float... data ) {
+    static public float calcLengthSq ( float... data ) {
         float lenSum = 0;
         for( int i = data.length - 1; i >= 0; i-- ) {
             lenSum += data[i] * data[i];
@@ -193,16 +239,16 @@ public class VectorFloat {
         return lenSum;
     }
 
-    static public float length ( float... data ) {
-        return (float) Math.sqrt( lengthSq( data ) );
+    static public float calcLength ( float... data ) {
+        return (float) Math.sqrt( calcLengthSq( data ) );
     }
 
-    static public void normalize ( float... data ) {
-        float lenFactor = 1.0f / length( data );
+    static public float[] normalize ( float... data ) {
+        float lenFactor = 1.0f / calcLength( data );
         for( int i = data.length - 1; i >= 0; i-- ) {
             data[i] *= lenFactor;
         }
-        //return this;
+        return data;
     }
 
     static public float dot ( float[] v1, float[] v2 ) { // simple regardless of dimension count
@@ -227,31 +273,38 @@ public class VectorFloat {
         return v;
     }
 
-    static public float[] getNormalized ( float... data ) {
-        float[] ret = new float[data.length];
-        float lenFactor = 1.0f / length( data );
+    static public float[] createNormalized ( float[] data ) {
+        return getNormalized( data, new float[data.length] );
+    }
+
+    static public float[] getNormalized ( float[] data, float[] target ) {
+        float lenFactor = 1.0f / calcLength( data );
         for( int i = data.length - 1; i >= 0; i-- ) {
-            ret[i] = data[i] * lenFactor;
+            target[i] = data[i] * lenFactor;
         }
-        return ret;
+        return target;
     }
 
-    static public float[] getSum ( float[] v, float[] t ) {
-        int len = v.length;
-        float[] ret = new float[len];
-        for( len--; len >= 0; len-- ) {
-            ret[len] = v[len] + t[len];
-        }
-        return ret;
+    static public float[] createSum ( float[] v, float[] t ) {
+        return getSum( v, t, new float[v.length] );
     }
 
-    static public float[] getDiff ( float[] v, float[] t ) {
-        int i = v.length;
-        float[] ret = new float[i];
-        for( i--; i >= 0; i-- ) {
-            ret[i] = v[i] - t[i];
+    static public float[] getSum ( float[] v, float[] t, float[] target ) {
+        for( int len = v.length - 1; len >= 0; len-- ) {
+            target[len] = v[len] + t[len];
         }
-        return ret;
+        return target;
+    }
+
+    static public float[] createDiff ( float[] v, float[] t ) {
+        return getDiff( v, t, new float[v.length] );
+    }
+
+    static public float[] getDiff ( float[] v, float[] t, float[] target ) {
+        for( int i = v.length - 1; i >= 0; i-- ) {
+            target[i] = v[i] - t[i];
+        }
+        return target;
     }
 
     static public float[] scale ( float[] v, float f ) {
@@ -268,29 +321,75 @@ public class VectorFloat {
         return v;
     }
 
-    static public float[] getScaled ( float[] v, float f ) {
-        int i = v.length;
-        float[] ret = new float[i];
-        for( i--; i >= 0; i-- ) {
-            ret[i] = v[i] * f;
+    static public float[] createScaled ( float[] v, float f ) {
+        return getScaled( v, f, new float[v.length] );
+    }
+
+    static public float[] getScaled ( float[] v, float f, float[] target ) {
+        for( int i = v.length - 1; i >= 0; i-- ) {
+            target[i] = v[i] * f;
         }
-        return ret;
+        return target;
     }
 
-    static public float[] getScaled ( float[] v, float[] f ) {
-        int i = v.length;
-        float[] ret = new float[i];
-        for( i--; i >= 0; i-- ) {
-            ret[i] = v[i] * f[i];
+    static public float[] createScaled ( float[] v, float[] f ) {
+        return getScaled( v, f, new float[v.length] );
+    }
+
+    static public float[] getScaled ( float[] v, float[] f, float[] target ) {
+        for( int i = v.length - 1; i >= 0; i-- ) {
+            target[i] = v[i] * f[i];
         }
-        return ret;
+        return target;
     }
 
-    static public float distance ( float[] v1, float[] v2 ) {
-        return (float) Math.sqrt( distanceSq( v1, v2 ) );
+    static public float[] createOpposite ( float[] v ) {
+        return getOpposite( v, new float[v.length] );
     }
 
-    static public float distanceSq ( float[] v1, float[] v2 ) {
+    static public float[] getOpposite ( float[] v, float[] target ) {
+        return getScaled( v, -1f, target );
+    }
+
+    /**
+     Note: this method creates a swap vector on-the-fly and therefore getReverse(), createReverse or reverse(v,swap) is preferred.
+
+     @param v
+     @return
+     */
+    @Deprecated
+    static public float[] reverse ( float[] v ) {
+        return reverse( v, new float[v.length / 2] );
+    }
+
+    static public float[] reverse ( float[] v, float[] swap ) {
+        int halfLen = v.length / 2;
+        for( int i1 = 0, i2 = v.length - 1; i1 < halfLen; i1++, i2-- ) {
+            swap[i1] = v[i2];
+        }
+        for( int i1 = 0, i2 = v.length - 1; i1 < halfLen; i1++, i2-- ) {
+            v[i2] = v[i1];
+        }
+        System.arraycopy( swap, 0, v, 0, halfLen );
+        return v;
+    }
+
+    static public float[] createReverse ( float[] v ) {
+        return getOpposite( v, new float[v.length] );
+    }
+
+    static public float[] getReverse ( float[] v, float[] target ) {
+        for( int i1 = 0, i2 = v.length - 1; i2 >= 0; i1++, i2-- ) {
+            target[i1] = v[i2];
+        }
+        return target;
+    }
+
+    static public float calcDistance ( float[] v1, float[] v2 ) {
+        return (float) Math.sqrt( calcDistanceSq( v1, v2 ) );
+    }
+
+    static public float calcDistanceSq ( float[] v1, float[] v2 ) {
         float sum = (float) 0;
         for( int i = v1.length - 1; i >= 0; i-- ) {
             float diff = v2[i] - v1[i];
@@ -329,9 +428,9 @@ public class VectorFloat {
 
     /*
      public boolean equalsWithRatio ( VectorFloat v, float epsilonRatio ) {
-     int len = data.length;
+     int len = data.calcLength;
      float[] data2 = v.data;
-     if ( v.data.length != len ) {
+     if ( v.data.calcLength != len ) {
      return false;
      }
      for( int i = 0; i < len; i++ ) {

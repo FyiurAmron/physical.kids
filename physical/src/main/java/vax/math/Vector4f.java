@@ -11,6 +11,11 @@ public class Vector4f extends VectorFloat {
         super( vector );
     }
 
+    /**
+     Note: this constructor doesn't copy the values provided, but wraps the array instead.
+
+     @param data
+     */
     public Vector4f ( float[] data ) {
         super( SIZE, data );
     }
@@ -51,13 +56,11 @@ public class Vector4f extends VectorFloat {
         data[3] = val;
     }
 
-    /*
-     public Vector4f set ( float x, float y, float z, float w ) {
-     data[0] = x;
-     data[1] = y;
-     data[2] = z;
-     data[3] = w;
-     return this;
-     }
-     */
+    public Vector4f set ( float x, float y, float z, float w ) {
+        data[0] = x;
+        data[1] = y;
+        data[2] = z;
+        data[3] = w;
+        return this;
+    }
 }

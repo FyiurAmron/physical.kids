@@ -176,7 +176,7 @@ public class PhysicalWindow {
         dilloBody.getForces().add( (Body obj) -> {
             Vector3f disp = obj.getTransform().getDisplacement( fixPoint );
             float k = 10.0f, l = 15.0f;
-            disp.scale( k * ( disp.length() - l ) );
+            disp.scale( k * ( disp.calcLength() - l ) );
             obj.applyForce( disp );
         } );
 
@@ -248,7 +248,7 @@ public class PhysicalWindow {
      }
 
      if ( currentKeyboardState[Key.G] && !lastKeyboardState[Key.G] ) {
-     bodyManager.Gravity.invert();
+     bodyManager.Gravity.setToOpposite();
      }
      if ( currentKeyboardState[Key.R] && !lastKeyboardState[Key.R] ) {
      bodyManager.Gravity.rotate( 1 );

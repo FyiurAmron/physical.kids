@@ -16,6 +16,11 @@ public class Vector2i extends VectorInt {
         super( vector );
     }
 
+    /**
+     Note: this constructor doesn't copy the values provided, but wraps the array instead.
+
+     @param data
+     */
     public Vector2i ( int[] data ) {
         super( SIZE, data );
     }
@@ -58,6 +63,12 @@ public class Vector2i extends VectorInt {
     public void scale ( float f ) {
         data[0] *= f;
         data[1] *= f;
+    }
+
+    public Vector2i set ( int x, int y ) {
+        data[0] = x;
+        data[1] = y;
+        return this;
     }
 
     @Override

@@ -9,34 +9,34 @@ if (!hasProperty('mainClass')) {
 ext {
     joglVersion = "+"
     //joglVersion = "2.3.2"
-    //platform = "windows-amd64"
+    platform = "windows-amd64"
     //platform = "windows-i586"
     //platform = "linux-amd64"
-    platform = "macosx-universal"
+    //platform = "macosx-universal"
 }
 
 dependencies {
     // core deps
     compile "net.sf.trove4j:trove4j:3.0.3"
-    
+
     // backend deps
     compile "org.jogamp.gluegen:gluegen-rt:$joglVersion"
     //compile "org.jogamp.gluegen:gluegen-rt-main:$joglVersion"
 
     compile "org.jogamp.gluegen:gluegen-rt:$joglVersion:natives-$platform"
-        
+
     compile "org.jogamp.jogl:jogl-all:$joglVersion"
     //compile "org.jogamp.jogl:jogl-all-main:$joglVersion"
 
     compile "org.jogamp.jogl:jogl-all:$joglVersion:natives-$platform"
-    
+
     compile "org.jogamp.jogl:newt:$joglVersion"
     //compile "org.jogamp.jogl:newt-main:$joglVersion"
     compile "org.jogamp.jogl:newt:$joglVersion:natives-$platform"
-    
+
     compile "org.jogamp.jogl:nativewindow:$joglVersion"
     compile "org.jogamp.jogl:nativewindow:$joglVersion:natives-$platform"
-	
+
     //   note that JUnit should have already been added in parent.gradle.
     //   By default, only the Maven Central Repository is specified in
     //   parent.gradle.

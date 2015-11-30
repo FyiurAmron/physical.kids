@@ -1,30 +1,89 @@
 package vax.math;
 
-public class LineSegment3f extends Line3f {
-    protected float length;
+/**
+
+ @author toor
+ */
+public class LineSegment3f {
+    protected Vector3f point1, point2;
 
     public LineSegment3f () {
-        super();
-    }
-
-    public LineSegment3f ( Vector3f origin, Vector3f distance, float length ) {
-        super( origin, distance );
-        this.length = length;
     }
 
     public LineSegment3f ( Vector3f point1, Vector3f point2 ) {
-        super( point1, point2, null );
+        this.point1 = point1;
+        this.point2 = point2;
     }
 
-    public float getLength () {
-        if ( length == 0.0 ) {
-            length = origin.distance( direction );
+    public Vector3f getPoint1 () {
+        return point1;
+    }
+
+    public Vector3f getPoint2 () {
+        return point2;
+    }
+
+    public void setPoint1 ( Vector3f point1 ) {
+        this.point1 = point1;
+    }
+
+    public void setPoint2 ( Vector3f point2 ) {
+        this.point2 = point2;
+    }
+
+//    http://mathworld.wolfram.com/Point-LineDistance3-Dimensional.html
+    public float calcDistance ( Vector3f point ) {
+        throw new UnsupportedOperationException( "not yet implemented" );
+    }
+
+//    http://mathworld.wolfram.com/Line-LineDistance.html
+    public float calcDistance ( Line3f lineSegment ) {
+        return lineSegment.calcDistance( this );
+    }
+
+//    http://mathworld.wolfram.com/Line-LineDistance.html
+    public float calcDistance ( LineSegment3f lineSegment ) {
+        throw new UnsupportedOperationException( "not yet implemented" );
+    }
+
+    public Vector3f intersect ( LineSegment3f lineSegment ) {
+        Vector3f target = new Vector3f();
+        return intersect( lineSegment, target ) ? target : null;
+    }
+
+    public boolean intersect ( LineSegment3f lineSegment, Vector3f target ) {
+        throw new UnsupportedOperationException( "not yet implemented" );
+    }
+
+    public Vector3f intersect ( Line3f line ) {
+        return line.intersect( this );
+    }
+
+    public boolean intersect ( Line3f line, Vector3f target ) {
+        return line.intersect( this, target );
+    }
+
+    public float calcLength () {
+        return point2.calcDistance( point1 );
+    }
+
+    public Vector3f calcDirection ( Vector3f target, boolean normalize ) {
+        target.set( point2 ).subtract( point1 );
+        if ( normalize ) {
+            target.normalize();
         }
-        return length;
+        return target;
     }
 
-    public void setLength ( float length ) {
-        this.length = length;
+    public Vector3f calcDirection ( Vector3f target ) {
+        return calcDirection( target, true );
     }
 
+    public Vector3f calcDirection ( boolean normalize ) {
+        return calcDirection( new Vector3f(), normalize );
+    }
+
+    public Vector3f calcDirection () {
+        return calcDirection( new Vector3f(), true );
+    }
 }
