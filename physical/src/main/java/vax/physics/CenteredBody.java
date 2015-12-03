@@ -5,6 +5,12 @@ import vax.math.*;
 abstract public class CenteredBody extends Body {
     public float radius;
 
+    /**
+     No-arg for serialization/subclassing.
+     */
+    public CenteredBody () {
+    }
+
     public CenteredBody ( float mass, float radius ) {
         super( mass );
         this.radius = radius;

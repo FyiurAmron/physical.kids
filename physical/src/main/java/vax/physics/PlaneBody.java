@@ -6,12 +6,14 @@ public class PlaneBody extends Body {
 
     protected Plane3f plane3f;
 
-    public PlaneBody ( Plane3f plane3f ) {
-        this.plane3f = plane3f;
+    /**
+     No-arg for serialization/subclassing.
+     */
+    public PlaneBody () {
     }
 
-    public PlaneBody () {
-        this( new Plane3f() );
+    public PlaneBody ( Plane3f plane3f ) {
+        this.plane3f = plane3f;
     }
 
     public PlaneBody ( Vector3f normal, float distanceToOrigin ) {
