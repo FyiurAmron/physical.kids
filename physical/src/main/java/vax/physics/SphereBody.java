@@ -3,18 +3,23 @@ package vax.physics;
 //import vax.math.*;
 public class SphereBody extends CenteredBody {
     /*
-    protected float rotationAngle;
-    protected float rotationSpeed;
-    protected int rotationAxis;
-    protected float rotationVelocityThreshold;
-    */
+     protected float rotationAngle;
+     protected float rotationSpeed;
+     protected int rotationAxis;
+     protected float rotationVelocityThreshold;
+     */
+
+    /**
+     No-arg for serialization/subclassing.
+     */
+    public SphereBody () {
+    }
 
     public SphereBody ( float mass, float radius ) {
         super( mass, radius );
         //restitution = 0.75f;
         //rotationVelocityThreshold = 0.15f;
     }
-
     /*
      public Matrix4f createRotationMatrix4 () {
      switch ( rotationAxis ) {
@@ -33,7 +38,6 @@ public class SphereBody extends CenteredBody {
      public void timeStep ( float deltaT ) {
      super.timeStep( deltaT );
      float v = velocity.length();
-
      if ( v < rotationVelocityThreshold ) {
      return;
      }
@@ -41,37 +45,29 @@ public class SphereBody extends CenteredBody {
      rotationAngle += v * deltaT * rotationSpeed;
      transform.setScaleAndRotation( createRotationMatrix4() );
      }
-
-    public float getRotationAngle () {
-        return rotationAngle;
-    }
-
-    public void setRotationAngle ( float rotationAngle ) {
-        this.rotationAngle = rotationAngle;
-    }
-
-    public float getRotationSpeed () {
-        return rotationSpeed;
-    }
-
-    public void setRotationSpeed ( float rotationSpeed ) {
-        this.rotationSpeed = rotationSpeed;
-    }
-
-    public int getRotationAxis () {
-        return rotationAxis;
-    }
-
-    public void setRotationAxis ( int rotationAxis ) {
-        this.rotationAxis = rotationAxis;
-    }
-
-    public float getRotationVelocityThreshold () {
-        return rotationVelocityThreshold;
-    }
-
-    public void setRotationVelocityThreshold ( float rotationVelocityThreshold ) {
-        this.rotationVelocityThreshold = rotationVelocityThreshold;
-    }
+     public float getRotationAngle () {
+     return rotationAngle;
+     }
+     public void setRotationAngle ( float rotationAngle ) {
+     this.rotationAngle = rotationAngle;
+     }
+     public float getRotationSpeed () {
+     return rotationSpeed;
+     }
+     public void setRotationSpeed ( float rotationSpeed ) {
+     this.rotationSpeed = rotationSpeed;
+     }
+     public int getRotationAxis () {
+     return rotationAxis;
+     }
+     public void setRotationAxis ( int rotationAxis ) {
+     this.rotationAxis = rotationAxis;
+     }
+     public float getRotationVelocityThreshold () {
+     return rotationVelocityThreshold;
+     }
+     public void setRotationVelocityThreshold ( float rotationVelocityThreshold ) {
+     this.rotationVelocityThreshold = rotationVelocityThreshold;
+     }
      */
 }
