@@ -23,6 +23,11 @@ public class TriangleBody extends PlaneBody {
                 && points[2].equals( tb.points[2] );
     }
 
+    @Override
+    public int hashCode () {
+        throw new UnsupportedOperationException(); // TODO [Jakub Sengerski] - always implement hashCode() when implementing equals()
+    }
+
     public Vector3f[] getPoints () {
         return points;
     }
