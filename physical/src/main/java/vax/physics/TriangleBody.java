@@ -17,6 +17,11 @@ public class TriangleBody extends PlaneBody {
         this.points[2] = v3;
     }
 
+    public boolean equals(TriangleBody tb){
+        return (points[0] == tb.getPoints()[0]) && (points[1] == tb.getPoints()[1]) && (points[2] == tb.getPoints()[2]);
+    }
+
+
     public Vector3f[] getPoints () {
         return points;
     }
