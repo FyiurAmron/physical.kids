@@ -4,7 +4,7 @@ import vax.math.Line3f;
 import vax.math.Vector3f;
 
 /**
- * Created by Kuba on 2015-11-25.
+ Created by Kuba on 2015-11-25.
  */
 public class TriangleTriangleCollider extends Collider<TriangleBody, TriangleBody> {
 
@@ -27,16 +27,12 @@ public class TriangleTriangleCollider extends Collider<TriangleBody, TriangleBod
         Vector3f crossPrev;
         Vector3f pointRelative;
         Line3f line = tb1.getPlane3f().intersect( tb2.getPlane3f() );
-        Vector3f lineOrigin = ( line != null ) ? line.getOrigin() : null;
 
-        // FIXME do poprawki, czy plaszczyzny s¹ rownolegle lub pokrywaja sie i co wtedy
+        // FIXME do poprawki, czy plaszczyzny sa rownolegle lub pokrywaja sie i co wtedy
         if ( line == null ) {
-            if ( tb1.equals( tb2 ) ) {
-                return true;
-            } else {
-                return false;
-            }
+            return ( tb1.equals( tb2 ) );
         }
+        Vector3f lineOrigin = line.getOrigin();
 
         cross = null;
         for( Vector3f point : tb1.points ) {

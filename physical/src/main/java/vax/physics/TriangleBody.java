@@ -4,7 +4,7 @@ import vax.math.Plane3f;
 import vax.math.Vector3f;
 
 /**
- * Created by Kuba on 2015-12-02.
+ Created by Kuba on 2015-12-02.
  */
 public class TriangleBody extends PlaneBody {
 
@@ -17,16 +17,13 @@ public class TriangleBody extends PlaneBody {
         this.points[2] = v3;
     }
 
-    public boolean equals(TriangleBody tb){
-        return (points[0] == tb.getPoints()[0]) && (points[1] == tb.getPoints()[1]) && (points[2] == tb.getPoints()[2]);
+    public boolean equals ( TriangleBody tb ) {
+        return points[0].equals( tb.points[0] )
+                && points[1].equals( tb.points[1] )
+                && points[2].equals( tb.points[2] );
     }
-
 
     public Vector3f[] getPoints () {
         return points;
-    }
-
-    public void setPoints ( Vector3f[] points ) {
-        this.points = points;
     }
 }
