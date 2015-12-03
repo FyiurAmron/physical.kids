@@ -2,7 +2,6 @@ package vax.physics;
 
 import vax.math.Line3f;
 import vax.math.Vector3f;
-import vax.math.VectorFloat;
 
 /**
  * Created by Kuba on 2015-11-25.
@@ -26,12 +25,25 @@ public class TriangleTriangleCollider extends Collider<TriangleBody, TriangleBod
         boolean tb2Collision = false;
         Vector3f cross;
         Vector3f crossPrev;
+        Vector3f pointRelative;
         Line3f line = tb1.getPlane3f().intersect( tb2.getPlane3f() );
+        Vector3f lineOrigin = ( line != null ) ? line.getOrigin() : null;
+
+        // FIXME do poprawki, czy plaszczyzny s¹ rownolegle lub pokrywaja sie i co wtedy
+        if ( line == null ) {
+            if ( tb1.equals( tb2 ) ) {
+                return true;
+            } else {
+                return false;
+            }
+        }
 
         cross = null;
         for( Vector3f point : tb1.points ) {
+            pointRelative = new Vector3f( point );
+            pointRelative.add( -lineOrigin.getX(), -lineOrigin.getY(), -lineOrigin.getZ() );
             crossPrev = ( cross != null ) ? cross : null;
-            cross = line.getDirection().createCross( point );
+            cross = line.getDirection().createCross( pointRelative );
 
             if ( cross.calcLength() == 0 ) {
                 tb1Collision = true;
@@ -48,8 +60,10 @@ public class TriangleTriangleCollider extends Collider<TriangleBody, TriangleBod
 
         cross = null;
         for( Vector3f point : tb2.points ) {
+            pointRelative = new Vector3f( point );
+            pointRelative.add( -lineOrigin.getX(), -lineOrigin.getY(), -lineOrigin.getZ() );
             crossPrev = ( cross != null ) ? cross : null;
-            cross = line.getDirection().createCross( point );
+            cross = line.getDirection().createCross( pointRelative );
 
             if ( cross.calcLength() == 0 ) {
                 tb1Collision = true;
