@@ -29,6 +29,16 @@ public interface BufferGLUE {
         public FloatBuffer createFloatBuffer ( float[] data ) {
             throw new IllegalStateException( GLUE_NOT_SET_YET );
         }
+
+        @Override
+        public ByteBuffer createByteBuffer ( int size ) {
+            throw new IllegalStateException( GLUE_NOT_SET_YET );
+        }
+
+        @Override
+        public ByteBuffer createByteBuffer ( byte[] data ) {
+            throw new IllegalStateException( GLUE_NOT_SET_YET );
+        }
     };
 
     IntBuffer createIntBuffer ( int size );
@@ -38,5 +48,9 @@ public interface BufferGLUE {
     FloatBuffer createFloatBuffer ( int size );
 
     FloatBuffer createFloatBuffer ( float[] data );
+
+    ByteBuffer createByteBuffer ( int size );
+
+    ByteBuffer createByteBuffer ( byte[] data );
 
 }

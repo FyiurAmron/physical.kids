@@ -30,7 +30,7 @@ public class Texture {
     }
 
     public Texture ( int handle, TextureDescriptor textureDescriptor ) {
-        this( handle, textureDescriptor, TextureParameters.DEFAULT, OpenGL.Constants.GL_TEXTURE_2D );
+        this(handle, textureDescriptor, TextureParameters.BILINEAR, OpenGL.Constants.GL_TEXTURE_2D );
     }
 
     public Texture ( String mock ) {

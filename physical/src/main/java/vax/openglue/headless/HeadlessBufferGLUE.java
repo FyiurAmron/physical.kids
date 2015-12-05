@@ -1,5 +1,6 @@
 package vax.openglue.headless;
 
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import vax.openglue.BufferGLUE;
@@ -29,4 +30,13 @@ public class HeadlessBufferGLUE implements BufferGLUE {
         return FloatBuffer.wrap( data );
     }
 
+    @Override
+    public ByteBuffer createByteBuffer ( int size ) {
+        return ByteBuffer.allocate( size );
+    }
+
+    @Override
+    public ByteBuffer createByteBuffer ( byte[] data ) {
+        return ByteBuffer.wrap( data );
+    }
 }

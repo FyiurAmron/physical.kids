@@ -1,0 +1,325 @@
+package vax.openglue;
+
+import java.nio.*;
+
+/**
+ An OpenGLUE interface wrapper, allowing easy glGetError() checking after each and every OpenGL call.
+ <p>
+ <em>Note: not to be used in production environment due to serious performance overhead.</em>
+
+ @author toor
+ */
+public class DebugGLUE implements OpenGLUE {
+    private OpenGLUE gl;
+
+    public DebugGLUE () {
+    }
+
+    public DebugGLUE ( OpenGLUE gl ) {
+        this.gl = gl;
+    }
+
+    public void setGlue ( OpenGLUE gl ) {
+        this.gl = gl;
+    }
+
+    public OpenGLUE getGlue () {
+        return gl;
+    }
+
+    @Override
+    public GLUtils ueGetGLUtils () {
+        return gl.ueGetGLUtils();
+    }
+
+    @Override
+    public void glViewport ( int x, int y, int width, int height ) {
+        gl.glViewport( x, y, width, height );
+        ueCheckError();
+    }
+
+    @Override
+    public int glGetUniformLocation ( int shaderProgramHandle, String name ) {
+        int ret = gl.glGetUniformLocation( shaderProgramHandle, name );
+        ueCheckError();
+        return ret;
+    }
+
+    @Override
+    public void glUniform1f ( int uniformLocation, float value ) {
+        gl.glUniform1f( uniformLocation, value );
+        ueCheckError();
+    }
+
+    @Override
+    public void glUniform2fv ( int uniformLocation, int count, float[] data, int offset ) {
+        gl.glUniform2fv( uniformLocation, count, data, offset );
+        ueCheckError();
+    }
+
+    @Override
+    public void glUniform3fv ( int uniformLocation, int count, float[] data, int offset ) {
+        gl.glUniform3fv( uniformLocation, count, data, offset );
+        ueCheckError();
+    }
+
+    @Override
+    public void glUniform4fv ( int uniformLocation, int count, float[] data, int offset ) {
+        gl.glUniform4fv( uniformLocation, count, data, offset );
+        ueCheckError();
+    }
+
+    @Override
+    public void glUniformMatrix4fv ( int uniformLocation, int count, boolean transpose, float[] data, int offset ) {
+        gl.glUniformMatrix4fv( uniformLocation, count, transpose, data, offset );
+        ueCheckError();
+    }
+
+    @Override
+    public void glUniform2fv ( int uniformLocation, int count, FloatBuffer data ) {
+        gl.glUniform2fv( uniformLocation, count, data );
+        ueCheckError();
+    }
+
+    @Override
+    public void glUniform3fv ( int uniformLocation, int count, FloatBuffer data ) {
+        gl.glUniform3fv( uniformLocation, count, data );
+        ueCheckError();
+    }
+
+    @Override
+    public void glUniform4fv ( int uniformLocation, int count, FloatBuffer data ) {
+        gl.glUniform4fv( uniformLocation, count, data );
+        ueCheckError();
+    }
+
+    @Override
+    public void glUniformMatrix4fv ( int uniformLocation, int count, boolean transpose, FloatBuffer data ) {
+        gl.glUniformMatrix4fv( uniformLocation, count, transpose, data );
+        ueCheckError();
+    }
+
+    @Override
+    public void glEnable ( int glParam ) {
+        gl.glEnable( glParam );
+        ueCheckError();
+    }
+
+    @Override
+    public void glDisable ( int glParam ) {
+        gl.glDisable( glParam );
+        ueCheckError();
+    }
+
+    @Override
+    public void glClear ( int i ) {
+        gl.glClear( i );
+        ueCheckError();
+    }
+
+    @Override
+    public void glClearColor ( float r, float g, float b, float a ) {
+        gl.glClearColor( r, g, b, a );
+        ueCheckError();
+    }
+
+    @Override
+    public int glCreateShader ( int shaderType ) {
+        int ret = gl.glCreateShader( shaderType );
+        ueCheckError();
+        return ret;
+    }
+
+    @Override
+    public int glCreateProgram () {
+        int ret = gl.glCreateProgram();
+        ueCheckError();
+        return ret;
+    }
+
+    @Override
+    public void glShaderSource ( int shaderHandle, int count, String[] sources, IntBuffer lengths ) {
+        gl.glShaderSource( shaderHandle, count, sources, lengths );
+        ueCheckError();
+    }
+
+    @Override
+    public void glShaderSource ( int shaderHandle, int count, String[] sources, int[] lengths, int lengthsOffset ) {
+        gl.glShaderSource( shaderHandle, count, sources, lengths, lengthsOffset );
+        ueCheckError();
+    }
+
+    @Override
+    public void glAttachShader ( int shaderProgramHandle, int vertexShaderHandle ) {
+        gl.glAttachShader( shaderProgramHandle, vertexShaderHandle );
+        ueCheckError();
+    }
+
+    @Override
+    public void glBindAttribLocation ( int shaderProgramHandle, int index, String name ) {
+        gl.glBindAttribLocation( shaderProgramHandle, index, name );
+        ueCheckError();
+    }
+
+    @Override
+    public void glLinkProgram ( int shaderProgramHandle ) {
+        gl.glLinkProgram( shaderProgramHandle );
+        ueCheckError();
+    }
+
+    @Override
+    public void glUseProgram ( int shaderProgramHandle ) {
+        gl.glUseProgram( shaderProgramHandle );
+        ueCheckError();
+    }
+
+    @Override
+    public void glCompileShader ( int vertexShaderHandle ) {
+        gl.glCompileShader( vertexShaderHandle );
+        ueCheckError();
+    }
+
+    @Override
+    public void glGetProgramInfoLog ( int shaderProgramHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf ) {
+        gl.glGetProgramInfoLog( shaderProgramHandle, maxLength, lengthBuf, infoLogBuf );
+        ueCheckError();
+    }
+
+    @Override
+    public void glGetShaderInfoLog ( int shaderHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf ) {
+        gl.glGetShaderInfoLog( shaderHandle, maxLength, lengthBuf, infoLogBuf );
+        ueCheckError();
+    }
+
+    @Override
+    public void glGenTextures ( int count, int[] outBuffer, int offset ) {
+        gl.glGenTextures( count, outBuffer, offset );
+        ueCheckError();
+    }
+
+    @Override
+    public void glGenTextures ( int count, IntBuffer outBuffer ) {
+        gl.glGenTextures( count, outBuffer );
+        ueCheckError();
+    }
+
+    @Override
+    public void glBindTexture ( int targetEnum, int handle ) {
+        gl.glBindTexture( targetEnum, handle );
+        ueCheckError();
+    }
+
+    @Override
+    public void glTexParameteri ( int targetEnum, int paramEnum, int param ) {
+        gl.glTexParameteri( targetEnum, paramEnum, param );
+        ueCheckError();
+    }
+
+    @Override
+    public void glTexParameterf ( int targetEnum, int paramEnum, float param ) {
+        gl.glTexParameterf( targetEnum, paramEnum, param );
+        ueCheckError();
+    }
+
+    @Override
+    public void glTexImage2D ( int targetEnum, int level, int internalFormat, int width, int height, int border, int format, int type,
+            Buffer data ) {
+        gl.glTexImage2D( targetEnum, level, internalFormat, width, height, border, format, type, data );
+        ueCheckError();
+    }
+
+    @Override
+    public void glGenerateMipmap ( int targetEnum ) {
+        gl.glGenerateMipmap( targetEnum );
+        ueCheckError();
+    }
+
+    @Override
+    public void glGenBuffers ( int count, int[] outBuffer, int offset ) {
+        gl.glGenBuffers( count, outBuffer, offset );
+        ueCheckError();
+    }
+
+    @Override
+    public void glGenBuffers ( int count, IntBuffer outBuffer ) {
+        gl.glGenBuffers( count, outBuffer );
+        ueCheckError();
+    }
+
+    @Override
+    public void glBindBuffer ( int targetEnum, int handle ) {
+        gl.glBindBuffer( targetEnum, handle );
+        ueCheckError();
+    }
+
+    @Override
+    public void glEnableVertexAttribArray ( int attribNr ) {
+        gl.glEnableVertexAttribArray( attribNr );
+        ueCheckError();
+    }
+
+    @Override
+    public void glGenVertexArrays ( int count, IntBuffer outBuffer ) {
+        gl.glGenVertexArrays( count, outBuffer );
+        ueCheckError();
+    }
+
+    @Override
+    public void glGenVertexArrays ( int count, int[] outBuffer, int offset ) {
+        gl.glGenVertexArrays( count, outBuffer, offset );
+        ueCheckError();
+    }
+
+    @Override
+    public void glBindVertexArray ( int vaoHandle ) {
+        gl.glBindVertexArray( vaoHandle );
+        ueCheckError();
+    }
+
+    @Override
+    public void glVertexAttribPointer ( int attribNr, int size, int typeEnum, boolean normalize, int stride, long pointer ) {
+        gl.glVertexAttribPointer( attribNr, size, typeEnum, normalize, stride, pointer );
+        ueCheckError();
+    }
+
+    @Override
+    public void glDrawElements ( int primitiveType, int count, int valueType, long offset ) {
+        gl.glDrawElements( primitiveType, count, valueType, offset );
+        ueCheckError();
+    }
+
+    @Override
+    public void glPolygonMode ( int faceEnum, int modeEnum ) {
+        gl.glPolygonMode( faceEnum, modeEnum );
+        ueCheckError();
+    }
+
+    @Override
+    public void glCullFace ( int cullFaceEnum ) {
+        gl.glCullFace( cullFaceEnum );
+        ueCheckError();
+    }
+
+    @Override
+    public void glBufferData ( int bufferTarget, long size, Buffer data, int usageEnum ) {
+        gl.glBufferData( bufferTarget, size, data, usageEnum );
+        ueCheckError();
+    }
+
+    @Override
+    public void glBlendFunc ( int blendSourceEnum, int blendDestEnum ) {
+        gl.glBlendFunc( blendSourceEnum, blendDestEnum );
+        ueCheckError();
+    }
+
+    @Override
+    public void glBlendFuncSeparate ( int blendRgbSourceEnum, int blendRgbDestEnum, int blendAlphaSourceEnum, int blendAlphaDestEnum ) {
+        gl.glBlendFuncSeparate( blendRgbSourceEnum, blendRgbDestEnum, blendAlphaSourceEnum, blendAlphaDestEnum );
+        ueCheckError();
+    }
+
+    @Override
+    public int glGetError () {
+        return gl.glGetError();
+    }
+}

@@ -17,10 +17,12 @@ import vax.util.Action;
  @author toor
  */
 public class SceneManager implements CanvasGLUE.EventListener {
-    private final UniformManager uniformManager = new UniformManager();
-    private final HashSet<Mesh> meshes = new HashSet<>();
+    private final UniformManager mainUniformManager = new UniformManager(), noiseUniformManager = new UniformManager();
+    private final HashSet<Mesh> mainMeshes = new HashSet<>(), noiseMeshes = new HashSet<>();
 
-    private final ShaderProgram shaderProgram;
+    private ShaderProgram mainShaderProgram, noiseShaderProgram;
+
+    private final boolean debug = true;
 
     private final Value1f //
             time = new Value1f(),
@@ -28,21 +30,23 @@ public class SceneManager implements CanvasGLUE.EventListener {
             textureSampler = new Value1f( 0 );
     private final Vector4f //
             ambientColor = new Vector4f(),
-            lightColor = new Vector4f();
+            lightColor = new Vector4f(),
+            backgroundColor = new Vector4f();
     private final Vector3f lightDirUnit = new Vector3f();
     private final Matrix4f //
             projectionMatrix = new Matrix4f(),
             modelviewMatrix = new Matrix4f(),
             transformMatrix = new Matrix4f( true );
 
-    private Uniform.UMatrix4f transformMatrixUniform;
+    private final DebugGLUE debugGLUE = new DebugGLUE();
 
-    public SceneManager ( String shadername ) {
-        shaderProgram = new ResourceShaderProgram( shadername );
+    private AbstractUniform.UMatrix4f transformMatrixUniform;
+
+    public SceneManager () {
     }
 
     public void addMesh ( Mesh mesh ) {
-        meshes.add( mesh );
+        mainMeshes.add( mesh );
     }
 
     private float getTime () {
@@ -51,7 +55,13 @@ public class SceneManager implements CanvasGLUE.EventListener {
 
     @Override
     public void init ( OpenGLUE gl ) {
+        debugGLUE.setGlue( gl );
+        gl = debugGLUE;
         ImageIO.GLUE glue = ImageIO.getGLUE();
+
+        mainShaderProgram = new ResourceShaderProgram( "main" );
+        noiseShaderProgram = new ResourceShaderProgram( "noise" );
+
         TextureData<?> dilloTD = glue.readTextureData( "angry-armadillo.png", Resource.class );
         TextureData<?> leftInterfaceTD = glue.readTextureData( "interface.png", Resource.class );
         SphereMesh ball = new SphereMesh( 0.1f, 12, 12, true );
@@ -60,8 +70,8 @@ public class SceneManager implements CanvasGLUE.EventListener {
         leftInterface.getTransform().setTranslationY( 1f );
         //RectangleMesh leftInterface = new RectangleMesh( 2, 2, 2 );
 
-        ball.setTexture( dilloTD.createTexture( gl, TextureParameters.HQ_MIPMAP, true ) );
-        leftInterface.setTexture( leftInterfaceTD.createTexture( gl, TextureParameters.HQ_MIPMAP, true ) );
+        ball.setTexture( dilloTD.createTexture( gl, TextureParameters.TRILINEAR, true ) );
+        leftInterface.setTexture( leftInterfaceTD.createTexture( gl, TextureParameters.TRILINEAR, true ) );
 
         ball.setUpdateAction( (Mesh target) -> {
             Matrix4f trans = target.getTransform();
@@ -70,8 +80,8 @@ public class SceneManager implements CanvasGLUE.EventListener {
             trans.setTranslationZ( -1.5f + (float) Math.cos( t ) );
         } );
 
-        addMesh( leftInterface );
-        addMesh( ball );
+        mainMeshes.add( ball );
+        noiseMeshes.add( leftInterface );
 
         //float aspectRatio = ( (float) settings.windowSize.getX() ) / settings.windowSize.getY();
         float aspectRatio = 4f / 3; // TODO infer this from window size
@@ -90,70 +100,101 @@ public class SceneManager implements CanvasGLUE.EventListener {
         //modelviewMatrix.scaleY( -1f );
         modelviewMatrix.setTranslationZ( 3f );
 
+        backgroundColor.set( 0.01f, 0.01f, 0.01f, 0.01f );
         ambientColor.set( 0.4f, 0.4f, 0.4f, 1.0f );
         lightColor.set( 1.0f, 1.0f, 1.0f, 1.0f );
         lightDirUnit.set( 0.5f, 1.0f, 0.5f );
         //lightDirUnit.set( 0.1f, 5.0f, 0.1f );
         lightDirUnit.normalize();
 
-        shaderProgram.init( gl );
+        Uniform[] uniforms
+                = {
+                    AbstractUniform.from( "projectionMatrix", projectionMatrix ),
+                    AbstractUniform.from( "modelviewMatrix", modelviewMatrix ),
+                    transformMatrixUniform = AbstractUniform.from( "transform", transformMatrix ),
+                    AbstractUniform.from( "ambientColor", ambientColor ),
+                    AbstractUniform.from( "lightColor", lightColor ),
+                    AbstractUniform.from( "lightDirUnit", lightDirUnit ),
+                    AbstractUniform.from( "time", time ),
+                    AbstractUniform.from( "random", random ),
+                    AbstractUniform.from( "textureSamples", textureSampler )
+                };
 
-        uniformManager.addUniforms(
-                Uniform.from( "projectionMatrix", projectionMatrix ),
-                Uniform.from( "modelviewMatrix", modelviewMatrix ),
-                transformMatrixUniform = Uniform.from( "transform", transformMatrix ),
-                Uniform.from( "ambientColor", ambientColor ),
-                Uniform.from( "lightColor", lightColor ),
-                Uniform.from( "lightDirUnit", lightDirUnit ),
-                Uniform.from( "time", time ),
-                Uniform.from( "random", random ),
-                Uniform.from( "textureSamples", textureSampler )
-        );
-        uniformManager.getUniform( "transform" );
-        uniformManager.init( gl, shaderProgram.getShaderProgramHandle() );
+        mainShaderProgram.init( gl );
+        mainShaderProgram.use( gl );
+        mainUniformManager.addUniforms( uniforms );
+        mainUniformManager.init( gl, mainShaderProgram );
 
-        for( Mesh m : meshes ) {
+        noiseShaderProgram.init( gl );
+        noiseShaderProgram.use( gl );
+        noiseUniformManager.addUniforms( uniforms );
+        noiseUniformManager.init( gl, noiseShaderProgram );
+
+        for( Mesh m : mainMeshes ) {
+            m.init( gl );
+        }
+        for( Mesh m : noiseMeshes ) {
             m.init( gl );
         }
 
-        gl.ueCheckError();
+        //gl.ueCheckError();
     }
 
     @Override
     public void display ( OpenGLUE gl ) {
-        //gl.glClearColor( 0.2f, 0.2f, 0.2f, 1f );
-        gl.glClearColor( 0.01f, 0.01f, 0.01f, 1f );
-        // TODO //gl.glClearColor( backgroundColor );
+        if ( debug ) {
+            debugGLUE.setGlue( gl );
+            gl = debugGLUE;
+        }
+        gl.glClearColor( backgroundColor );
         gl.glClear( ClearBufferMask.ColorBufferBit, ClearBufferMask.DepthBufferBit );
 
         random.setValue( MathUtils.nextFloat() );
         //float ftime = (float) ( System.currentTimeMillis() % 1000 ) / 1000;
         //System.out.println( ftime );
         time.setValue( getTime() );
-        uniformManager.updateGl( gl );
+
         //modelviewMatrix.setTranslationX( (float) Math.sin( ftime ) );
         //modelviewMatrix.setTranslationZ( -1.5f + (float) Math.cos( ftime ) );
-
         // TODO sorting to ordered collection (list) vs cam dist
-        for( Mesh m : meshes ) {
+        mainShaderProgram.use( gl );
+        mainUniformManager.updateGl( gl );
+        for( Mesh m : mainMeshes ) {
             m.update( gl );
             transformMatrix.set( m.getTransform() );
-            uniformManager.updateGl( gl, transformMatrixUniform );
+            mainUniformManager.updateGl( gl, transformMatrixUniform ); // performance opt.
             m.render( gl );
         }
 
-        gl.ueCheckError();
+        noiseShaderProgram.use( gl );
+        noiseUniformManager.updateGl( gl );
+        for( Mesh m : noiseMeshes ) {
+            m.update( gl );
+            transformMatrix.set( m.getTransform() );
+            noiseUniformManager.updateGl( gl, transformMatrixUniform ); // performance opt.
+            m.render( gl );
+        }
+
+        //gl.ueCheckError();
     }
 
     @Override
     public void reshape ( OpenGLUE gl, int x, int y, int width, int height ) {
+        if ( debug ) {
+            debugGLUE.setGlue( gl );
+            gl = debugGLUE;
+        }
         // TODO if aspect changed: recalc persp. matrix
 
-        gl.ueCheckError();
+        //gl.ueCheckError();
     }
 
     @Override
     public void dispose ( OpenGLUE gl ) {
+        if ( debug ) {
+            debugGLUE.setGlue( gl );
+            gl = debugGLUE;
+        }
         /*
          for( Mesh mesh : meshes )
          mesh.dispose();
@@ -161,6 +202,6 @@ public class SceneManager implements CanvasGLUE.EventListener {
 
         //shaderProgram.dispose(); // TODO implement
         //uniformManager.dispose(); // TODO implement
-        gl.ueCheckError();
+        //gl.ueCheckError();
     }
 }
