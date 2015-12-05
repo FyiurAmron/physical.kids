@@ -9,6 +9,8 @@ import vax.util.MiscUtils;
  @author toor
  */
 public class ResourceShaderProgram extends ShaderProgram {
+    private String shaderName;
+
     public ResourceShaderProgram ( String vertexShaderResourceName, String fragmentShaderResourceName ) {
         super( MiscUtils.readResource( Shader.class, vertexShaderResourceName ),
                 MiscUtils.readResource( Shader.class, fragmentShaderResourceName ) );
@@ -21,5 +23,11 @@ public class ResourceShaderProgram extends ShaderProgram {
      */
     public ResourceShaderProgram ( String shaderName ) {
         this( shaderName + ".vertex.glsl", shaderName + ".fragment.glsl" );
+        this.shaderName = shaderName;
+    }
+
+    @Override
+    public String toString () {
+        return getClass().getSimpleName() + " '" + shaderName + "'";
     }
 }

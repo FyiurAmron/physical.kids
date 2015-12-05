@@ -1,7 +1,9 @@
 package vax.openglue;
 
 import java.util.HashSet;
+
 import vax.openglue.mesh.Mesh;
+import vax.openglue.mesh.MeshSorter;
 import vax.openglue.shader.ShaderProgram;
 import vax.physical.ResourceShaderProgram;
 
@@ -10,19 +12,22 @@ import vax.physical.ResourceShaderProgram;
  @author toor
  */
 public class MeshBatch implements CanvasGLUE.EventListener {
-    // TODO add sorter
-    private HashSet<Mesh> meshes;
+    private HashSet<Mesh> nonAlphaBlendedMeshes, alphaBlendedMeshes;
+    private MeshSorter meshSorter;
     private ShaderProgram shaderProgram;
     private HashSet<Uniform> perRenderUniforms, perMeshUniforms;
     private UniformManager uniformManager;
 
-    public MeshBatch ( String shaderName ) {
-        this( new HashSet<>(), new ResourceShaderProgram( shaderName ), new HashSet<>(), new HashSet<>(), new UniformManager() );
+    public MeshBatch ( String shaderName, MeshSorter meshSorter ) {
+        this( new HashSet<>(), new HashSet<>(), meshSorter, new ResourceShaderProgram( shaderName ),
+                new HashSet<>(), new HashSet<>(), new UniformManager() );
     }
 
-    public MeshBatch ( HashSet<Mesh> meshes, ShaderProgram shaderProgram,
-            HashSet<Uniform> perPassUniforms, HashSet<Uniform> perMeshUniforms, UniformManager uniformManager ) {
-        this.meshes = meshes;
+    public MeshBatch ( HashSet<Mesh> nonAlphaBlendedMeshes, HashSet<Mesh> alphaBlendedMeshes, MeshSorter meshSorter,
+            ShaderProgram shaderProgram, HashSet<Uniform> perPassUniforms, HashSet<Uniform> perMeshUniforms, UniformManager uniformManager ) {
+        this.nonAlphaBlendedMeshes = nonAlphaBlendedMeshes;
+        this.alphaBlendedMeshes = alphaBlendedMeshes;
+        this.meshSorter = meshSorter;
         this.shaderProgram = shaderProgram;
         this.perRenderUniforms = perPassUniforms;
         this.perMeshUniforms = perMeshUniforms;
@@ -49,8 +54,16 @@ public class MeshBatch implements CanvasGLUE.EventListener {
 
      @return explicitly mutable batch's mesh set
      */
-    public HashSet<Mesh> getMeshes () {
-        return meshes;
+    public HashSet<Mesh> getAlphaBlendedMeshes () {
+        return alphaBlendedMeshes;
+    }
+
+    /**
+
+     @return explicitly mutable batch's mesh set
+     */
+    public HashSet<Mesh> getNonAlphaBlendedMeshes () {
+        return nonAlphaBlendedMeshes;
     }
 
     @Override
@@ -61,7 +74,11 @@ public class MeshBatch implements CanvasGLUE.EventListener {
         uniformManager.addUniforms( perRenderUniforms );
         uniformManager.init( gl, shaderProgram );
 
-        for( Mesh m : meshes ) {
+        for( Mesh m : nonAlphaBlendedMeshes ) {
+            m.init( gl );
+        }
+
+        for( Mesh m : alphaBlendedMeshes ) {
             m.init( gl );
         }
     }
@@ -73,14 +90,29 @@ public class MeshBatch implements CanvasGLUE.EventListener {
         for( Uniform u : perRenderUniforms ) {
             uniformManager.updateGl( gl, u );
         }
-        for( Mesh m : meshes ) {
+
+        gl.glDisable( OpenGL.Constants.GL_BLEND );
+
+        for( Mesh m : nonAlphaBlendedMeshes ) {
             m.update( gl );
+        }
+        for( Mesh m : meshSorter.sort( nonAlphaBlendedMeshes ) ) {
             for( Uniform u : perMeshUniforms ) {
                 uniformManager.updateGl( gl, u );
             }
             m.render( gl );
         }
 
+        gl.glEnable( OpenGL.Constants.GL_BLEND );
+        for( Mesh m : alphaBlendedMeshes ) {
+            m.update( gl );
+        }
+        for( Mesh m : meshSorter.sort( alphaBlendedMeshes, false ) ) {
+            for( Uniform u : perMeshUniforms ) {
+                uniformManager.updateGl( gl, u );
+            }
+            m.render( gl );
+        }
     }
 
     @Override

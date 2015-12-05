@@ -5,9 +5,7 @@ import com.jogamp.opengl.GL;
 import vax.math.*;
 import vax.openglue.*;
 import vax.openglue.constants.ClearBufferMask;
-import vax.openglue.mesh.Mesh;
-import vax.openglue.mesh.RectangleMesh;
-import vax.openglue.mesh.SphereMesh;
+import vax.openglue.mesh.*;
 import vax.physical.resource.Resource;
 
 /**
@@ -48,8 +46,9 @@ public class SceneManager implements CanvasGLUE.EventListener {
         gl = debugGLUE;
         ImageIO.GLUE glue = ImageIO.getGLUE();
 
-        mainMeshBatch = new MeshBatch( "main" );
-        noiseMeshBatch = new MeshBatch( "noise" );
+        CameraDistanceSorter cds = new CameraDistanceSorter( modelviewMatrix );
+        mainMeshBatch = new MeshBatch( "main", cds );
+        noiseMeshBatch = new MeshBatch( "noise", cds );
 
         TextureData<?> dilloTD = glue.readTextureData( "angry-armadillo.png", Resource.class );
         TextureData<?> leftInterfaceTD = glue.readTextureData( "interface.png", Resource.class );
@@ -75,8 +74,8 @@ public class SceneManager implements CanvasGLUE.EventListener {
             transformMatrix.set( target.getTransform() );
         } );
 
-        mainMeshBatch.getMeshes().add( ball );
-        noiseMeshBatch.getMeshes().add( leftInterface );
+        mainMeshBatch.getNonAlphaBlendedMeshes().add( ball );
+        noiseMeshBatch.getAlphaBlendedMeshes().add( leftInterface );
 
         //float aspectRatio = ( (float) settings.windowSize.getX() ) / settings.windowSize.getY();
         float aspectRatio = 4f / 3; // TODO infer this from window size
@@ -84,7 +83,7 @@ public class SceneManager implements CanvasGLUE.EventListener {
         gl.glCullFace( OpenGLUE.Constants.GL_BACK );
         gl.glEnable( GL.GL_CULL_FACE );
         gl.glEnable( GL.GL_DEPTH_TEST );
-        gl.glEnable( GL.GL_BLEND );
+        //gl.glEnable( GL.GL_BLEND ); // per-mesh now
         gl.glBlendFunc( GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA );
         //projectionMatrix.setToPerspective( 0.1f, 100f, 67, aspectRatio );
         float halfSizeX = 1f, halfSizeY = 1f, sizeX = 2 * halfSizeX, sizeY = 2 * halfSizeY;

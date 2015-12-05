@@ -17,7 +17,7 @@ public class SphereSphereCollider extends Collider<SphereBody, SphereBody> {
         }
 
         float res = sb1.restitution * sb2.restitution;
-        Vector3f disp = sb1.transform.getDisplacement( sb2.transform );
+        Vector3f disp = sb1.transform.createDisplacement( sb2.transform );
         float totalRadius = sb1.radius + sb2.radius;
         float dist = disp.calcLength();
         //System.out.println( totalRadius + " " + dist );
