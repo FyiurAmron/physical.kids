@@ -442,5 +442,9 @@ public interface OpenGL {
      */
     void glBufferData ( int bufferTarget, long size, Buffer data, int usageEnum );
 
+    void glBlendFunc ( int blendSourceEnum, int blendDestEnum );
+
+    void glBlendFuncSeparate ( int blendRgbSourceEnum, int blendRgbDestEnum, int blendAlphaSourceEnum, int blendAlphaDestEnum );
+
     int glGetError ();
 }

@@ -270,16 +270,6 @@ public class JoglUe3 extends AbstractGLUE {
     }
 
     @Override
-    public void glBufferData ( int bufferTarget, long size, Buffer data, int usageEnum ) {
-        gl.glBufferData( bufferTarget, size, data, usageEnum );
-    }
-
-    @Override
-    public int glGetError () {
-        return gl.glGetError();
-    }
-
-    @Override
     public void glClearColor ( float r, float g, float b, float a ) {
         gl.glClearColor( r, g, b, a );
     }
@@ -288,4 +278,25 @@ public class JoglUe3 extends AbstractGLUE {
     public void glViewport ( int x, int y, int width, int height ) {
         gl.glViewport( x, y, width, height );
     }
+
+    @Override
+    public void glBufferData ( int bufferTarget, long size, Buffer data, int usageEnum ) {
+        gl.glBufferData( bufferTarget, size, data, usageEnum );
+    }
+
+    @Override
+    public void glBlendFunc ( int blendSourceEnum, int blendDestEnum ) {
+        gl.glBlendFunc( blendSourceEnum, blendDestEnum );
+    }
+
+    @Override
+    public void glBlendFuncSeparate ( int blendRgbSourceEnum, int blendRgbDestEnum, int blendAlphaSourceEnum, int blendAlphaDestEnum ) {
+        gl.glBlendFuncSeparate( blendRgbSourceEnum, blendRgbDestEnum, blendAlphaSourceEnum, blendAlphaDestEnum );
+    }
+
+    @Override
+    public int glGetError () {
+        return gl.glGetError();
+    }
+
 }

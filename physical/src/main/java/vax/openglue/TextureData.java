@@ -25,7 +25,11 @@ public class TextureData<T extends Buffer> {
         return buffer;
     }
 
-    public Texture createTexture ( OpenGLUE gl, TextureParameters textureParameters, int targetEnum, boolean generateMipmaps ) {
+    public Texture createTexture ( OpenGLUE gl, TextureParameters textureParameters, boolean generateMipmaps ) {
+        return createTexture( gl, textureParameters, generateMipmaps, OpenGLUE.Constants.GL_TEXTURE_2D );
+    }
+
+    public Texture createTexture ( OpenGLUE gl, TextureParameters textureParameters, boolean generateMipmaps, int targetEnum ) {
         int handle = gl.glGenTexture();
         Texture tex = new Texture( handle, textureDescriptor, textureParameters, targetEnum );
         tex.bind( gl ); // sets the params

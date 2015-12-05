@@ -19,6 +19,10 @@ public class TextureDescriptor {
         this.name = name;
         this.width = width;
         this.height = height;
+        // TEMP FIXME
+        int tmp1 = OpenGL.Constants.GL_RGBA;
+        //pixelFormat = OpenGL.Constants.GL_RGBA;
+        //internalFormat = pixelFormat;
         this.pixelFormat = pixelFormat;
         this.internalFormat = internalFormat;
         this.type = type;

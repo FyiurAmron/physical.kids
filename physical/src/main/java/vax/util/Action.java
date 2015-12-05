@@ -6,5 +6,5 @@ package vax.util;
  @param <T>
  */
 public interface Action<T> {
-    void exec ( T t );
+    void exec ( T target );
 }

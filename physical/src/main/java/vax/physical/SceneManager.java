@@ -6,9 +6,11 @@ import vax.math.*;
 import vax.openglue.*;
 import vax.openglue.constants.ClearBufferMask;
 import vax.openglue.mesh.Mesh;
+import vax.openglue.mesh.RectangleMesh;
 import vax.openglue.mesh.SphereMesh;
 import vax.openglue.shader.ShaderProgram;
 import vax.physical.resource.Resource;
+import vax.util.Action;
 
 /**
 
@@ -24,10 +26,10 @@ public class SceneManager implements CanvasGLUE.EventListener {
             time = new Value1f(),
             random = new Value1f(),
             textureSampler = new Value1f( 0 );
-    private final Vector3f //
-            ambientColor = new Vector3f(),
-            lightColor = new Vector3f(),
-            lightDirUnit = new Vector3f();
+    private final Vector4f //
+            ambientColor = new Vector4f(),
+            lightColor = new Vector4f();
+    private final Vector3f lightDirUnit = new Vector3f();
     private final Matrix4f //
             projectionMatrix = new Matrix4f(),
             modelviewMatrix = new Matrix4f(),
@@ -43,11 +45,32 @@ public class SceneManager implements CanvasGLUE.EventListener {
         meshes.add( mesh );
     }
 
+    private float getTime () {
+        return (float) ( System.currentTimeMillis() % 1_000_000 ) / 1000; // 6 digits of precision, about max for float
+    }
+
     @Override
     public void init ( OpenGLUE gl ) {
-        TextureData<?> td = ImageIO.getGLUE().readTextureData( "angry-armadillo.png", Resource.class );
-        SphereMesh ball = new SphereMesh( 1, 12, 12, true );
-        ball.setTexture( td.createTexture( gl, TextureParameters.DEFAULT, OpenGLUE.Constants.GL_TEXTURE_2D, true ) );
+        ImageIO.GLUE glue = ImageIO.getGLUE();
+        TextureData<?> dilloTD = glue.readTextureData( "angry-armadillo.png", Resource.class );
+        TextureData<?> leftInterfaceTD = glue.readTextureData( "interface.png", Resource.class );
+        SphereMesh ball = new SphereMesh( 0.1f, 12, 12, true );
+        RectangleMesh leftInterface = new RectangleMesh( -1f, -2f );
+        leftInterface.getTransform().setTranslationX( -0.5f );
+        leftInterface.getTransform().setTranslationY( 1f );
+        //RectangleMesh leftInterface = new RectangleMesh( 2, 2, 2 );
+
+        ball.setTexture( dilloTD.createTexture( gl, TextureParameters.HQ_MIPMAP, true ) );
+        leftInterface.setTexture( leftInterfaceTD.createTexture( gl, TextureParameters.HQ_MIPMAP, true ) );
+
+        ball.setUpdateAction( (Mesh target) -> {
+            Matrix4f trans = target.getTransform();
+            float t = getTime();
+            trans.setTranslationX( (float) Math.sin( t ) );
+            trans.setTranslationZ( -1.5f + (float) Math.cos( t ) );
+        } );
+
+        addMesh( leftInterface );
         addMesh( ball );
 
         //float aspectRatio = ( (float) settings.windowSize.getX() ) / settings.windowSize.getY();
@@ -56,16 +79,19 @@ public class SceneManager implements CanvasGLUE.EventListener {
         gl.glCullFace( OpenGLUE.Constants.GL_BACK );
         gl.glEnable( GL.GL_CULL_FACE );
         gl.glEnable( GL.GL_DEPTH_TEST );
-        projectionMatrix.setToPerspective( 0.1f, 100f, 67, aspectRatio );
-        //projectionMatrix.setToOrthoWindow( -5, -5, 10, 10 );
+        gl.glEnable( GL.GL_BLEND );
+        gl.glBlendFunc( GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA );
+        //projectionMatrix.setToPerspective( 0.1f, 100f, 67, aspectRatio );
+        float halfSizeX = 1f, halfSizeY = 1f, sizeX = 2 * halfSizeX, sizeY = 2 * halfSizeY;
+        projectionMatrix.setToOrthoWindow( -halfSizeX, -halfSizeY, sizeX, sizeY, -10, 10 );
         //projectionMatrix.setToIdentity();
         modelviewMatrix.setToIdentity();
-        modelviewMatrix.scaleZ( -1f );
-        modelviewMatrix.scaleY( -1f );
-        modelviewMatrix.setTranslationZ( -3f );
+        //modelviewMatrix.scaleZ( -1f );
+        //modelviewMatrix.scaleY( -1f );
+        modelviewMatrix.setTranslationZ( 3f );
 
-        ambientColor.set( 0.4f, 0.4f, 0.4f );
-        lightColor.set( 1.0f, 1.0f, 1.0f );
+        ambientColor.set( 0.4f, 0.4f, 0.4f, 1.0f );
+        lightColor.set( 1.0f, 1.0f, 1.0f, 1.0f );
         lightDirUnit.set( 0.5f, 1.0f, 0.5f );
         //lightDirUnit.set( 0.1f, 5.0f, 0.1f );
         lightDirUnit.normalize();
@@ -95,20 +121,22 @@ public class SceneManager implements CanvasGLUE.EventListener {
 
     @Override
     public void display ( OpenGLUE gl ) {
-        gl.glClearColor( 0.2f, 0.2f, 0.2f, 1f );
+        //gl.glClearColor( 0.2f, 0.2f, 0.2f, 1f );
+        gl.glClearColor( 0.01f, 0.01f, 0.01f, 1f );
         // TODO //gl.glClearColor( backgroundColor );
         gl.glClear( ClearBufferMask.ColorBufferBit, ClearBufferMask.DepthBufferBit );
 
         random.setValue( MathUtils.nextFloat() );
         //float ftime = (float) ( System.currentTimeMillis() % 1000 ) / 1000;
-        float ftime = (float) ( System.currentTimeMillis() % 1_000_000 ) / 1000; // 6 digits of precision, about max for float
         //System.out.println( ftime );
-        time.setValue( ftime );
+        time.setValue( getTime() );
         uniformManager.updateGl( gl );
-        modelviewMatrix.setTranslationX( (float) Math.sin( ftime ) );
-        modelviewMatrix.setTranslationY( (float) Math.cos( ftime ) );
+        //modelviewMatrix.setTranslationX( (float) Math.sin( ftime ) );
+        //modelviewMatrix.setTranslationZ( -1.5f + (float) Math.cos( ftime ) );
 
+        // TODO sorting to ordered collection (list) vs cam dist
         for( Mesh m : meshes ) {
+            m.update( gl );
             transformMatrix.set( m.getTransform() );
             uniformManager.updateGl( gl, transformMatrixUniform );
             m.render( gl );
