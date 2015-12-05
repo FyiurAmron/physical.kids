@@ -57,7 +57,7 @@ public interface Uniform {
 
         @Override
         public String toString () {
-            return getPrefix() + " " + getName() + "[ " + value + " ]";
+            return getPrefix() + " " + getName() + "( " + value + " )";
         }
 
         @Override

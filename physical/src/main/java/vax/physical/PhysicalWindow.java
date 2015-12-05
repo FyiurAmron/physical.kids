@@ -62,19 +62,20 @@ public class PhysicalWindow {
          */
 
         //texture = new texture( "E:\\drop\\logo-dark.jpg" );
-        angrySquirrelTextureData = new Texture( "gfx/angry-squirrel.png" );
-        angryTurtleTextureData = new Texture( "gfx/angry-turtle.png" );
-        angryDilloTextureData = new Texture( "gfx/angry-armadillo.png" );
+        angrySquirrelTextureData = /* new Texture( "gfx/angry-squirrel.png" ) */ null;
+        angryTurtleTextureData = /* new Texture( "gfx/angry-turtle.png" ) */ null;
+        angryDilloTextureData = /* new Texture( "gfx/angry-armadillo.png" ) */ null;
 
-        worldTextureDatas = new Texture[]{
-            new Texture( "gfx/drzewka-1.png" ),
-            new Texture( "gfx/drzewka-3.png" ),
-            new Texture( "gfx/sky.png" ),
-            new Texture( "gfx/grass.png" ),
-            new Texture( "gfx/drzewka-2.png" ),
-            new Texture( "gfx/drzewka-4.png" )
-        };
+        worldTextureDatas = new Texture[]{ /*
+         new Texture( "gfx/drzewka-1.png" ),
+         new Texture( "gfx/drzewka-3.png" ),
+         new Texture( "gfx/sky.png" ),
+         new Texture( "gfx/grass.png" ),
+         new Texture( "gfx/drzewka-2.png" ),
+         new Texture( "gfx/drzewka-4.png" )
+         */};
 
+        // TODO covert the above to proper TextureData loading from resources & Texture initalization
         squirrelMesh = new SphereMesh( BALL_RADIUS, 20, 20, true );
         squirrelMesh.setTexture( angrySquirrelTextureData );
         /*

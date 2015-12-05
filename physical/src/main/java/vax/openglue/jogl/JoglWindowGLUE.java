@@ -6,6 +6,7 @@ import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.util.Animator;
 import vax.openglue.CanvasGLUE;
+import vax.openglue.EventListenerGL;
 import vax.openglue.WindowGLUE;
 
 /**
@@ -19,11 +20,11 @@ public class JoglWindowGLUE implements WindowGLUE {
     private final JoglUe3 ue = new JoglUe3();
     public boolean debug;
 
-    public JoglWindowGLUE ( CanvasGLUE.EventListener cvel, WindowGLUE.Settings settings ) {
+    public JoglWindowGLUE ( EventListenerGL cvel, WindowGLUE.Settings settings ) {
         this( cvel, settings, new GLCapabilities( GLProfile.get( GLProfile.GL3 ) ), true );
     }
 
-    public JoglWindowGLUE ( CanvasGLUE.EventListener cvel, WindowGLUE.Settings settings, GLCapabilities glCapabilities, boolean debug ) {
+    public JoglWindowGLUE ( EventListenerGL cvel, WindowGLUE.Settings settings, GLCapabilities glCapabilities, boolean debug ) {
         this.debug = debug;
         Screen screen = NewtFactory.createScreen( NewtFactory.createDisplay( null ), screenIdx );
         glWindow = GLWindow.create( screen, glCapabilities );
@@ -42,7 +43,7 @@ public class JoglWindowGLUE implements WindowGLUE {
                 cvel.render( ue.setGl( drawable ) );
                 if ( debug ) {
                     //glWindow.setTitle( settings.title + " @ " + animator.getLastFPS() + " FPS" );
-                    // https://jogamp.org/bugzilla/show_bug.cgi?id=1098
+                    // disabled due to https://jogamp.org/bugzilla/show_bug.cgi?id=1098
                 }
             }
 
@@ -71,7 +72,7 @@ public class JoglWindowGLUE implements WindowGLUE {
          } );
          */
         // ditto with WindowListener
-        // end TODO
+        // end TO_DO
 
         animator = new Animator( glWindow );
         animator.setUpdateFPSFrames( 100, null );

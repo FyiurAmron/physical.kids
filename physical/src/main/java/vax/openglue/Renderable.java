@@ -1,7 +1,5 @@
 package vax.openglue;
 
-public interface Renderable {
+public interface Renderable extends LifecycleListenerGL {
     void render ( OpenGLUE gl );
-
-    void update ( OpenGLUE gl );
 }

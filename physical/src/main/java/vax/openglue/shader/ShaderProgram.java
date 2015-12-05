@@ -1,20 +1,19 @@
 package vax.openglue.shader;
 
 import java.util.ArrayList;
-import vax.openglue.GLException;
-import vax.openglue.OpenGLUE;
-import vax.openglue.constants.ErrorCode;
+import vax.openglue.*;
 import vax.openglue.constants.ShaderType;
 
 /**
 
  @author toor
  */
-public class ShaderProgram {
+public class ShaderProgram implements LifecycleListenerGL {
     public static final String[] ATTRIBS = { "in_position", "in_normal", "in_uv" };
 
     private final ArrayList<Shader> shaders = new ArrayList<>( 2 );
     private int shaderProgramHandle;
+    private int[] shaderHandles;
 
     public ShaderProgram () {
     }
@@ -59,19 +58,20 @@ public class ShaderProgram {
      @param gl
      @throws GLException thrown if there are any errors during any of the initialization steps
      */
+    @Override
     public void init ( OpenGLUE gl ) {
-        ErrorCode errorCode;
         shaderProgramHandle = gl.glCreateProgram();
-        for( Shader s : shaders ) {
+        int shaderCount = shaders.size();
+        shaderHandles = new int[shaderCount];
+        for( int i = 0; i < shaderCount; i++ ) {
+            Shader s = shaders.get( i );
             int shaderHandle = gl.glCreateShader( s.getType() );
+            shaderHandles[i] = shaderHandle;
             gl.glShaderSource( shaderHandle, s.getSource() );
             gl.glCompileShader( shaderHandle );
-            errorCode = gl.ueGetError();
-            if ( errorCode.isError() ) {
-                System.err.println( gl.ueGetShaderInfoLog( shaderHandle ) );
-                throw new GLException( errorCode );
+            if ( gl.glGetShaderi( shaderHandle, OpenGL.Constants.GL_COMPILE_STATUS ) == OpenGL.Constants.GL_FALSE ) {
+                throw new GLException( gl.ueGetShaderInfoLog( shaderHandle ) );
             }
-            //System.out.println( gl.glGetShaderInfoLog( shaderHandle ) );
             gl.glAttachShader( shaderProgramHandle, shaderHandle );
         }
 
@@ -81,15 +81,24 @@ public class ShaderProgram {
 
         gl.glLinkProgram( shaderProgramHandle );
 
-        errorCode = gl.ueGetError();
-        if ( errorCode.isError() ) {
-            System.err.println( gl.ueGetProgramInfoLog( shaderProgramHandle ) );
-            throw new GLException( errorCode );
+        boolean compileError = false;
+        if ( compileError ) {
+            throw new GLException( gl.ueGetProgramInfoLog( shaderProgramHandle ) );
         }
-        //System.out.println( gl.glGetProgramInfoLog( shaderProgramHandle ) );
     }
 
     public void use ( OpenGLUE gl ) {
         gl.glUseProgram( shaderProgramHandle );
+    }
+
+    @Override
+    public void dispose ( OpenGLUE gl ) {
+        if ( shaderHandles == null ) {
+            return; // init() not called yet
+        }
+        for( int i : shaderHandles ) {
+            gl.glDeleteShader( i );
+        }
+        gl.glDeleteProgram( shaderProgramHandle );
     }
 }

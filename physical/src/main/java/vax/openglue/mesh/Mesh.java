@@ -25,14 +25,24 @@ public class Mesh implements Renderable {
     protected static final float[] TRI_VT_PROTO = {
         1, 1, /* */ 1, 0, /* */ 0, 1
     };
-    // TODO FIXME implement parametrisation
-    protected static final float[] RECT_VT_PROTO = { // used by Rect & Prism
-        //    0, 1, /* */ 1, 1,/* */ 0, 0,
-        //    0, 0, /* */ 1, 1,/* */ 1, 0, //
-        //};
-        1, 1, /* */ 0, 1,/* */ 1, 0,
-        1, 0, /* */ 0, 1,/* */ 0, 0, //
-    };
+    // used by Rect & Prism
+    protected static final float[] //
+            RECT_VT_PROTO_1 = {
+                0, 1, /* */ 1, 1,/* */ 0, 0,
+                0, 0, /* */ 1, 1,/* */ 1, 0, //
+            },
+            RECT_VT_PROTO_2 = {
+                1, 1, /* */ 0, 1,/* */ 1, 0,
+                1, 0, /* */ 0, 1,/* */ 0, 0, //
+            },
+            RECT_VT_PROTO_3 = {
+                0, 0, /* */ 1, 0,/* */ 0, 1,
+                0, 1, /* */ 1, 0,/* */ 1, 1, //
+            },
+            RECT_VT_PROTO_4 = {
+                1, 0, /* */ 0, 0,/* */ 1, 1,
+                1, 1, /* */ 0, 0,/* */ 0, 1, //
+            };
 
     protected final Matrix4f transform = new Matrix4f( true );
 
@@ -98,8 +108,8 @@ public class Mesh implements Renderable {
     /*
      interface implementation
      */
-    @Override
-    public void update ( OpenGLUE gl ) {
+    //@Override
+    public void update () {
         if ( updateAction != null ) {
             updateAction.exec( this );
         }
@@ -140,13 +150,14 @@ public class Mesh implements Renderable {
         gl.glVertexAttribPointer( attribNr, size, OpenGL.Constants.GL_FLOAT, true, size * Float.BYTES, 0 );
     }
 
+    @Override
     public void init ( OpenGLUE gl ) {
         positionVboHandle = genBuffer( gl, OpenGL.Constants.GL_ARRAY_BUFFER, meshData.getVertices() );
         normalVboHandle = genBuffer( gl, OpenGL.Constants.GL_ARRAY_BUFFER, meshData.getNormals() );
         uvsVboHandle = genBuffer( gl, OpenGL.Constants.GL_ARRAY_BUFFER, meshData.getUvs() );
         eboHandle = genBuffer( gl, OpenGL.Constants.GL_ELEMENT_ARRAY_BUFFER, meshData.getIndices() );
-        gl.glBindBuffer( BufferTarget.ArrayBuffer, 0 );
-        gl.glBindBuffer( BufferTarget.ElementArrayBuffer, 0 );
+        gl.glBindBuffer( BufferTarget.ArrayBuffer, 0 ); // important!
+        gl.glBindBuffer( BufferTarget.ElementArrayBuffer, 0 );  // important!
 
         vaoHandle = gl.glGenVertexArray();
         gl.glBindVertexArray( vaoHandle );
@@ -154,7 +165,7 @@ public class Mesh implements Renderable {
         enableAttribute( gl, 1, normalVboHandle, Mesh.VN_DIMS );
         enableAttribute( gl, 2, uvsVboHandle, Mesh.VT_DIMS );
         gl.glBindBuffer( BufferTarget.ElementArrayBuffer, eboHandle );
-        gl.glBindVertexArray( 0 );
+        gl.glBindVertexArray( 0 ); // important!
     }
 
     protected void writeOBJ_buf ( DataOutputStream dos, int bufNr ) throws IOException {
@@ -197,4 +208,17 @@ public class Mesh implements Renderable {
         writeOBJ( "" + getClass() );
     }
 
+    /**
+     Note: this doesn't dispose() any textures.
+
+     @param gl
+     */
+    @Override
+    public void dispose ( OpenGLUE gl ) {
+        if ( positionVboHandle == 0 ) {
+            return; // init() not called yet
+        }
+        gl.glDeleteBuffers( new int[]{ positionVboHandle, normalVboHandle, uvsVboHandle, eboHandle } );
+        gl.glDeleteVertexArray( vaoHandle );
+    }
 }

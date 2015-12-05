@@ -85,8 +85,16 @@ public class HeadlessGLUE extends AbstractGLUE {
     }
 
     @Override
+    public void glDeleteShader ( int shaderHandle ) {
+    }
+
+    @Override
     public int glCreateProgram () {
         return 0;
+    }
+
+    @Override
+    public void glDeleteProgram ( int shaderProgramHandle ) {
     }
 
     @Override
@@ -118,11 +126,35 @@ public class HeadlessGLUE extends AbstractGLUE {
     }
 
     @Override
+    public void glGetShaderiv ( int shaderHandle, int paramEnum, int[] params, int offset ) {
+    }
+
+    @Override
+    public void glGetShaderiv ( int shaderHandle, int paramEnum, IntBuffer params ) {
+    }
+
+    @Override
+    public void glGetProgramiv ( int shaderHandle, int paramEnum, int[] params, int offset ) {
+    }
+
+    @Override
+    public void glGetProgramiv ( int shaderHandle, int paramEnum, IntBuffer params ) {
+    }
+
+    @Override
     public void glGetProgramInfoLog ( int shaderProgramHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf ) {
     }
 
     @Override
     public void glGetShaderInfoLog ( int vertexShaderHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf ) {
+    }
+
+    @Override
+    public void glGetProgramInfoLog ( int program, int bufSize, int[] length, int lengthOffset, byte[] infoLog, int infoLogOffset ) {
+    }
+
+    @Override
+    public void glGetShaderInfoLog ( int shader, int bufSize, int[] length, int lengthOffset, byte[] infoLog, int infoLogOffset ) {
     }
 
     @Override
@@ -163,6 +195,14 @@ public class HeadlessGLUE extends AbstractGLUE {
 
     @Override
     public void glBindBuffer ( int targetEnum, int handle ) {
+    }
+
+    @Override
+    public void glDeleteBuffers ( int count, int[] bufferNames, int offset ) {
+    }
+
+    @Override
+    public void glDeleteBuffers ( int count, IntBuffer bufferNames ) {
     }
 
     @Override
@@ -212,5 +252,61 @@ public class HeadlessGLUE extends AbstractGLUE {
     @Override
     public int glGetError () {
         return OpenGLUE.Constants.GL_NO_ERROR;
+    }
+
+    @Override
+    public void glDeleteTextures ( int n, IntBuffer textures ) {
+    }
+
+    @Override
+    public void glDeleteTextures ( int n, int[] textures, int offset ) {
+    }
+
+    @Override
+    public void glGenFramebuffers ( int n, IntBuffer framebuffers ) {
+    }
+
+    @Override
+    public void glGenFramebuffers ( int n, int[] framebuffers, int offset ) {
+    }
+
+    @Override
+    public void glBindFramebuffer ( int target, int framebuffer ) {
+    }
+
+    @Override
+    public void glDeleteFramebuffers ( int n, IntBuffer framebuffers ) {
+    }
+
+    @Override
+    public void glDeleteFramebuffers ( int n, int[] framebuffers, int offset ) {
+    }
+
+    @Override
+    public void glGenRenderbuffers ( int n, IntBuffer renderbuffers ) {
+    }
+
+    @Override
+    public void glGenRenderbuffers ( int n, int[] renderbuffers, int offset ) {
+    }
+
+    @Override
+    public void glBindRenderbuffer ( int target, int renderbuffer ) {
+    }
+
+    @Override
+    public void glDeleteRenderbuffers ( int n, IntBuffer renderbuffers ) {
+    }
+
+    @Override
+    public void glDeleteRenderbuffers ( int n, int[] renderbuffers, int offset ) {
+    }
+
+    @Override
+    public void glDeleteVertexArrays ( int n, IntBuffer arrays ) {
+    }
+
+    @Override
+    public void glDeleteVertexArrays ( int n, int[] arrays, int offset ) {
     }
 }

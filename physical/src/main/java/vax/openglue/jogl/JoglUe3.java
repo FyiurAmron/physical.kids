@@ -119,8 +119,18 @@ public class JoglUe3 extends AbstractGLUE {
     }
 
     @Override
+    public void glDeleteShader ( int shaderHandle ) {
+        gl.glDeleteShader( shaderHandle );
+    }
+
+    @Override
     public int glCreateProgram () {
         return gl.glCreateProgram();
+    }
+
+    @Override
+    public void glDeleteProgram ( int shaderProgramHandle ) {
+        gl.glDeleteProgram( shaderProgramHandle );
     }
 
     @Override
@@ -139,6 +149,26 @@ public class JoglUe3 extends AbstractGLUE {
     }
 
     @Override
+    public void glGetShaderiv ( int shaderHandle, int paramEnum, int[] params, int offset ) {
+        gl.glGetShaderiv( shaderHandle, paramEnum, params, offset );
+    }
+
+    @Override
+    public void glGetShaderiv ( int shaderHandle, int paramEnum, IntBuffer params ) {
+        gl.glGetShaderiv( shaderHandle, paramEnum, params );
+    }
+
+    @Override
+    public void glGetProgramiv ( int shaderProgramHandle, int paramEnum, int[] params, int offset ) {
+        gl.glGetProgramiv( shaderProgramHandle, paramEnum, params, offset );
+    }
+
+    @Override
+    public void glGetProgramiv ( int shaderProgramHandle, int paramEnum, IntBuffer params ) {
+        gl.glGetProgramiv( shaderProgramHandle, paramEnum, params );
+    }
+
+    @Override
     public void glGetShaderInfoLog ( int vertexShaderHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf ) {
         gl.glGetShaderInfoLog( vertexShaderHandle, maxLength, lengthBuf, infoLogBuf );
     }
@@ -146,6 +176,18 @@ public class JoglUe3 extends AbstractGLUE {
     @Override
     public void glGetProgramInfoLog ( int shaderProgramHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf ) {
         gl.glGetProgramInfoLog( shaderProgramHandle, maxLength, lengthBuf, infoLogBuf );
+    }
+
+    @Override
+    public void glGetShaderInfoLog ( int vertexShaderHandle, int maxLength,
+            int[] length, int lengthOffset, byte[] infoLog, int infoLogOffset ) {
+        gl.glGetShaderInfoLog( vertexShaderHandle, maxLength, length, lengthOffset, infoLog, infoLogOffset );
+    }
+
+    @Override
+    public void glGetProgramInfoLog ( int shaderProgramHandle, int maxLength,
+            int[] length, int lengthOffset, byte[] infoLog, int infoLogOffset ) {
+        gl.glGetProgramInfoLog( shaderProgramHandle, maxLength, length, lengthOffset, infoLog, infoLogOffset );
     }
 
     @Override
@@ -204,6 +246,16 @@ public class JoglUe3 extends AbstractGLUE {
     }
 
     @Override
+    public void glDeleteBuffers ( int count, int[] bufferNames, int offset ) {
+        gl.glDeleteBuffers( count, bufferNames, offset );
+    }
+
+    @Override
+    public void glDeleteBuffers ( int count, IntBuffer bufferNames ) {
+        gl.glDeleteBuffers( count, bufferNames );
+    }
+
+    @Override
     public void glGenTextures ( int count, IntBuffer outBuffer ) {
         gl.glGenTextures( count, outBuffer );
     }
@@ -216,6 +268,76 @@ public class JoglUe3 extends AbstractGLUE {
     @Override
     public void glBindTexture ( int targetEnum, int handle ) {
         gl.glBindTexture( targetEnum, handle );
+    }
+
+    @Override
+    public void glDeleteTextures ( int n, IntBuffer textures ) {
+        gl.glDeleteTextures( n, textures );
+    }
+
+    @Override
+    public void glDeleteTextures ( int n, int[] textures, int offset ) {
+        gl.glDeleteTextures( n, textures, offset );
+    }
+
+    @Override
+    public void glGenFramebuffers ( int n, IntBuffer framebuffers ) {
+        gl.glGenFramebuffers( n, framebuffers );
+    }
+
+    @Override
+    public void glGenFramebuffers ( int n, int[] framebuffers, int offset ) {
+        gl.glGenFramebuffers( n, framebuffers, offset );
+    }
+
+    @Override
+    public void glBindFramebuffer ( int target, int framebuffer ) {
+        gl.glBindFramebuffer( target, framebuffer );
+    }
+
+    @Override
+    public void glDeleteFramebuffers ( int n, IntBuffer framebuffers ) {
+        gl.glDeleteFramebuffers( n, framebuffers );
+    }
+
+    @Override
+    public void glDeleteFramebuffers ( int n, int[] framebuffers, int offset ) {
+        gl.glDeleteFramebuffers( n, framebuffers, offset );
+    }
+
+    @Override
+    public void glGenRenderbuffers ( int n, IntBuffer renderbuffers ) {
+        gl.glGenRenderbuffers( n, renderbuffers );
+    }
+
+    @Override
+    public void glGenRenderbuffers ( int n, int[] renderbuffers, int offset ) {
+        gl.glGenRenderbuffers( n, renderbuffers, offset );
+    }
+
+    @Override
+    public void glBindRenderbuffer ( int target, int renderbuffer ) {
+        gl.glBindRenderbuffer( target, renderbuffer );
+    }
+
+    @Override
+    public void glDeleteRenderbuffers ( int n, IntBuffer renderbuffers ) {
+        gl.glDeleteRenderbuffers( n, renderbuffers );
+    }
+
+    @Override
+    public void glDeleteRenderbuffers ( int n, int[] renderbuffers, int offset ) {
+        gl.glDeleteRenderbuffers( n, renderbuffers, offset );
+    }
+
+    @Override
+    public void glDeleteVertexArrays ( int n, IntBuffer arrays ) {
+        gl.glDeleteVertexArrays( n, arrays );
+    }
+
+    @Override
+    public void glDeleteVertexArrays ( int n, int[] arrays, int offset ) {
+        gl.glDeleteVertexArrays( n, arrays, offset );
     }
 
     @Override
@@ -298,5 +420,4 @@ public class JoglUe3 extends AbstractGLUE {
     public int glGetError () {
         return gl.glGetError();
     }
-
 }

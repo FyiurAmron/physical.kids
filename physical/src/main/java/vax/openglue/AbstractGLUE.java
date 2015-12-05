@@ -31,6 +31,7 @@ public abstract class AbstractGLUE implements OpenGLUE {
             throw new IllegalStateException( "GLUE already set to incompatible one" );
         }
         glUtil.setLogBuffer( bg.createByteBuffer( DEFAULT_LOG_BUFFER_SIZE ) );
+        glUtil.setLogBufferSizeBuffer( bg.createIntBuffer( 1 ) );
 
         ImageIO.GLUE iiog = ImageIO.getGLUE();
         Class<? extends ImageIO.GLUE> ciig = getClassImageIO_GLUE();
