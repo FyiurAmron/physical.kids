@@ -18,20 +18,12 @@ public class CanvasGLUE {
         void init ( OpenGLUE gl );
 
         /**
-         Notifies the listener to perform the release of all OpenGL
-         resources, such as memory buffers and GLSL programs.
-
-         @param gl
-         */
-        void dispose ( OpenGLUE gl );
-
-        /**
          Called by the drawable to initiate OpenGL rendering by the
          client.
 
          @param gl
          */
-        void display ( OpenGLUE gl );
+        void render ( OpenGLUE gl );
 
         /**
          Called by the drawable during the first repaint after the
@@ -51,5 +43,13 @@ public class CanvasGLUE {
          @param height viewport height in pixel units
          */
         void reshape ( OpenGLUE gl, int x, int y, int width, int height );
+
+        /**
+         Notifies the listener to perform the release of all OpenGL
+         resources, such as memory buffers and GLSL programs.
+
+         @param gl
+         */
+        void dispose ( OpenGLUE gl );
     }
 }
