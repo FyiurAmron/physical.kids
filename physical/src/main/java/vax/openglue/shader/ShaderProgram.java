@@ -1,7 +1,9 @@
 package vax.openglue.shader;
 
 import java.util.ArrayList;
+import vax.openglue.GLException;
 import vax.openglue.OpenGLUE;
+import vax.openglue.constants.ErrorCode;
 import vax.openglue.constants.ShaderType;
 
 /**
@@ -49,12 +51,26 @@ public class ShaderProgram {
         return shaders;
     }
 
+    /**
+     Compiles and links vertex and fragment shaders.
+     <p>
+     Generates output to <code>System.err</code> in case there are any compilation/linking errors generated.
+
+     @param gl
+     @throws GLException thrown if there are any errors during any of the initialization steps
+     */
     public void init ( OpenGLUE gl ) {
+        ErrorCode errorCode;
         shaderProgramHandle = gl.glCreateProgram();
         for( Shader s : shaders ) {
             int shaderHandle = gl.glCreateShader( s.getType() );
             gl.glShaderSource( shaderHandle, s.getSource() );
             gl.glCompileShader( shaderHandle );
+            errorCode = gl.ueGetError();
+            if ( errorCode.isError() ) {
+                System.err.println( gl.ueGetShaderInfoLog( shaderHandle ) );
+                throw new GLException( errorCode );
+            }
             //System.out.println( gl.glGetShaderInfoLog( shaderHandle ) );
             gl.glAttachShader( shaderProgramHandle, shaderHandle );
         }
@@ -64,7 +80,16 @@ public class ShaderProgram {
         }
 
         gl.glLinkProgram( shaderProgramHandle );
+
+        errorCode = gl.ueGetError();
+        if ( errorCode.isError() ) {
+            System.err.println( gl.ueGetProgramInfoLog( shaderProgramHandle ) );
+            throw new GLException( errorCode );
+        }
         //System.out.println( gl.glGetProgramInfoLog( shaderProgramHandle ) );
+    }
+
+    public void use ( OpenGLUE gl ) {
         gl.glUseProgram( shaderProgramHandle );
     }
 }

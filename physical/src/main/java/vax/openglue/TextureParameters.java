@@ -37,15 +37,15 @@ public class TextureParameters {
     };
 
     public static final TextureParameters //
-            DEFAULT = new TextureParameters(
+            BILINEAR = new TextureParameters(
                     new Param( GL_TEXTURE_MIN_FILTER, GL_LINEAR ),
                     new Param( GL_TEXTURE_MAG_FILTER, GL_LINEAR ),
                     new Param( GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE ),
                     new Param( GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE )
             ),
-            HQ_MIPMAP = new TextureParameters(
+            TRILINEAR = new TextureParameters(
                     new Param( GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR ),
-                    new Param( GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR ),
+                    new Param( GL_TEXTURE_MAG_FILTER, GL_LINEAR ),
                     new Param( GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE ),
                     new Param( GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE )
             );
@@ -204,7 +204,6 @@ public class TextureParameters {
         @Override
         public boolean update ( OpenGLUE gl, int targetEnum, int paramEnum ) {
             gl.glTexParameteri( targetEnum, paramEnum, param );
-            //return ( gl.glGetError() != ErrorCode.NoError.getValue() );
             return true;
         }
     }

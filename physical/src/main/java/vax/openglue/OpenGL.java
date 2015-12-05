@@ -389,7 +389,7 @@ public interface OpenGL {
 
     void glGetProgramInfoLog ( int shaderProgramHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf );
 
-    void glGetShaderInfoLog ( int vertexShaderHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf );
+    void glGetShaderInfoLog ( int shaderHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf );
 
     void glGenTextures ( int count, int[] outBuffer, int offset );
 

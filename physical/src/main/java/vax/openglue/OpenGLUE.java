@@ -1,7 +1,7 @@
 package vax.openglue;
 
 import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
+import vax.math.Vector4f;
 import vax.openglue.constants.*;
 
 /**
@@ -30,23 +30,30 @@ public interface OpenGLUE extends OpenGL {
         return ErrorCode.forValue( glGetError() );
     }
 
-    default void ueCheckError () {
-        int error = glGetError();
-        if ( error != Constants.GL_NO_ERROR ) {
-            throw new GLException( ErrorCode.forValue( error ) );
+    default String ueGetLogBufferContent () {
+        return BufferUtils.toString( ueGetGLUtils().getLogBuffer() );
+    }
+
+    static void ueCheckError ( int errorEnum ) {
+        if ( errorEnum != Constants.GL_NO_ERROR ) {
+            throw new GLException( ErrorCode.forValue( errorEnum ) );
         }
     }
 
-    default boolean ueGetProgramInfoLog ( int shaderProgramHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf ) {
-        ByteBuffer bb = ueGetGLUtils().getLogBuffer();
-        glGetProgramInfoLog( shaderProgramHandle, bb.capacity(), null, bb );
-        return ( glGetError() != ErrorCode.NoError.getValue() );
+    default void ueCheckError () {
+        ueCheckError( glGetError() );
     }
 
-    default boolean ueGetShaderInfoLog ( int vertexShaderHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf ) {
+    default String ueGetProgramInfoLog ( int shaderProgramHandle ) {
         ByteBuffer bb = ueGetGLUtils().getLogBuffer();
-        glGetShaderInfoLog( vertexShaderHandle, bb.capacity(), null, bb );
-        return ( glGetError() != ErrorCode.NoError.getValue() );
+        glGetProgramInfoLog( shaderProgramHandle, bb.capacity(), null, bb );
+        return ueGetLogBufferContent();
+    }
+
+    default String ueGetShaderInfoLog ( int shaderHandle ) {
+        ByteBuffer bb = ueGetGLUtils().getLogBuffer();
+        glGetShaderInfoLog( shaderHandle, bb.capacity(), null, bb );
+        return ueGetLogBufferContent();
     }
 
     // legacy/signature-compatible method extenders
@@ -110,5 +117,9 @@ public interface OpenGLUE extends OpenGL {
         int[] intArr = ueGetGLUtils().getSingleIntArray();
         glGenBuffers( 1, intArr, 0 );
         return intArr[0];
+    }
+
+    default void glClearColor ( Vector4f backgroundColor ) {
+        glClearColor( backgroundColor.getX(), backgroundColor.getY(), backgroundColor.getZ(), backgroundColor.getW() );
     }
 }

@@ -5,6 +5,8 @@ package vax.openglue;
  @author toor
  */
 public abstract class AbstractGLUE implements OpenGLUE {
+    public static final int DEFAULT_LOG_BUFFER_SIZE = 4096;
+
     private GLUtils glUtil;
 
     public AbstractGLUE () {
@@ -18,7 +20,8 @@ public abstract class AbstractGLUE implements OpenGLUE {
         Class<? extends BufferGLUE> cbg = getClassBufferGLUE();
         if ( bg == BufferGLUE.GLUE_NOT_SET ) {
             try {
-                BufferUtils.setBufferGLUE( cbg.newInstance() );
+                bg = cbg.newInstance();
+                BufferUtils.setBufferGLUE( bg );
             } catch (InstantiationException | IllegalAccessException ex) {
                 throw new RuntimeException( ex );
             }
@@ -27,6 +30,7 @@ public abstract class AbstractGLUE implements OpenGLUE {
         } else {
             throw new IllegalStateException( "GLUE already set to incompatible one" );
         }
+        glUtil.setLogBuffer( bg.createByteBuffer( DEFAULT_LOG_BUFFER_SIZE ) );
 
         ImageIO.GLUE iiog = ImageIO.getGLUE();
         Class<? extends ImageIO.GLUE> ciig = getClassImageIO_GLUE();

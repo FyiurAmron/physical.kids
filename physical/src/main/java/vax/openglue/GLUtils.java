@@ -7,11 +7,12 @@ import java.nio.ByteBuffer;
  @author toor
  */
 public class GLUtils {
-    public static final int DEFAULT_LOG_BUFFER_SIZE = 4096;
-
     private ByteBuffer logBuffer;
     private final String[] singleStringArr = new String[1];
     private final int[] singleIntArr = new int[1];
+
+    public GLUtils () {
+    }
 
     public ByteBuffer getLogBuffer () {
         return logBuffer;
@@ -34,7 +35,7 @@ public class GLUtils {
         return singleStringArr;
     }
 
-    public int[] toArray( int i ) {
+    public int[] toArray ( int i ) {
         singleIntArr[0] = i;
         return singleIntArr;
     }

@@ -45,4 +45,7 @@ public enum ErrorCode implements OpenGlConstantWrapper {
         return value;
     }
 
+    public boolean isError() {
+        return this != NoError;
+    }
 }
