@@ -87,7 +87,7 @@ public class PhysicalWindow {
          squirrelMesh.UpdateAction( squirrelMesh );
          */
         //sm.writeOBJ();
-        sm.addMesh( squirrelMesh );
+        //sm.addMesh( squirrelMesh ); // TODO implement in some way
 
         turtleMesh = new SphereMesh( BALL_RADIUS * 5, 10, 10, true );
         turtleMesh.texture = angryTurtleTextureData;
@@ -98,7 +98,7 @@ public class PhysicalWindow {
          };
          turtleMesh.UpdateAction( turtleMesh );
          */
-        sm.addMesh( turtleMesh );
+        //sm.addMesh( turtleMesh ); // TODO implement in some way
 
         dilloMesh = new SphereMesh( BALL_RADIUS * 2, 20, 20, true );
         dilloMesh.texture = angryDilloTextureData;
@@ -109,7 +109,7 @@ public class PhysicalWindow {
          };
          dilloMesh.UpdateAction( dilloMesh );
          */
-        sm.addMesh( dilloMesh );
+        //sm.addMesh( dilloMesh ); // TODO implement in some way
 
         float boxX = 100, boxY = 50, boxZ = 100, shiftX = 0.5f * boxX, shiftY = 0.5f * boxY, shiftZ = 0.5f * boxZ;
         worldMeshes = new RectangleMesh[]{
@@ -123,7 +123,7 @@ public class PhysicalWindow {
         for( int i = worldMeshes.length - 1; i >= 0; i-- ) {
             Mesh m = worldMeshes[i];
             m.texture = worldTextureDatas[i];
-            sm.addMesh( m );
+            //sm.addMesh( m ); // TODO implement in some way
         }
         Matrix4f trans;
         trans = worldMeshes[0].getTransform();

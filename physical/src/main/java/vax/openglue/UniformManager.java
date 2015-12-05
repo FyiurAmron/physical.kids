@@ -1,8 +1,6 @@
 package vax.openglue;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 import vax.openglue.shader.ShaderProgram;
 
 /**
@@ -20,6 +18,10 @@ public class UniformManager {
 
     public void addUniforms ( Uniform... uniforms ) {
         managedUniforms.addAll( Arrays.asList( uniforms ) );
+    }
+
+    public void addUniforms ( Collection<? extends Uniform> uniforms ) {
+        managedUniforms.addAll( uniforms );
     }
 
     public Uniform getUniform ( String name ) {
