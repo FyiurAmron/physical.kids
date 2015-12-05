@@ -1,6 +1,7 @@
 package vax.openglue;
 
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
 /**
 
@@ -8,6 +9,7 @@ import java.nio.ByteBuffer;
  */
 public class GLUtils {
     private ByteBuffer logBuffer;
+    private IntBuffer logBufferSizeBuffer;
     private final String[] singleStringArr = new String[1];
     private final int[] singleIntArr = new int[1];
 
@@ -20,6 +22,14 @@ public class GLUtils {
 
     public void setLogBuffer ( ByteBuffer logBuffer ) {
         this.logBuffer = logBuffer;
+    }
+
+    public IntBuffer getLogBufferSizeBuffer () {
+        return logBufferSizeBuffer;
+    }
+
+    public void setLogBufferSizeBuffer ( IntBuffer logBufferSizeBuffer ) {
+        this.logBufferSizeBuffer = logBufferSizeBuffer;
     }
 
     public String[] getSingleStringArray () {

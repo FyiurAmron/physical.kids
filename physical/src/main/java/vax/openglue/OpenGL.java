@@ -371,7 +371,11 @@ public interface OpenGL {
 
     int glCreateShader ( int shaderType );
 
+    void glDeleteShader ( int shaderHandle );
+
     int glCreateProgram ();
+
+    void glDeleteProgram ( int shaderProgramHandle );
 
     void glShaderSource ( int shaderHandle, int count, String[] sources, IntBuffer lengths );
 
@@ -387,15 +391,31 @@ public interface OpenGL {
 
     void glCompileShader ( int vertexShaderHandle );
 
+    void glGetShaderiv ( int shaderHandle, int paramEnum, int[] params, int offset );
+
+    void glGetShaderiv ( int shaderHandle, int paramEnum, IntBuffer params );
+
+    void glGetProgramiv ( int shaderProgramHandle, int paramEnum, int[] params, int offset );
+
+    void glGetProgramiv ( int shaderProgramHandle, int paramEnum, IntBuffer params );
+
     void glGetProgramInfoLog ( int shaderProgramHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf );
 
+    void glGetProgramInfoLog ( int program, int bufSize, int[] length, int lengthOffset, byte[] infoLog, int infoLogOffset );
+
     void glGetShaderInfoLog ( int shaderHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf );
+
+    void glGetShaderInfoLog ( int shader, int bufSize, int[] length, int lengthOffset, byte[] infoLog, int infoLogOffset );
 
     void glGenTextures ( int count, int[] outBuffer, int offset );
 
     void glGenTextures ( int count, IntBuffer outBuffer );
 
     void glBindTexture ( int targetEnum, int handle );
+
+    void glDeleteTextures ( int n, IntBuffer textures );
+
+    void glDeleteTextures ( int n, int[] textures, int offset );
 
     void glTexParameteri ( int targetEnum, int paramEnum, int param );
 
@@ -412,13 +432,41 @@ public interface OpenGL {
 
     void glBindBuffer ( int targetEnum, int handle );
 
-    void glEnableVertexAttribArray ( int attribNr );
+    void glDeleteBuffers ( int count, int[] bufferNames, int offset );
+
+    void glDeleteBuffers ( int count, IntBuffer bufferNames );
+
+    void glGenFramebuffers ( int n, IntBuffer framebuffers );
+
+    void glGenFramebuffers ( int n, int[] framebuffers, int offset );
+
+    void glBindFramebuffer ( int target, int framebuffer );
+
+    void glDeleteFramebuffers ( int n, IntBuffer framebuffers );
+
+    void glDeleteFramebuffers ( int n, int[] framebuffers, int offset );
+
+    void glGenRenderbuffers ( int n, IntBuffer renderbuffers );
+
+    void glGenRenderbuffers ( int n, int[] renderbuffers, int offset );
+
+    void glBindRenderbuffer ( int target, int renderbuffer );
+
+    void glDeleteRenderbuffers ( int n, IntBuffer renderbuffers );
+
+    void glDeleteRenderbuffers ( int n, int[] renderbuffers, int offset );
 
     void glGenVertexArrays ( int count, IntBuffer outBuffer );
 
     void glGenVertexArrays ( int count, int[] outBuffer, int offset );
 
     void glBindVertexArray ( int vaoHandle );
+
+    void glDeleteVertexArrays ( int n, IntBuffer arrays );
+
+    void glDeleteVertexArrays ( int n, int[] arrays, int offset );
+
+    void glEnableVertexAttribArray ( int attribNr );
 
     void glVertexAttribPointer ( int attribNr, int size, int typeEnum, boolean normalize, int stride, long pointer );
 

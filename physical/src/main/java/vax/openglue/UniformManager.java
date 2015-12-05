@@ -7,11 +7,22 @@ import vax.openglue.shader.ShaderProgram;
 
  @author toor
  */
-public class UniformManager {
+public class UniformManager /* implements LifecycleListenerGL */ {
     private final ArrayList<Uniform> managedUniforms = new ArrayList<>();
     private final HashMap<Uniform, Integer> uniformMap = new HashMap<>();
     private final HashMap<String, Uniform> uniformNameMap = new HashMap<>();
 
+    /*
+     private final int shaderProgramHandle;
+
+     public UniformManager ( ShaderProgram shaderProgram ) {
+     this( shaderProgram.getShaderProgramHandle() );
+     }
+
+     public UniformManager ( int shaderProgramHandle ) {
+     this.shaderProgramHandle = shaderProgramHandle;
+     }
+     */
     public void addUniform ( Uniform uniform ) {
         managedUniforms.add( uniform );
     }
@@ -36,6 +47,7 @@ public class UniformManager {
         init( gl, shaderProgram.getShaderProgramHandle() );
     }
 
+    //@Override
     public void init ( OpenGLUE gl, int shaderProgramHandle ) {
         for( Uniform uniform : managedUniforms ) {
             int uniformLocation = gl.glGetUniformLocation( shaderProgramHandle, uniform.getName() );
@@ -57,5 +69,10 @@ public class UniformManager {
         for( Uniform uniform : managedUniforms ) {
             uniform.updateGl( gl, getLocation( uniform ) );
         }
+    }
+
+    @Override
+    public String toString () {
+        return uniformNameMap.toString();
     }
 }

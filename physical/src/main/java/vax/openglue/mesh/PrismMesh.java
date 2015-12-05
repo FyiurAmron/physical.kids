@@ -8,14 +8,23 @@ public class PrismMesh extends Mesh {
     // top/bottom + 3 sides (2 tri each)
 
     public PrismMesh ( float[][] ps, float height ) {
-        super( buildPrism( ps, height ) );
+        this( ps, height, RECT_VT_PROTO_1, TRI_VT_PROTO );
     }
 
     public PrismMesh ( float[] p1, float[] p2, float[] p3, float height ) {
-        super( buildPrism( new float[][]{ p1, p2, p3 }, height ) );
+        this( p1, p2, p3, height, RECT_VT_PROTO_1, TRI_VT_PROTO );
     }
 
-    public static MeshData buildPrism ( float[][] p, float height ) { // p = float[3][3]; // three vert., three coords
+    public PrismMesh ( float[][] ps, float height, float[] rectVtProto, float[] triVtProto ) {
+        super( buildPrism( ps, height, rectVtProto, triVtProto ) );
+    }
+
+    public PrismMesh ( float[] p1, float[] p2, float[] p3, float height, float[] rectVtProto, float[] triVtProto ) {
+        super( buildPrism( new float[][]{ p1, p2, p3 }, height, rectVtProto, triVtProto ) );
+    }
+
+    public static MeshData buildPrism ( float[][] p, float height, float[] rectVtProto, float[] triVtProto ) {
+        // p = float[3][3]; // three vert., three coords
         float[][] r = new float[Mesh.VERTEX_COUNT][];
         for( int i = 0; i < Mesh.VERTEX_COUNT; i++ ) {
             r[i] = new float[Mesh.V_DIMS];
@@ -37,7 +46,7 @@ public class PrismMesh extends Mesh {
             vx.put( p[i] );
             vn.put( norm );
         }
-        vt.put( Mesh.TRI_VT_PROTO );
+        vt.put( triVtProto );
 
         for( int i = 0, j = 1; i < 3; i++, j++ ) {
             if ( j == 3 ) {
@@ -57,14 +66,14 @@ public class PrismMesh extends Mesh {
                 vn.put( norm );
             }
 
-            vt.put( RECT_VT_PROTO );
+            vt.put( rectVtProto );
         }
 
         for( int i = Mesh.VERTEX_COUNT - 1; i >= 0; i-- ) { // reverses winding
             vx.put( r[i] );
             vn.put( rev_norm );
         }
-        vt.put( Mesh.TRI_VT_PROTO );
+        vt.put( triVtProto );
         return new MeshData( vx.compile(), vn.compile(), vt.compile() );
     }
 }

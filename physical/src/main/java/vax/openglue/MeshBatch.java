@@ -11,12 +11,14 @@ import vax.physical.ResourceShaderProgram;
 
  @author toor
  */
-public class MeshBatch implements CanvasGLUE.EventListener {
-    private HashSet<Mesh> nonAlphaBlendedMeshes, alphaBlendedMeshes;
-    private MeshSorter meshSorter;
-    private ShaderProgram shaderProgram;
-    private HashSet<Uniform> perRenderUniforms, perMeshUniforms;
-    private UniformManager uniformManager;
+public class MeshBatch implements EventListenerGL {
+    private final HashSet<Mesh> nonAlphaBlendedMeshes;
+    private final HashSet<Mesh> alphaBlendedMeshes;
+    private final MeshSorter meshSorter;
+    private final ShaderProgram shaderProgram;
+    private final HashSet<Uniform> perRenderUniforms;
+    private final HashSet<Uniform> perMeshUniforms;
+    private final UniformManager uniformManager;
 
     public MeshBatch ( String shaderName, MeshSorter meshSorter ) {
         this( new HashSet<>(), new HashSet<>(), meshSorter, new ResourceShaderProgram( shaderName ),
@@ -70,8 +72,9 @@ public class MeshBatch implements CanvasGLUE.EventListener {
     public void init ( OpenGLUE gl ) {
         shaderProgram.init( gl );
         shaderProgram.use( gl );
-        uniformManager.addUniforms( perMeshUniforms );
+        
         uniformManager.addUniforms( perRenderUniforms );
+        uniformManager.addUniforms( perMeshUniforms );
         uniformManager.init( gl, shaderProgram );
 
         for( Mesh m : nonAlphaBlendedMeshes ) {
@@ -85,33 +88,35 @@ public class MeshBatch implements CanvasGLUE.EventListener {
 
     @Override
     public void render ( OpenGLUE gl ) {
-        // TODO sorting to ordered collection (list)
         shaderProgram.use( gl );
         for( Uniform u : perRenderUniforms ) {
             uniformManager.updateGl( gl, u );
         }
 
-        gl.glDisable( OpenGL.Constants.GL_BLEND );
-
-        for( Mesh m : nonAlphaBlendedMeshes ) {
-            m.update( gl );
-        }
-        for( Mesh m : meshSorter.sort( nonAlphaBlendedMeshes ) ) {
-            for( Uniform u : perMeshUniforms ) {
-                uniformManager.updateGl( gl, u );
+        if ( !nonAlphaBlendedMeshes.isEmpty() ) {
+            gl.glDisable( OpenGL.Constants.GL_BLEND );
+            for( Mesh m : nonAlphaBlendedMeshes ) {
+                m.update();
             }
-            m.render( gl );
+            for( Mesh m : meshSorter.sort( nonAlphaBlendedMeshes ) ) {
+                for( Uniform u : perMeshUniforms ) {
+                    uniformManager.updateGl( gl, u );
+                }
+                m.render( gl );
+            }
         }
 
-        gl.glEnable( OpenGL.Constants.GL_BLEND );
-        for( Mesh m : alphaBlendedMeshes ) {
-            m.update( gl );
-        }
-        for( Mesh m : meshSorter.sort( alphaBlendedMeshes, false ) ) {
-            for( Uniform u : perMeshUniforms ) {
-                uniformManager.updateGl( gl, u );
+        if ( !alphaBlendedMeshes.isEmpty() ) {
+            gl.glEnable( OpenGL.Constants.GL_BLEND );
+            for( Mesh m : alphaBlendedMeshes ) {
+                m.update();
             }
-            m.render( gl );
+            for( Mesh m : meshSorter.sort( alphaBlendedMeshes, false ) ) {
+                for( Uniform u : perMeshUniforms ) {
+                    uniformManager.updateGl( gl, u );
+                }
+                m.render( gl );
+            }
         }
     }
 
@@ -120,14 +125,23 @@ public class MeshBatch implements CanvasGLUE.EventListener {
         // updating all of the matrices handled in the render(gl) itself
     }
 
+    public void disposeMeshes ( OpenGLUE gl ) {
+        for( Mesh mesh : nonAlphaBlendedMeshes ) {
+            mesh.dispose( gl );
+        }
+        for( Mesh mesh : alphaBlendedMeshes ) {
+            mesh.dispose( gl );
+        }
+    }
+
+    /**
+     Note: this method doesn't dispose the meshes themselves.
+
+     @param gl
+     */
     @Override
     public void dispose ( OpenGLUE gl ) {
-        // TODO implement
-
-        //shaderProgram.dispose();
-        //uniformManager.dispose();
-        //for(Mesh m : meshes)
-        // m.dispose();
+        shaderProgram.dispose( gl );
     }
 
 }

@@ -1,6 +1,7 @@
 package vax.openglue;
 
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import vax.math.Vector4f;
 import vax.openglue.constants.*;
 
@@ -45,14 +46,22 @@ public interface OpenGLUE extends OpenGL {
     }
 
     default String ueGetProgramInfoLog ( int shaderProgramHandle ) {
-        ByteBuffer bb = ueGetGLUtils().getLogBuffer();
-        glGetProgramInfoLog( shaderProgramHandle, bb.capacity(), null, bb );
+        GLUtils glu = ueGetGLUtils();
+        ByteBuffer bb = glu.getLogBuffer();
+        IntBuffer lbsb = glu.getLogBufferSizeBuffer();
+        glGetProgramInfoLog( shaderProgramHandle, bb.capacity(), lbsb, bb );
+        lbsb.rewind();
+        bb.limit( lbsb.get() );
         return ueGetLogBufferContent();
     }
 
     default String ueGetShaderInfoLog ( int shaderHandle ) {
-        ByteBuffer bb = ueGetGLUtils().getLogBuffer();
-        glGetShaderInfoLog( shaderHandle, bb.capacity(), null, bb );
+        GLUtils glu = ueGetGLUtils();
+        ByteBuffer bb = glu.getLogBuffer();
+        IntBuffer lbsb = glu.getLogBufferSizeBuffer();
+        glGetShaderInfoLog( shaderHandle, bb.capacity(), lbsb, bb );
+        lbsb.rewind();
+        bb.limit( lbsb.get() );
         return ueGetLogBufferContent();
     }
 
@@ -85,8 +94,42 @@ public interface OpenGLUE extends OpenGL {
         glUniformMatrix4fv( uniformLocation, 1, false, data, 0 );
     }
 
+    default void glGetShaderiv ( int shaderHandle, int paramEnum, int[] params ) {
+        glGetShaderiv( shaderHandle, paramEnum, params, 0 );
+    }
+
+    default int glGetShaderi ( int shaderHandle, int paramEnum ) {
+        int[] iArr = ueGetGLUtils().getSingleIntArray();
+        glGetShaderiv( shaderHandle, paramEnum, iArr, 0 );
+        return iArr[0];
+    }
+
+    default void glGetProgramiv ( int shaderProgramHandle, int paramEnum, int[] params ) {
+        glGetProgramiv( shaderProgramHandle, paramEnum, params, 0 );
+    }
+
+    default int glGetProgrami ( int shaderProgramHandle, int paramEnum ) {
+        int[] iArr = ueGetGLUtils().getSingleIntArray();
+        glGetProgramiv( shaderProgramHandle, paramEnum, iArr, 0 );
+        return iArr[0];
+    }
+
+    default void glGetShaderInfoLog ( int vertexShaderHandle, int maxLength,
+            int[] length, byte[] infoLog ) {
+        glGetShaderInfoLog( vertexShaderHandle, maxLength, length, 0, infoLog, 0 );
+    }
+
+    default void glGetProgramInfoLog ( int shaderProgramHandle, int maxLength,
+            int[] length, byte[] infoLog ) {
+        glGetProgramInfoLog( shaderProgramHandle, maxLength, length, 0, infoLog, 0 );
+    }
+
     default void glShaderSource ( int shaderHandle, String source ) {
         glShaderSource( shaderHandle, 1, ueGetGLUtils().toArray( source ), null );
+    }
+
+    default void glGenVertexArrays ( int[] outBuffer ) {
+        glGenVertexArrays( outBuffer.length, outBuffer, 0 );
     }
 
     default void glGenVertexArrays ( int count, int[] outBuffer ) {
@@ -99,6 +142,22 @@ public interface OpenGLUE extends OpenGL {
         return intArr[0];
     }
 
+    default void glDeleteVertexArrays ( int[] vertexArrayNames ) {
+        glDeleteVertexArrays( vertexArrayNames.length, vertexArrayNames, 0 );
+    }
+
+    default void glDeleteVertexArrays ( int count, int[] vertexArrayNames ) {
+        glDeleteVertexArrays( count, vertexArrayNames, 0 );
+    }
+
+    default void glDeleteVertexArray ( int vertexArrayHandle ) {
+        glDeleteVertexArrays( 1, ueGetGLUtils().toArray( vertexArrayHandle ), 0 );
+    }
+
+    default void glGenTextures ( int[] outBuffer ) {
+        glGenTextures( outBuffer.length, outBuffer, 0 );
+    }
+
     default void glGenTextures ( int count, int[] outBuffer ) {
         glGenTextures( count, outBuffer, 0 );
     }
@@ -109,6 +168,22 @@ public interface OpenGLUE extends OpenGL {
         return intArr[0];
     }
 
+    default void glDeleteTextures ( int[] textureNames ) {
+        glDeleteTextures( textureNames.length, textureNames, 0 );
+    }
+
+    default void glDeleteTextures ( int count, int[] textureNames ) {
+        glDeleteTextures( count, textureNames, 0 );
+    }
+
+    default void glDeleteTexture ( int textureHandle ) {
+        glDeleteTextures( 1, ueGetGLUtils().toArray( textureHandle ), 0 );
+    }
+
+    default void glGenBuffers ( int[] outBuffer ) {
+        glGenBuffers( outBuffer.length, outBuffer, 0 );
+    }
+
     default void glGenBuffers ( int count, int[] outBuffer ) {
         glGenBuffers( count, outBuffer, 0 );
     }
@@ -117,6 +192,70 @@ public interface OpenGLUE extends OpenGL {
         int[] intArr = ueGetGLUtils().getSingleIntArray();
         glGenBuffers( 1, intArr, 0 );
         return intArr[0];
+    }
+
+    default void glDeleteBuffers ( int[] bufferNames ) {
+        glDeleteBuffers( bufferNames.length, bufferNames, 0 );
+    }
+
+    default void glDeleteBuffers ( int count, int[] bufferNames ) {
+        glDeleteBuffers( count, bufferNames, 0 );
+    }
+
+    default void glDeleteBuffer ( int bufferHandle ) {
+        glDeleteBuffers( 1, ueGetGLUtils().toArray( bufferHandle ), 0 );
+    }
+
+    default void glGenFramebuffers ( int[] outBuffer ) {
+        glGenFramebuffers( outBuffer.length, outBuffer, 0 );
+    }
+
+    default void glGenFramebuffers ( int count, int[] outBuffer ) {
+        glGenFramebuffers( count, outBuffer, 0 );
+    }
+
+    default int glGenFramebuffer () {
+        int[] intArr = ueGetGLUtils().getSingleIntArray();
+        glGenFramebuffers( 1, intArr, 0 );
+        return intArr[0];
+    }
+
+    default void glDeleteFramebuffers ( int[] bufferNames ) {
+        glDeleteFramebuffers( bufferNames.length, bufferNames, 0 );
+    }
+
+    default void glDeleteFramebuffers ( int count, int[] bufferNames ) {
+        glDeleteFramebuffers( count, bufferNames, 0 );
+    }
+
+    default void glDeleteFramebuffer ( int bufferHandle ) {
+        glDeleteFramebuffers( 1, ueGetGLUtils().toArray( bufferHandle ), 0 );
+    }
+
+    default void glGenRenderbuffers ( int[] outBuffer ) {
+        glGenRenderbuffers( outBuffer.length, outBuffer, 0 );
+    }
+
+    default void glGenRenderbuffers ( int count, int[] outBuffer ) {
+        glGenRenderbuffers( count, outBuffer, 0 );
+    }
+
+    default int glGenRenderbuffer () {
+        int[] intArr = ueGetGLUtils().getSingleIntArray();
+        glGenRenderbuffers( 1, intArr, 0 );
+        return intArr[0];
+    }
+
+    default void glDeleteRenderbuffers ( int[] bufferNames ) {
+        glDeleteRenderbuffers( bufferNames.length, bufferNames, 0 );
+    }
+
+    default void glDeleteRenderbuffers ( int count, int[] bufferNames ) {
+        glDeleteRenderbuffers( count, bufferNames, 0 );
+    }
+
+    default void glDeleteRenderbuffer ( int bufferHandle ) {
+        glDeleteRenderbuffers( 1, ueGetGLUtils().toArray( bufferHandle ), 0 );
     }
 
     default void glClearColor ( Vector4f backgroundColor ) {

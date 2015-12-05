@@ -4,14 +4,35 @@ import vax.math.Vector3f;
 import vax.math.VectorFloat;
 
 public class RectangleMesh extends Mesh {
+    public RectangleMesh ( float sizeX, float sizeY ) {
+        this( sizeX, sizeY, RECT_VT_PROTO_1 );
+    }
+
+    public RectangleMesh ( int axis, float size1, float size2 ) {
+        this( axis, size1, size2, RECT_VT_PROTO_1 );
+    }
+
+    public RectangleMesh ( float[][] ps, int segU, int segV ) {
+        this( ps, segU, segV, RECT_VT_PROTO_1 );
+    }
+
+    public RectangleMesh ( float[] p1, float[] p2, float[] p3, int segU, int segV ) {
+        this( p1, p2, p3, segU, segV, RECT_VT_PROTO_1);
+    }
+
     /**
      Creates a new OXY rectangle of given sizes, centered at OY axis.
 
      @param sizeX
      @param sizeY
+     @param rectVtProto
      */
-    public RectangleMesh ( float sizeX, float sizeY ) {
-        this( new float[]{ -sizeX / 2, 0, 0 }, new float[]{ sizeX / 2, 0, 0 }, new float[]{ -sizeX / 2, sizeY, 0 }, 1, 1 );
+    public RectangleMesh ( float sizeX, float sizeY, float[] rectVtProto ) {
+        this(
+                new float[]{ -sizeX / 2, 0, 0 },
+                new float[]{ sizeX / 2, 0, 0 },
+                new float[]{ -sizeX / 2, sizeY, 0 },
+                1, 1, rectVtProto );
     }
 
     /**
@@ -20,23 +41,24 @@ public class RectangleMesh extends Mesh {
      @param axis axis int as defined by SC3D_constant ( 0 == OX, 1 == OY, 2 == OZ )
      @param size1 first size (X or Y)
      @param size2 second size (Y or Z)
+     @param rectVtProto
      */
-    public RectangleMesh ( int axis, float size1, float size2 ) {
-        this( buildAxedRectangle( axis, size1, size2 ), 1, 1 );
+    public RectangleMesh ( int axis, float size1, float size2, float[] rectVtProto ) {
+        this( buildAxedRectangle( axis, size1, size2 ), 1, 1, rectVtProto );
     }
 
     /* public rectangle( float[] p1, float[] p2, float[] p3 ) {
      super( prepare_rectangle_arrs( p1, p2, p3, 1, 1 ) );
      } */
-    public RectangleMesh ( float[][] ps, int segU, int segV ) {
-        this( ps[0], ps[1], ps[2], segU, segV );
+    public RectangleMesh ( float[][] ps, int segU, int segV, float[] rectVtProto ) {
+        this( ps[0], ps[1], ps[2], segU, segV, rectVtProto );
     }
 
-    public RectangleMesh ( float[] p1, float[] p2, float[] p3, int segU, int segV ) {
-        super( buildRectangle( p1, p2, p3, segU, segV ) );
+    public RectangleMesh ( float[] p1, float[] p2, float[] p3, int segU, int segV, float[] rectVtProto ) {
+        super( buildRectangle( p1, p2, p3, segU, segV, rectVtProto ) );
     }
 
-    static protected MeshData buildRectangle ( float[] p1, float[] p2, float[] p3, int segU, int segV ) {
+    static protected MeshData buildRectangle ( float[] p1, float[] p2, float[] p3, int segU, int segV, float[] rectVtProto ) {
         int v_total = 2 * Mesh.VERTEX_COUNT * segU * segV; // 2 tris for each seg, 6 verts per seg
         float[] vx = new float[Mesh.V_DIMS * v_total],
                 vn = new float[Mesh.VN_DIMS * v_total],
@@ -66,8 +88,8 @@ public class RectangleMesh extends Mesh {
             }
         }
 
-        for( int i = 0, max = Mesh.VT_DIMS * v_total, vt_step = Mesh.RECT_VT_PROTO.length; i < max; i += vt_step ) {
-            System.arraycopy( Mesh.RECT_VT_PROTO, 0, vt, i, vt_step );
+        for( int i = 0, max = Mesh.VT_DIMS * v_total, vt_step = rectVtProto.length; i < max; i += vt_step ) {
+            System.arraycopy( rectVtProto, 0, vt, i, vt_step );
         }
 
         float[] n = Vector3f.createNormal( p1, p2, p3 ); // the getNormal should be equal for the whole rectangle

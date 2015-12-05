@@ -1,5 +1,6 @@
 package vax.physical;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import com.jogamp.opengl.GL;
 import vax.math.*;
@@ -12,10 +13,13 @@ import vax.physical.resource.Resource;
 
  @author toor
  */
-public class SceneManager implements CanvasGLUE.EventListener {
-    private MeshBatch mainMeshBatch, noiseMeshBatch;
+public class SceneManager implements EventListenerGL {
+    private final ArrayList<Mesh> meshes = new ArrayList<>();
+    private final ArrayList<Texture> textures = new ArrayList<>();
 
     private final boolean debug = true;
+
+    private MeshBatch mainMeshBatch, noiseMeshBatch;
 
     private final Value1f //
             time = new Value1f(),
@@ -58,11 +62,22 @@ public class SceneManager implements CanvasGLUE.EventListener {
         leftInterface.getTransform().setTranslationY( 1f );
         //RectangleMesh leftInterface = new RectangleMesh( 2, 2, 2 );
 
-        ball.setTexture( dilloTD.createTexture( gl, TextureParameters.TRILINEAR, true ) );
-        leftInterface.setTexture( leftInterfaceTD.createTexture( gl, TextureParameters.TRILINEAR, true ) );
+        Texture //
+                dilloTex = new Texture( dilloTD, TextureParameters.TRILINEAR, true ),
+                interfaceLeftTex = new Texture( leftInterfaceTD, TextureParameters.TRILINEAR, true );
+        ball.setTexture( dilloTex );
+        leftInterface.setTexture( interfaceLeftTex );
+
+        textures.add( dilloTex );
+        textures.add( interfaceLeftTex );
+
+        for( Texture tex : textures ) {
+            tex.init( gl );
+        }
 
         ball.setUpdateAction( (Mesh target) -> {
             Matrix4f trans = target.getTransform();
+
             float t = getTime();
             trans.setTranslationX( (float) Math.sin( t ) );
             trans.setTranslationZ( -1.5f + (float) Math.cos( t ) );
@@ -74,15 +89,18 @@ public class SceneManager implements CanvasGLUE.EventListener {
             transformMatrix.set( target.getTransform() );
         } );
 
+        meshes.add( ball );
+        meshes.add( leftInterface );
         mainMeshBatch.getNonAlphaBlendedMeshes().add( ball );
+        //mainMeshBatch.getNonAlphaBlendedMeshes().add( leftInterface );
         noiseMeshBatch.getAlphaBlendedMeshes().add( leftInterface );
 
         //float aspectRatio = ( (float) settings.windowSize.getX() ) / settings.windowSize.getY();
         float aspectRatio = 4f / 3; // TODO infer this from window size
         //gl.glPolygonMode( OpenGLUE.Constants.GL_FRONT_AND_BACK, OpenGLUE.Constants.GL_LINE ); // DEBUG
-        gl.glCullFace( OpenGLUE.Constants.GL_BACK );
-        gl.glEnable( GL.GL_CULL_FACE );
-        gl.glEnable( GL.GL_DEPTH_TEST );
+        //gl.glCullFace( OpenGLUE.Constants.GL_BACK );
+        //gl.glEnable( GL.GL_CULL_FACE );
+        //gl.glEnable( GL.GL_DEPTH_TEST );
         //gl.glEnable( GL.GL_BLEND ); // per-mesh now
         gl.glBlendFunc( GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA );
         //projectionMatrix.setToPerspective( 0.1f, 100f, 67, aspectRatio );
@@ -162,8 +180,6 @@ public class SceneManager implements CanvasGLUE.EventListener {
             gl = debugGLUE;
         }
         // TODO if aspect changed & persp. used: recalc persp. matrix
-
-        //gl.ueCheckError();
     }
 
     @Override
@@ -172,13 +188,16 @@ public class SceneManager implements CanvasGLUE.EventListener {
             debugGLUE.setGlue( gl );
             gl = debugGLUE;
         }
-        /*
-         for( Mesh mesh : meshes )
-         mesh.dispose();
-         */ // TODO implement
 
-        //shaderProgram.dispose(); // TODO implement
-        //uniformManager.dispose(); // TODO implement
-        //gl.ueCheckError();
+        mainMeshBatch.dispose( gl );
+        noiseMeshBatch.dispose( gl );
+
+        for( Mesh mesh : meshes ) {
+            mesh.dispose( gl );
+        }
+
+        for( Texture tex : textures ) {
+            tex.dispose( gl );
+        }
     }
 }

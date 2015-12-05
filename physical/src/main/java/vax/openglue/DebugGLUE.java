@@ -131,10 +131,22 @@ public class DebugGLUE implements OpenGLUE {
     }
 
     @Override
+    public void glDeleteShader ( int shaderHandle ) {
+        gl.glDeleteShader( shaderHandle );
+        ueCheckError();
+    }
+
+    @Override
     public int glCreateProgram () {
         int ret = gl.glCreateProgram();
         ueCheckError();
         return ret;
+    }
+
+    @Override
+    public void glDeleteProgram ( int shaderProgramHandle ) {
+        gl.glDeleteProgram( shaderProgramHandle );
+        ueCheckError();
     }
 
     @Override
@@ -180,6 +192,30 @@ public class DebugGLUE implements OpenGLUE {
     }
 
     @Override
+    public void glGetShaderiv ( int shaderHandle, int paramEnum, int[] params, int offset ) {
+        gl.glGetShaderiv( shaderHandle, paramEnum, params, offset );
+        ueCheckError();
+    }
+
+    @Override
+    public void glGetShaderiv ( int shaderHandle, int paramEnum, IntBuffer params ) {
+        gl.glGetShaderiv( shaderHandle, paramEnum, params );
+        ueCheckError();
+    }
+
+    @Override
+    public void glGetProgramiv ( int shaderProgramHandle, int paramEnum, int[] params, int offset ) {
+        gl.glGetProgramiv( shaderProgramHandle, paramEnum, params, offset );
+        ueCheckError();
+    }
+
+    @Override
+    public void glGetProgramiv ( int shaderProgramHandle, int paramEnum, IntBuffer params ) {
+        gl.glGetProgramiv( shaderProgramHandle, paramEnum, params );
+        ueCheckError();
+    }
+
+    @Override
     public void glGetProgramInfoLog ( int shaderProgramHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf ) {
         gl.glGetProgramInfoLog( shaderProgramHandle, maxLength, lengthBuf, infoLogBuf );
         ueCheckError();
@@ -188,6 +224,20 @@ public class DebugGLUE implements OpenGLUE {
     @Override
     public void glGetShaderInfoLog ( int shaderHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf ) {
         gl.glGetShaderInfoLog( shaderHandle, maxLength, lengthBuf, infoLogBuf );
+        ueCheckError();
+    }
+
+    @Override
+    public void glGetShaderInfoLog ( int vertexShaderHandle, int maxLength,
+            int[] length, int lengthOffset, byte[] infoLog, int infoLogOffset ) {
+        gl.glGetShaderInfoLog( vertexShaderHandle, maxLength, length, lengthOffset, infoLog, infoLogOffset );
+        ueCheckError();
+    }
+
+    @Override
+    public void glGetProgramInfoLog ( int shaderProgramHandle, int maxLength,
+            int[] length, int lengthOffset, byte[] infoLog, int infoLogOffset ) {
+        gl.glGetProgramInfoLog( shaderProgramHandle, maxLength, length, lengthOffset, infoLog, infoLogOffset );
         ueCheckError();
     }
 
@@ -253,6 +303,18 @@ public class DebugGLUE implements OpenGLUE {
     }
 
     @Override
+    public void glDeleteBuffers ( int count, int[] bufferNames, int offset ) {
+        gl.glDeleteBuffers( count, bufferNames, offset );
+        ueCheckError();
+    }
+
+    @Override
+    public void glDeleteBuffers ( int count, IntBuffer bufferNames ) {
+        gl.glDeleteBuffers( count, bufferNames );
+        ueCheckError();
+    }
+
+    @Override
     public void glEnableVertexAttribArray ( int attribNr ) {
         gl.glEnableVertexAttribArray( attribNr );
         ueCheckError();
@@ -267,6 +329,90 @@ public class DebugGLUE implements OpenGLUE {
     @Override
     public void glGenVertexArrays ( int count, int[] outBuffer, int offset ) {
         gl.glGenVertexArrays( count, outBuffer, offset );
+        ueCheckError();
+    }
+
+    @Override
+    public void glDeleteTextures ( int n, IntBuffer textures ) {
+        gl.glDeleteTextures( n, textures );
+        ueCheckError();
+    }
+
+    @Override
+    public void glDeleteTextures ( int n, int[] textures, int offset ) {
+        gl.glDeleteTextures( n, textures, offset );
+        ueCheckError();
+    }
+
+    @Override
+    public void glGenFramebuffers ( int n, IntBuffer framebuffers ) {
+        gl.glGenFramebuffers( n, framebuffers );
+        ueCheckError();
+    }
+
+    @Override
+    public void glGenFramebuffers ( int n, int[] framebuffers, int offset ) {
+        gl.glGenFramebuffers( n, framebuffers, offset );
+        ueCheckError();
+    }
+
+    @Override
+    public void glBindFramebuffer ( int target, int framebuffer ) {
+        gl.glBindFramebuffer( target, framebuffer );
+        ueCheckError();
+    }
+
+    @Override
+    public void glDeleteFramebuffers ( int n, IntBuffer framebuffers ) {
+        gl.glDeleteFramebuffers( n, framebuffers );
+        ueCheckError();
+    }
+
+    @Override
+    public void glDeleteFramebuffers ( int n, int[] framebuffers, int offset ) {
+        gl.glDeleteFramebuffers( n, framebuffers, offset );
+        ueCheckError();
+    }
+
+    @Override
+    public void glGenRenderbuffers ( int n, IntBuffer renderbuffers ) {
+        gl.glGenRenderbuffers( n, renderbuffers );
+        ueCheckError();
+    }
+
+    @Override
+    public void glGenRenderbuffers ( int n, int[] renderbuffers, int offset ) {
+        gl.glGenRenderbuffers( n, renderbuffers, offset );
+        ueCheckError();
+    }
+
+    @Override
+    public void glBindRenderbuffer ( int target, int renderbuffer ) {
+        gl.glBindRenderbuffer( target, renderbuffer );
+        ueCheckError();
+    }
+
+    @Override
+    public void glDeleteRenderbuffers ( int n, IntBuffer renderbuffers ) {
+        gl.glDeleteRenderbuffers( n, renderbuffers );
+        ueCheckError();
+    }
+
+    @Override
+    public void glDeleteRenderbuffers ( int n, int[] renderbuffers, int offset ) {
+        gl.glDeleteRenderbuffers( n, renderbuffers, offset );
+        ueCheckError();
+    }
+
+    @Override
+    public void glDeleteVertexArrays ( int n, IntBuffer arrays ) {
+        gl.glDeleteVertexArrays( n, arrays );
+        ueCheckError();
+    }
+
+    @Override
+    public void glDeleteVertexArrays ( int n, int[] arrays, int offset ) {
+        gl.glDeleteVertexArrays( n, arrays, offset );
         ueCheckError();
     }
 

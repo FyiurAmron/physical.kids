@@ -18,4 +18,8 @@ public class Value1f {
         return this.value;
     }
 
+    @Override
+    public String toString () {
+        return Float.toString( value );
+    }
 }
