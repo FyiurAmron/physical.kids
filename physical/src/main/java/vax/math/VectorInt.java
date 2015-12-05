@@ -208,22 +208,22 @@ public class VectorInt {
         return getSum( v, t, new int[v.length] );
     }
 
-    static public int[] getSum ( int[] v, int[] t, int[] target ) {
+    static public int[] getSum ( int[] v, int[] t, int[] output ) {
         for( int i = v.length; i >= 0; i-- ) {
-            target[i] = v[i] + t[i];
+            output[i] = v[i] + t[i];
         }
-        return target;
+        return output;
     }
 
     static public int[] createDiff ( int[] v, int[] t ) {
         return getDiff( v, t, new int[v.length] );
     }
 
-    static public int[] getDiff ( int[] v, int[] t, int[] target ) {
+    static public int[] getDiff ( int[] v, int[] t, int[] output ) {
         for( int i = v.length - 1; i >= 0; i-- ) {
-            target[i] = v[i] - t[i];
+            output[i] = v[i] - t[i];
         }
-        return target;
+        return output;
     }
 
     static public int[] scale ( int[] v, int f ) {
@@ -244,22 +244,22 @@ public class VectorInt {
         return getScaled( v, f, new int[v.length] );
     }
 
-    static public int[] getScaled ( int[] v, int f, int[] target ) {
+    static public int[] getScaled ( int[] v, int f, int[] output ) {
         for( int i = v.length - 1; i >= 0; i-- ) {
-            target[i] = v[i] * f;
+            output[i] = v[i] * f;
         }
-        return target;
+        return output;
     }
 
     static public int[] getScaled ( int[] v, int[] f ) {
         return getScaled( v, f, new int[v.length] );
     }
 
-    static public int[] getScaled ( int[] v, int[] f, int[] target ) {
+    static public int[] getScaled ( int[] v, int[] f, int[] output ) {
         for( int i = v.length - 1; i >= 0; i-- ) {
-            target[i] = v[i] * f[i];
+            output[i] = v[i] * f[i];
         }
-        return target;
+        return output;
     }
 
     static public int calcDistance ( int[] v1, int[] v2 ) {

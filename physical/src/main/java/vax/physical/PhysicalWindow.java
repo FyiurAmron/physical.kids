@@ -76,7 +76,7 @@ public class PhysicalWindow {
         };
 
         squirrelMesh = new SphereMesh( BALL_RADIUS, 20, 20, true );
-        squirrelMesh.texture = angrySquirrelTextureData;
+        squirrelMesh.setTexture( angrySquirrelTextureData );
         /*
          squirrelMesh.UpdateAction = ( Mesh model ) -> {
          Matrix4f transform = model.Transform;
@@ -90,7 +90,7 @@ public class PhysicalWindow {
         //sm.addMesh( squirrelMesh ); // TODO implement in some way
 
         turtleMesh = new SphereMesh( BALL_RADIUS * 5, 10, 10, true );
-        turtleMesh.texture = angryTurtleTextureData;
+        turtleMesh.setTexture( angryTurtleTextureData );
         /*
          turtleMesh.UpdateAction = ( Mesh model ) -> {
          Matrix4f transform = model.Transform;
@@ -101,7 +101,7 @@ public class PhysicalWindow {
         //sm.addMesh( turtleMesh ); // TODO implement in some way
 
         dilloMesh = new SphereMesh( BALL_RADIUS * 2, 20, 20, true );
-        dilloMesh.texture = angryDilloTextureData;
+        dilloMesh.setTexture( angryDilloTextureData );
         /*
          dilloMesh.UpdateAction = ( Mesh model ) -> {
          Matrix4f transform = model.Transform;
@@ -122,7 +122,7 @@ public class PhysicalWindow {
         };
         for( int i = worldMeshes.length - 1; i >= 0; i-- ) {
             Mesh m = worldMeshes[i];
-            m.texture = worldTextureDatas[i];
+            m.setTexture( worldTextureDatas[i] );
             //sm.addMesh( m ); // TODO implement in some way
         }
         Matrix4f trans;
@@ -165,7 +165,7 @@ public class PhysicalWindow {
         /*
          // spring - vertical harmonic oscillator
          dilloBody.Forces.Add( ( Body obj ) -> {
-         Vector3f disp = obj.Transform.getDisplacement( fixPoint );
+         Vector3f disp = obj.Transform.createDisplacement( fixPoint );
          float k = 20.0f;
          disp.scale( k );
          obj.applyForce( disp );
@@ -174,7 +174,7 @@ public class PhysicalWindow {
 
         // springy pendulum - 3D harmonic oscillator
         dilloBody.getForces().add( (Body obj) -> {
-            Vector3f disp = obj.getTransform().getDisplacement( fixPoint );
+            Vector3f disp = obj.getTransform().createDisplacement( fixPoint );
             float k = 10.0f, l = 15.0f;
             disp.scale( k * ( disp.calcLength() - l ) );
             obj.applyForce( disp );

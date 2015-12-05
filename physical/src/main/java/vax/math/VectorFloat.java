@@ -277,34 +277,34 @@ public class VectorFloat {
         return getNormalized( data, new float[data.length] );
     }
 
-    static public float[] getNormalized ( float[] data, float[] target ) {
+    static public float[] getNormalized ( float[] data, float[] output ) {
         float lenFactor = 1.0f / calcLength( data );
         for( int i = data.length - 1; i >= 0; i-- ) {
-            target[i] = data[i] * lenFactor;
+            output[i] = data[i] * lenFactor;
         }
-        return target;
+        return output;
     }
 
     static public float[] createSum ( float[] v, float[] t ) {
         return getSum( v, t, new float[v.length] );
     }
 
-    static public float[] getSum ( float[] v, float[] t, float[] target ) {
+    static public float[] getSum ( float[] v, float[] t, float[] output ) {
         for( int len = v.length - 1; len >= 0; len-- ) {
-            target[len] = v[len] + t[len];
+            output[len] = v[len] + t[len];
         }
-        return target;
+        return output;
     }
 
     static public float[] createDiff ( float[] v, float[] t ) {
         return getDiff( v, t, new float[v.length] );
     }
 
-    static public float[] getDiff ( float[] v, float[] t, float[] target ) {
+    static public float[] getDiff ( float[] v, float[] t, float[] output ) {
         for( int i = v.length - 1; i >= 0; i-- ) {
-            target[i] = v[i] - t[i];
+            output[i] = v[i] - t[i];
         }
-        return target;
+        return output;
     }
 
     static public float[] scale ( float[] v, float f ) {
@@ -325,30 +325,30 @@ public class VectorFloat {
         return getScaled( v, f, new float[v.length] );
     }
 
-    static public float[] getScaled ( float[] v, float f, float[] target ) {
+    static public float[] getScaled ( float[] v, float f, float[] output ) {
         for( int i = v.length - 1; i >= 0; i-- ) {
-            target[i] = v[i] * f;
+            output[i] = v[i] * f;
         }
-        return target;
+        return output;
     }
 
     static public float[] createScaled ( float[] v, float[] f ) {
         return getScaled( v, f, new float[v.length] );
     }
 
-    static public float[] getScaled ( float[] v, float[] f, float[] target ) {
+    static public float[] getScaled ( float[] v, float[] f, float[] output ) {
         for( int i = v.length - 1; i >= 0; i-- ) {
-            target[i] = v[i] * f[i];
+            output[i] = v[i] * f[i];
         }
-        return target;
+        return output;
     }
 
     static public float[] createOpposite ( float[] v ) {
         return getOpposite( v, new float[v.length] );
     }
 
-    static public float[] getOpposite ( float[] v, float[] target ) {
-        return getScaled( v, -1f, target );
+    static public float[] getOpposite ( float[] v, float[] output ) {
+        return getScaled( v, -1f, output );
     }
 
     /**
@@ -378,11 +378,11 @@ public class VectorFloat {
         return getOpposite( v, new float[v.length] );
     }
 
-    static public float[] getReverse ( float[] v, float[] target ) {
+    static public float[] getReverse ( float[] v, float[] output ) {
         for( int i1 = 0, i2 = v.length - 1; i2 >= 0; i1++, i2-- ) {
-            target[i1] = v[i2];
+            output[i1] = v[i2];
         }
-        return target;
+        return output;
     }
 
     static public float calcDistance ( float[] v1, float[] v2 ) {

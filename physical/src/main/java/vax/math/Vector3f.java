@@ -135,23 +135,23 @@ public class Vector3f extends VectorFloat {
     /*
      static methods
      */
-    static public float[] getCross ( float v10, float v11, float v12, float v20, float v21, float v22, float[] target ) {
-        target[0] = v11 * v22 - v12 * v21;
-        target[1] = v12 * v20 - v10 * v22;
-        target[2] = v10 * v21 - v11 * v20;
-        return target;
+    static public float[] getCross ( float v10, float v11, float v12, float v20, float v21, float v22, float[] output ) {
+        output[0] = v11 * v22 - v12 * v21;
+        output[1] = v12 * v20 - v10 * v22;
+        output[2] = v10 * v21 - v11 * v20;
+        return output;
     }
 
     /**
-     Note: target <b>may</b> be equal to v1 or v2 without any errors.
+     Note: output <b>may</b> be equal to v1 or v2 without any errors.
 
      @param v1
      @param v2
-     @param target
+     @param output
      @return
      */
-    static public float[] getCross ( float[] v1, float[] v2, float[] target ) {
-        return getCross( v1[0], v1[1], v1[2], v2[0], v2[1], v2[2], target );
+    static public float[] getCross ( float[] v1, float[] v2, float[] output ) {
+        return getCross( v1[0], v1[1], v1[2], v2[0], v2[1], v2[2], output );
     }
 
     static public float[] createCross ( float[] v1, float[] v2 ) {
@@ -159,26 +159,26 @@ public class Vector3f extends VectorFloat {
     }
 
     static public float[] getNormal ( float v10, float v11, float v12, float v20, float v21, float v22, float v30, float v31, float v32,
-            float[] target ) {
+            float[] output ) {
         getCross(
                 v20 - v10, v21 - v11, v22 - v12,
                 v30 - v10, v31 - v11, v32 - v12,
-                target );
-        normalize( target );
-        return target;
+                output );
+        normalize( output );
+        return output;
     }
 
     /**
-     Note: target <b>may</b> be equal to v1 or v2 without any errors.
+     Note: output <b>may</b> be equal to v1 or v2 without any errors.
 
      @param v1
      @param v2
      @param v3
-     @param target
+     @param output
      @return
      */
-    static public float[] getNormal ( float[] v1, float[] v2, float[] v3, float[] target ) {
-        return Vector3f.getNormal( v1[0], v1[1], v1[2], v2[0], v2[1], v2[2], v3[0], v3[1], v3[2], target );
+    static public float[] getNormal ( float[] v1, float[] v2, float[] v3, float[] output ) {
+        return Vector3f.getNormal( v1[0], v1[1], v1[2], v2[0], v2[1], v2[2], v3[0], v3[1], v3[2], output );
     }
 
     static public float[] createNormal ( float[] v1, float[] v2, float[] v3 ) {

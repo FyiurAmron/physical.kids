@@ -27,19 +27,20 @@ public class Mesh implements Renderable {
     };
     // TODO FIXME implement parametrisation
     protected static final float[] RECT_VT_PROTO = { // used by Rect & Prism
-    //    0, 1, /* */ 1, 1,/* */ 0, 0,
-    //    0, 0, /* */ 1, 1,/* */ 1, 0, //
-    //};
+        //    0, 1, /* */ 1, 1,/* */ 0, 0,
+        //    0, 0, /* */ 1, 1,/* */ 1, 0, //
+        //};
         1, 1, /* */ 0, 1,/* */ 1, 0,
         1, 0, /* */ 0, 1,/* */ 0, 0, //
     };
 
     protected final Matrix4f transform = new Matrix4f( true );
 
-    public Action<Mesh> updateAction;
-    public Texture texture;
+    private Action<Mesh> updateAction;
+    private Texture texture;
     protected PrimitiveType primitiveType = PrimitiveType.Triangles;
-    protected int vaoHandle,
+    protected int //
+            vaoHandle,
             positionVboHandle,
             normalVboHandle,
             uvsVboHandle,
@@ -111,13 +112,12 @@ public class Mesh implements Renderable {
         }
         gl.glBindVertexArray( vaoHandle );
 
-        gl.glDrawElements(primitiveType.getValue(), meshData.getIndices().length, OpenGL.Constants.GL_UNSIGNED_INT, 0 );
+        gl.glDrawElements( primitiveType.getValue(), meshData.getIndices().length, OpenGL.Constants.GL_UNSIGNED_INT, 0 );
     }
 
     /*
      other methods
      */
-
     public int genBuffer ( OpenGLUE gl, int bufferTarget, float[] data ) {
         int handle = gl.glGenBuffer();
         gl.glBindBuffer( bufferTarget, handle );
@@ -141,10 +141,10 @@ public class Mesh implements Renderable {
     }
 
     public void init ( OpenGLUE gl ) {
-        positionVboHandle = genBuffer(gl, OpenGL.Constants.GL_ARRAY_BUFFER, meshData.getVertices() );
-        normalVboHandle = genBuffer(gl, OpenGL.Constants.GL_ARRAY_BUFFER, meshData.getNormals() );
-        uvsVboHandle = genBuffer(gl, OpenGL.Constants.GL_ARRAY_BUFFER, meshData.getUvs() );
-        eboHandle = genBuffer(gl, OpenGL.Constants.GL_ELEMENT_ARRAY_BUFFER, meshData.getIndices() );
+        positionVboHandle = genBuffer( gl, OpenGL.Constants.GL_ARRAY_BUFFER, meshData.getVertices() );
+        normalVboHandle = genBuffer( gl, OpenGL.Constants.GL_ARRAY_BUFFER, meshData.getNormals() );
+        uvsVboHandle = genBuffer( gl, OpenGL.Constants.GL_ARRAY_BUFFER, meshData.getUvs() );
+        eboHandle = genBuffer( gl, OpenGL.Constants.GL_ELEMENT_ARRAY_BUFFER, meshData.getIndices() );
         gl.glBindBuffer( BufferTarget.ArrayBuffer, 0 );
         gl.glBindBuffer( BufferTarget.ElementArrayBuffer, 0 );
 
@@ -158,7 +158,7 @@ public class Mesh implements Renderable {
     }
 
     protected void writeOBJ_buf ( DataOutputStream dos, int bufNr ) throws IOException {
-        FloatBuffer fb = FloatBuffer.wrap(meshData.getData()[bufNr] );
+        FloatBuffer fb = FloatBuffer.wrap( meshData.getData()[bufNr] );
         dos.writeBytes( "#\n# " + OBJ_SECTION_NAMES[bufNr][0] + "\n#\n\n" );
         String prefix = OBJ_SECTION_NAMES[bufNr][1] + " ";
         if ( bufNr != 2 ) {
@@ -178,7 +178,7 @@ public class Mesh implements Renderable {
                 DataOutputStream dos = new DataOutputStream( fos )) {
             dos.writeBytes( "# created by " + Main.APP_NAME + "\n" );
             int tri_cnt = meshData.getVertexCount() / VERTEX_COUNT;
-            dos.writeBytes("# " + meshData.getVertexCount() + " vertex total == normals == UVs\n"
+            dos.writeBytes( "# " + meshData.getVertexCount() + " vertex total == normals == UVs\n"
                     + "# " + tri_cnt + " tris == faces\n\n"
                     + "mtllib " + filename + ".mtl\nusemtl " + filename + "\n\n"
                     + "#\n# " + getClass() + "\n#\n\n" );

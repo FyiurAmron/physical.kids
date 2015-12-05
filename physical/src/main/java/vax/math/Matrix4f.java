@@ -114,65 +114,43 @@ public class Matrix4f extends VectorFloat {
         setTranslation( vectorFloat.data );
     }
 
-    public Vector3f getDisplacement ( Vector3f target ) {
-        /*
-         return new Vector3f(
-         target.getX() - getTranslationX(),
-         target.getY() - getTranslationY(),
-         target.getZ() - getTranslationZ() );
-         */
-        return new Vector3f(
+    public Vector3f createDisplacement ( Vector3f target ) {
+        return getDisplacement( target, new Vector3f() );
+    }
+
+    public Vector3f getDisplacement ( Vector3f target, Vector3f output ) {
+        return output.set(
                 target.data[0] - data[TRANSLATION_X],
                 target.data[1] - data[TRANSLATION_Y],
                 target.data[2] - data[TRANSLATION_Z] );
     }
 
-    public Vector3f getDisplacement ( Matrix4f target ) {
-        /*
-         return new Vector3f(
-         target.getTranslationX() - getTranslationX(),
-         target.getTranslationY() - getTranslationY(),
-         target.getTranslationZ() - getTranslationZ() );
-         */
-        return new Vector3f(
+    public Vector3f createDisplacement ( Matrix4f target ) {
+        return getDisplacement( target, new Vector3f() );
+    }
+
+    public Vector3f getDisplacement ( Matrix4f target, Vector3f output ) {
+        return output.set(
                 target.data[TRANSLATION_X] - data[TRANSLATION_X],
                 target.data[TRANSLATION_Y] - data[TRANSLATION_Y],
                 target.data[TRANSLATION_Z] - data[TRANSLATION_Z] );
     }
 
-    public float translationDistance ( Vector3f v ) {
-        /*
-         return Vector3f.calcDistance(
-         getTranslationX(), getTranslationY(), getTranslationZ(),
-         v.getX(), v.getY(), v.getZ()
-         );
-         */
+    public float calcTranslationDistance ( Vector3f v ) {
         return Vector3f.distance(
                 data[TRANSLATION_X], data[TRANSLATION_Y], data[TRANSLATION_Z],
                 v.data[0], v.data[1], v.data[2]
         );
     }
 
-    public float translationDistance ( Matrix4f matrix4 ) {
-        /*
-         return Vector3f.calcDistance(
-         getTranslationX(), getTranslationY(), getTranslationZ(),
-         matrix4.getTranslationX(), matrix4.getTranslationY(), matrix4.getTranslationZ()
-         );
-         */
+    public float calcTranslationDistance ( Matrix4f matrix4 ) {
         return Vector3f.distance(
                 data[TRANSLATION_X], data[TRANSLATION_Y], data[TRANSLATION_Z],
                 matrix4.data[TRANSLATION_X], matrix4.data[TRANSLATION_Y], matrix4.data[TRANSLATION_Z]
         );
     }
 
-    public float translationDistanceSq ( Matrix4f matrix4 ) {
-        /*
-         return Vector3f.calcDistanceSq(
-         getTranslationX(), getTranslationY(), getTranslationZ(),
-         matrix4.getTranslationX(), matrix4.getTranslationY(), matrix4.getTranslationZ()
-         );
-         */
+    public float calcTranslationDistanceSq ( Matrix4f matrix4 ) {
         return Vector3f.distanceSq(
                 data[TRANSLATION_X], data[TRANSLATION_Y], data[TRANSLATION_Z],
                 matrix4.data[TRANSLATION_X], matrix4.data[TRANSLATION_Y], matrix4.data[TRANSLATION_Z]
