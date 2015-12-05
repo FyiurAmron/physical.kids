@@ -7,7 +7,15 @@ import vax.openglue.constants.PrimitiveType;
 
 public class WireBoxMesh extends Mesh {
     protected static final IntBuffer BOX_INDICES_BUF
-            = BufferUtils.createIntBuffer( 0, 1, 0, 2, 0, 4, 1, 3, 1, 5, 2, 3, 2, 6, 3, 7, 4, 5, 4, 6, 5, 7, 6, 7 );
+            = BufferUtils.createIntBuffer(
+                    0, 1, 0,
+                    2, 0, 4,
+                    1, 3, 1,
+                    5, 2, 3,
+                    2, 6, 3,
+                    7, 4, 5,
+                    4, 6, 5,
+                    7, 6, 7 );
     protected static final int OPT_X = 2, OPT_Y = 2, OPT_Z = 2;
 
     static protected MeshData buildWireBox ( float x, float y, float z ) {
@@ -26,8 +34,8 @@ public class WireBoxMesh extends Mesh {
         return new MeshData( fb, BufferUtils.createFloatBuffer( size ), BufferUtils.createFloatBuffer( size ), BOX_INDICES_BUF );
     }
 
-    public WireBoxMesh ( float size_x, float size_y, float size_z ) {
-        super( buildWireBox( size_x, size_y, size_z ) );
+    public WireBoxMesh ( float sizeX, float sizeY, float sizeZ ) {
+        super( buildWireBox( sizeX, sizeY, sizeZ ) );
         primitiveType = PrimitiveType.Lines;
     }
 

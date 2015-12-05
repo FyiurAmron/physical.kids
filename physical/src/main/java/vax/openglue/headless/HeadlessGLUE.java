@@ -202,6 +202,14 @@ public class HeadlessGLUE extends AbstractGLUE {
     }
 
     @Override
+    public void glBlendFunc ( int blendSourceEnum, int blendDestEnum ) {
+    }
+
+    @Override
+    public void glBlendFuncSeparate ( int blendRgbSourceEnum, int blendRgbDestEnum, int blendAlphaSourceEnum, int blendAlphaDestEnum ) {
+    }
+
+    @Override
     public int glGetError () {
         return OpenGLUE.Constants.GL_NO_ERROR;
     }

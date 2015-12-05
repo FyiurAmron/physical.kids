@@ -7,55 +7,54 @@ public class RectangleMesh extends Mesh {
     /**
      Creates a new OXY rectangle of given sizes, centered at OY axis.
 
-     @param size_x
-     @param size_y
+     @param sizeX
+     @param sizeY
      */
-    public RectangleMesh ( float size_x, float size_y ) {
-        this( new float[]{ -size_x / 2, 0, 0 }, new float[]{ size_x / 2, 0, 0 }, new float[]{ -size_x / 2, size_y, 0 }, 1, 1 );
+    public RectangleMesh ( float sizeX, float sizeY ) {
+        this( new float[]{ -sizeX / 2, 0, 0 }, new float[]{ sizeX / 2, 0, 0 }, new float[]{ -sizeX / 2, sizeY, 0 }, 1, 1 );
     }
 
     /**
      Creates a new rectangle orthogonal to given axis, centered at it.
 
      @param axis axis int as defined by SC3D_constant ( 0 == OX, 1 == OY, 2 == OZ )
-     @param size_1 first size (X or Y)
-     @param size_2 second size (Y or Z)
+     @param size1 first size (X or Y)
+     @param size2 second size (Y or Z)
      */
-    public RectangleMesh ( int axis, float size_1, float size_2 )
+    public RectangleMesh ( int axis, float size1, float size2 ) {
+        this( buildAxedRectangle( axis, size1, size2 ), 1, 1 );
+    }
 
-
-    {
-            this( buildAxedRectangle( axis, size_1, size_2 ), 1, 1 );
-        }
-
-        /* public rectangle( float[] p1, float[] p2, float[] p3 ) {
+    /* public rectangle( float[] p1, float[] p2, float[] p3 ) {
      super( prepare_rectangle_arrs( p1, p2, p3, 1, 1 ) );
      } */
-        public RectangleMesh ( float[][] ps, int seg_u, int seg_v ) {
-            this( ps[0], ps[1], ps[2], seg_u, seg_v );
-        }
+    public RectangleMesh ( float[][] ps, int segU, int segV ) {
+        this( ps[0], ps[1], ps[2], segU, segV );
+    }
 
-        public RectangleMesh ( float[] p1, float[] p2, float[] p3, int seg_u, int seg_v ) {
-            super( buildRectangle( p1, p2, p3, seg_u, seg_v ) );
-        }
+    public RectangleMesh ( float[] p1, float[] p2, float[] p3, int segU, int segV ) {
+        super( buildRectangle( p1, p2, p3, segU, segV ) );
+    }
 
-        static protected MeshData buildRectangle ( float[] p1, float[] p2, float[] p3, int seg_u, int seg_v ) {
-        int v_total = 2 * Mesh.VERTEX_COUNT * seg_u * seg_v; // 2 tris for each seg, 6 verts per seg
+    static protected MeshData buildRectangle ( float[] p1, float[] p2, float[] p3, int segU, int segV ) {
+        int v_total = 2 * Mesh.VERTEX_COUNT * segU * segV; // 2 tris for each seg, 6 verts per seg
         float[] vx = new float[Mesh.V_DIMS * v_total],
                 vn = new float[Mesh.VN_DIMS * v_total],
                 vt = new float[Mesh.VT_DIMS * v_total],
                 u = VectorFloat.createDiff( p2, p1 ),
                 v = VectorFloat.createDiff( p3, p1 );
+        float invSegU = 1.0f / segU, invSegV = 1.0f / segV;
 
         float u0, u1, v0, v1; // calculated in-place to avoid loss of precision for large surfaces
-        for( int i = 0, i_step = 2 * Mesh.VERTEX_COUNT * Mesh.V_DIMS, i_u = 0, k; i_u < seg_u; i_u++ ) {
-            for( int i_v = 0; i_v < seg_v; i_v++, i += i_step ) {
+        for( int i = 0, i_step = 2 * Mesh.VERTEX_COUNT * Mesh.V_DIMS, i_u = 0, k; i_u < segU; i_u++ ) {
+            for( int i_v = 0; i_v < segV; i_v++, i += i_step ) {
                 for( int j = 0; j < Mesh.V_DIMS; j++ ) {
                     k = i + j;
-                    u0 = u[j] * i_u / seg_u;
-                    u1 = u[j] * ( i_u + 1 ) / seg_u;
-                    v0 = v[j] * i_v / seg_v;
-                    v1 = v[j] * ( i_v + 1 ) / seg_v;
+                    float uU = u[j] * invSegU, vV = v[j] * invSegV;
+                    u0 = i_u * uU;
+                    u1 = u0 + uU;
+                    v0 = i_v * vV;
+                    v1 = v0 + vV;
 
                     vx[k] = p1[j] + u0 + v0;
                     vx[k + Mesh.V_DIMS] = p1[j] + u1 + v0;
@@ -79,27 +78,27 @@ public class RectangleMesh extends Mesh {
         return new MeshData( vx, vn, vt );
     }
 
-    static protected float[][] buildAxedRectangle ( int axis, float size_1, float size_2 ) {
-        size_1 *= 0.5f;
-        size_2 *= 0.5f;
+    static protected float[][] buildAxedRectangle ( int axis, float size1, float size2 ) {
+        size1 *= 0.5f;
+        size2 *= 0.5f;
         switch ( axis ) {
             case Vector3f.OX:
                 return new float[][]{
-                    new float[]{ 0, -size_1, -size_2 },
-                    new float[]{ 0, size_1, -size_2 },
-                    new float[]{ 0, -size_1, size_2 }
+                    new float[]{ 0, -size1, -size2 },
+                    new float[]{ 0, size1, -size2 },
+                    new float[]{ 0, -size1, size2 }
                 };
             case Vector3f.OY:
                 return new float[][]{
-                    new float[]{ -size_1, 0, -size_2 },
-                    new float[]{ size_1, 0, -size_2 },
-                    new float[]{ -size_1, 0, size_2 }
+                    new float[]{ -size1, 0, -size2 },
+                    new float[]{ size1, 0, -size2 },
+                    new float[]{ -size1, 0, size2 }
                 };
             case Vector3f.OZ:
                 return new float[][]{
-                    new float[]{ -size_1, -size_2, 0 },
-                    new float[]{ size_1, -size_2, 0 },
-                    new float[]{ -size_1, size_2, 0 }
+                    new float[]{ -size1, -size2, 0 },
+                    new float[]{ size1, -size2, 0 },
+                    new float[]{ -size1, size2, 0 }
                 };
         }
         throw new IllegalArgumentException( "unknown axis nr '" + axis + "'" );

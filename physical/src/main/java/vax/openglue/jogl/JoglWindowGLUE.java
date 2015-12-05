@@ -41,7 +41,8 @@ public class JoglWindowGLUE implements WindowGLUE {
             public void display ( GLAutoDrawable drawable ) {
                 cvel.display( ue.setGl( drawable ) );
                 if ( debug ) {
-                    glWindow.setTitle( settings.title + " @ " + animator.getLastFPS() + " FPS" );
+                    //glWindow.setTitle( settings.title + " @ " + animator.getLastFPS() + " FPS" );
+                    // https://jogamp.org/bugzilla/show_bug.cgi?id=1098
                 }
             }
 

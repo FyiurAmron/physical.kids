@@ -15,6 +15,8 @@ public class Main {
      */
     public static void main ( String[] args ) {
         // TODO code application logic here
+        System.setProperty( "jogamp.common.utils.locks.Lock.timeout", "" + Integer.MAX_VALUE ); // so we're actually able to debug
+
         SceneManager sm = new vax.physical.SceneManager( "new" );
         JoglWindowGLUE jwg = new vax.openglue.jogl.JoglWindowGLUE( sm,
                 new WindowGLUE.Settings( APP_NAME, 800, 600, 100, 100, false, false, false, true, false ) );

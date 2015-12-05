@@ -36,12 +36,19 @@ public class TextureParameters {
     //GL_GENERATE_MIPMAP // use glGenerateMipmap(targetEnum)
     };
 
-    public static final TextureParameters DEFAULT = new TextureParameters(
-            new Param( GL_TEXTURE_MIN_FILTER, GL_LINEAR ),
-            new Param( GL_TEXTURE_MAG_FILTER, GL_LINEAR ),
-            new Param( GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE ),
-            new Param( GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE )
-    );
+    public static final TextureParameters //
+            DEFAULT = new TextureParameters(
+                    new Param( GL_TEXTURE_MIN_FILTER, GL_LINEAR ),
+                    new Param( GL_TEXTURE_MAG_FILTER, GL_LINEAR ),
+                    new Param( GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE ),
+                    new Param( GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE )
+            ),
+            HQ_MIPMAP = new TextureParameters(
+                    new Param( GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR ),
+                    new Param( GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR ),
+                    new Param( GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE ),
+                    new Param( GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE )
+            );
 
     private final TIntObjectHashMap<ParamValue<?>> params = new TIntObjectHashMap<>( ALLOWED_PARAMS.length );
 

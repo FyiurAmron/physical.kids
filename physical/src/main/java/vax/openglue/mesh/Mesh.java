@@ -17,7 +17,7 @@ public class Mesh implements Renderable {
             VS_COUNT = 3;
     // v, vn, vt; 3 total.
     public static final float PI = (float) Math.PI, TWO_PI = 2 * PI;
-    protected static final String[][] OBJ_section_name = {
+    protected static final String[][] OBJ_SECTION_NAMES = {
         { "vertices", "v" },
         { "normals", "vn" },
         { "UVs", "vt" }
@@ -25,15 +25,51 @@ public class Mesh implements Renderable {
     protected static final float[] TRI_VT_PROTO = {
         1, 1, /* */ 1, 0, /* */ 0, 1
     };
-    protected static final float[] RECT_VT_PROTO = {
-        0, 1, /* */ 1, 1,/* */ 0, 0,
-        0, 0, /* */ 1, 1,/* */ 1, 0, //
+    // TODO FIXME implement parametrisation
+    protected static final float[] RECT_VT_PROTO = { // used by Rect & Prism
+    //    0, 1, /* */ 1, 1,/* */ 0, 0,
+    //    0, 0, /* */ 1, 1,/* */ 1, 0, //
+    //};
+        1, 1, /* */ 0, 1,/* */ 1, 0,
+        1, 0, /* */ 0, 1,/* */ 0, 0, //
     };
 
     protected final Matrix4f transform = new Matrix4f( true );
 
     public Action<Mesh> updateAction;
+    public Texture texture;
+    protected PrimitiveType primitiveType = PrimitiveType.Triangles;
+    protected int vaoHandle,
+            positionVboHandle,
+            normalVboHandle,
+            uvsVboHandle,
+            eboHandle;
 
+    protected final MeshData meshData;
+
+    /*
+     c-tors
+     */
+    public Mesh ( MeshData meshData ) {
+        this.meshData = meshData;
+    }
+
+    public Mesh ( MeshData meshData, Matrix4f sourceTransform ) {
+        this.meshData = meshData;
+        transform.set( sourceTransform );
+    }
+
+    public Mesh ( float[] vertices, float[] normals, float[] uvs, int[] indices ) {
+        this( new MeshData( vertices, normals, uvs, indices ) );
+    }
+
+    public Mesh ( FloatBuffer vertices, FloatBuffer normals, FloatBuffer uvs, IntBuffer indices ) {
+        this( new MeshData( vertices.array(), normals.array(), uvs.array(), indices.array() ) );
+    }
+
+    /*
+     getters/setters
+     */
     public Action<Mesh> getUpdateAction () {
         return updateAction;
     }
@@ -46,8 +82,6 @@ public class Mesh implements Renderable {
         return transform;
     }
 
-    public Texture texture;
-
     public Texture getTexture () {
         return texture;
     }
@@ -56,47 +90,13 @@ public class Mesh implements Renderable {
         this.texture = Texture;
     }
 
-    protected PrimitiveType primitiveType = PrimitiveType.Triangles;
-
-    public PrimitiveType glPrimitiveType;
-
-    public void setGlPrimitiveType ( PrimitiveType glPrimitiveType ) {
-        this.glPrimitiveType = glPrimitiveType;
-    }
-
-    public PrimitiveType getGlPrimitiveType () {
-        return glPrimitiveType;
-    }
-
-    protected int vaoHandle,
-            positionVboHandle,
-            normalVboHandle,
-            uvsVboHandle,
-            eboHandle;
-
-    protected final MeshData modelData;
-
     public MeshData getModelData () {
-        return modelData;
+        return meshData;
     }
 
-    public Mesh ( MeshData modelData ) {
-        this.modelData = modelData;
-    }
-
-    public Mesh ( MeshData modelData, Matrix4f sourceTransform ) {
-        this.modelData = modelData;
-        transform.set( sourceTransform );
-    }
-
-    public Mesh ( float[] vertices, float[] normals, float[] uvs, int[] indices ) {
-        this( new MeshData( vertices, normals, uvs, indices ) );
-    }
-
-    public Mesh ( FloatBuffer vertices, FloatBuffer normals, FloatBuffer uvs, IntBuffer indices ) {
-        this( new MeshData( vertices.array(), normals.array(), uvs.array(), indices.array() ) );
-    }
-
+    /*
+     interface implementation
+     */
     @Override
     public void update ( OpenGLUE gl ) {
         if ( updateAction != null ) {
@@ -111,8 +111,12 @@ public class Mesh implements Renderable {
         }
         gl.glBindVertexArray( vaoHandle );
 
-        gl.glDrawElements( primitiveType.getValue(), modelData.getIndices().length, OpenGL.Constants.GL_UNSIGNED_INT, 0 );
+        gl.glDrawElements(primitiveType.getValue(), meshData.getIndices().length, OpenGL.Constants.GL_UNSIGNED_INT, 0 );
     }
+
+    /*
+     other methods
+     */
 
     public int genBuffer ( OpenGLUE gl, int bufferTarget, float[] data ) {
         int handle = gl.glGenBuffer();
@@ -130,17 +134,17 @@ public class Mesh implements Renderable {
         return handle;
     }
 
-    void enableAttribute ( OpenGLUE gl, int attribNr, int handle, int size ) {
+    private void enableAttribute ( OpenGLUE gl, int attribNr, int handle, int size ) {
         gl.glEnableVertexAttribArray( attribNr );
         gl.glBindBuffer( OpenGL.Constants.GL_ARRAY_BUFFER, handle );
         gl.glVertexAttribPointer( attribNr, size, OpenGL.Constants.GL_FLOAT, true, size * Float.BYTES, 0 );
     }
 
     public void init ( OpenGLUE gl ) {
-        positionVboHandle = genBuffer( gl, OpenGL.Constants.GL_ARRAY_BUFFER, modelData.getVertices() );
-        normalVboHandle = genBuffer( gl, OpenGL.Constants.GL_ARRAY_BUFFER, modelData.getNormals() );
-        uvsVboHandle = genBuffer( gl, OpenGL.Constants.GL_ARRAY_BUFFER, modelData.getUvs() );
-        eboHandle = genBuffer( gl, OpenGL.Constants.GL_ELEMENT_ARRAY_BUFFER, modelData.getIndices() );
+        positionVboHandle = genBuffer(gl, OpenGL.Constants.GL_ARRAY_BUFFER, meshData.getVertices() );
+        normalVboHandle = genBuffer(gl, OpenGL.Constants.GL_ARRAY_BUFFER, meshData.getNormals() );
+        uvsVboHandle = genBuffer(gl, OpenGL.Constants.GL_ARRAY_BUFFER, meshData.getUvs() );
+        eboHandle = genBuffer(gl, OpenGL.Constants.GL_ELEMENT_ARRAY_BUFFER, meshData.getIndices() );
         gl.glBindBuffer( BufferTarget.ArrayBuffer, 0 );
         gl.glBindBuffer( BufferTarget.ElementArrayBuffer, 0 );
 
@@ -154,15 +158,15 @@ public class Mesh implements Renderable {
     }
 
     protected void writeOBJ_buf ( DataOutputStream dos, int bufNr ) throws IOException {
-        FloatBuffer fb = FloatBuffer.wrap( modelData.getData()[bufNr] );
-        dos.writeBytes( "#\n# " + OBJ_section_name[bufNr][0] + "\n#\n\n" );
-        String prefix = OBJ_section_name[bufNr][1] + " ";
+        FloatBuffer fb = FloatBuffer.wrap(meshData.getData()[bufNr] );
+        dos.writeBytes( "#\n# " + OBJ_SECTION_NAMES[bufNr][0] + "\n#\n\n" );
+        String prefix = OBJ_SECTION_NAMES[bufNr][1] + " ";
         if ( bufNr != 2 ) {
-            for( int j = 0; j < modelData.getVertexCount(); j++ ) {
+            for( int j = 0; j < meshData.getVertexCount(); j++ ) {
                 dos.writeBytes( prefix + fb.get() + " " + fb.get() + " " + fb.get() + "\n" );
             }
         } else {
-            for( int j = 0; j < modelData.getVertexCount(); j++ ) {
+            for( int j = 0; j < meshData.getVertexCount(); j++ ) {
                 dos.writeBytes( prefix + fb.get() + " " + fb.get() + "\n" );
             }
         }
@@ -173,8 +177,8 @@ public class Mesh implements Renderable {
         try (FileOutputStream fos = new FileOutputStream( filename + ".obj" );
                 DataOutputStream dos = new DataOutputStream( fos )) {
             dos.writeBytes( "# created by " + Main.APP_NAME + "\n" );
-            int tri_cnt = modelData.getVertexCount() / VERTEX_COUNT;
-            dos.writeBytes( "# " + modelData.getVertexCount() + " vertex total == normals == UVs\n"
+            int tri_cnt = meshData.getVertexCount() / VERTEX_COUNT;
+            dos.writeBytes("# " + meshData.getVertexCount() + " vertex total == normals == UVs\n"
                     + "# " + tri_cnt + " tris == faces\n\n"
                     + "mtllib " + filename + ".mtl\nusemtl " + filename + "\n\n"
                     + "#\n# " + getClass() + "\n#\n\n" );
