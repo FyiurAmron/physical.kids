@@ -28,39 +28,123 @@ public class HeadlessGLUE extends AbstractGLUE {
     }
 
     @Override
-    public void glUniform1f ( int uniformLocation, float value ) {
+    public void glUniform1f ( int location, float v0 ) {
     }
 
     @Override
-    public void glUniform2fv ( int uniformLocation, int count, float[] data, int offset ) {
+    public void glUniform1fv ( int location, int count, FloatBuffer value ) {
     }
 
     @Override
-    public void glUniform3fv ( int uniformLocation, int count, float[] data, int offset ) {
+    public void glUniform1fv ( int location, int count, float[] value, int valueOffset ) {
     }
 
     @Override
-    public void glUniform4fv ( int uniformLocation, int count, float[] data, int offset ) {
+    public void glUniform1i ( int location, int v0 ) {
     }
 
     @Override
-    public void glUniformMatrix4fv ( int uniformLocation, int count, boolean transpose, float[] data, int offset ) {
+    public void glUniform1iv ( int location, int count, IntBuffer value ) {
     }
 
     @Override
-    public void glUniform2fv ( int uniformLocation, int count, FloatBuffer data ) {
+    public void glUniform1iv ( int location, int count, int[] value, int valueOffset ) {
     }
 
     @Override
-    public void glUniform3fv ( int uniformLocation, int count, FloatBuffer data ) {
+    public void glUniform2f ( int location, float v0, float v1 ) {
     }
 
     @Override
-    public void glUniform4fv ( int uniformLocation, int count, FloatBuffer data ) {
+    public void glUniform2fv ( int location, int count, FloatBuffer data ) {
     }
 
     @Override
-    public void glUniformMatrix4fv ( int uniformLocation, int count, boolean transpose, FloatBuffer data ) {
+    public void glUniform2fv ( int location, int count, float[] value, int valueOffset ) {
+    }
+
+    @Override
+    public void glUniform2i ( int location, int v0, int v1 ) {
+    }
+
+    @Override
+    public void glUniform2iv ( int location, int count, IntBuffer value ) {
+    }
+
+    @Override
+    public void glUniform2iv ( int location, int count, int[] value, int valueOffset ) {
+    }
+
+    @Override
+    public void glUniform3f ( int location, float v0, float v1, float v2 ) {
+    }
+
+    @Override
+    public void glUniform3fv ( int location, int count, FloatBuffer value ) {
+    }
+
+    @Override
+    public void glUniform3fv ( int location, int count, float[] value, int offset ) {
+    }
+
+    @Override
+    public void glUniform3i ( int location, int v0, int v1, int v2 ) {
+    }
+
+    @Override
+    public void glUniform3iv ( int location, int count, IntBuffer value ) {
+    }
+
+    @Override
+    public void glUniform3iv ( int location, int count, int[] value, int valueOffset ) {
+    }
+
+    @Override
+    public void glUniform4f ( int location, float v0, float v1, float v2, float v3 ) {
+    }
+
+    @Override
+    public void glUniform4fv ( int location, int count, FloatBuffer value ) {
+    }
+
+    @Override
+    public void glUniform4fv ( int location, int count, float[] value, int valueOffset ) {
+    }
+
+    @Override
+    public void glUniform4i ( int location, int v0, int v1, int v2, int v3 ) {
+    }
+
+    @Override
+    public void glUniform4iv ( int location, int count, IntBuffer value ) {
+    }
+
+    @Override
+    public void glUniform4iv ( int location, int count, int[] value, int valueOffset ) {
+    }
+
+    @Override
+    public void glUniformMatrix2fv ( int location, int count, boolean transpose, FloatBuffer value ) {
+    }
+
+    @Override
+    public void glUniformMatrix2fv ( int location, int count, boolean transpose, float[] value, int valueOffset ) {
+    }
+
+    @Override
+    public void glUniformMatrix3fv ( int location, int count, boolean transpose, FloatBuffer value ) {
+    }
+
+    @Override
+    public void glUniformMatrix3fv ( int location, int count, boolean transpose, float[] value, int valueOffset ) {
+    }
+
+    @Override
+    public void glUniformMatrix4fv ( int location, int count, boolean transpose, FloatBuffer value ) {
+    }
+
+    @Override
+    public void glUniformMatrix4fv ( int location, int count, boolean transpose, float[] value, int valueOffset ) {
     }
 
     @Override

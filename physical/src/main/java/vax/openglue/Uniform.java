@@ -15,24 +15,28 @@ public interface Uniform {
 
     String toShaderString ();
 
+    static U2i from ( String name, Vector2i value ) {
+        return new U2i( name, value );
+    }
+
     static U1f from ( String name, Value1f value ) {
-        return new AbstractUniform.U1f( name, value );
+        return new U1f( name, value );
     }
 
     static U2f from ( String name, Vector2f value ) {
-        return new AbstractUniform.U2f( name, value );
+        return new U2f( name, value );
     }
 
     static U3f from ( String name, Vector3f value ) {
-        return new AbstractUniform.U3f( name, value );
+        return new U3f( name, value );
     }
 
     static U4f from ( String name, Vector4f value ) {
-        return new AbstractUniform.U4f( name, value );
+        return new U4f( name, value );
     }
 
     static UMatrix4f from ( String name, Matrix4f value ) {
-        return new AbstractUniform.UMatrix4f( name, value );
+        return new UMatrix4f( name, value );
     }
 
     abstract class AbstractUniform<T> implements Uniform {
@@ -63,6 +67,22 @@ public interface Uniform {
         @Override
         public String toShaderString () {
             return "uniform " + getPrefix() + " " + getName() + ";\n";
+        }
+    }
+
+    class U2i extends AbstractUniform<Vector2i> {
+        public U2i ( String name, Vector2i value ) {
+            super( name, value );
+        }
+
+        @Override
+        public void updateGl ( OpenGLUE gl, int uniformLocation ) {
+            gl.glUniform2iv( uniformLocation, value.getData() );
+        }
+
+        @Override
+        public String getPrefix () {
+            return "ivec2";
         }
     }
 

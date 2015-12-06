@@ -22,11 +22,11 @@ public class Mesh implements Renderable {
         { "normals", "vn" },
         { "UVs", "vt" }
     };
-    protected static final float[] TRI_VT_PROTO = {
+    public static final float[] TRI_VT_PROTO = {
         1, 1, /* */ 1, 0, /* */ 0, 1
     };
     // used by Rect & Prism
-    protected static final float[] //
+    public static final float[] //
             RECT_VT_PROTO_1 = {
                 0, 1, /* */ 1, 1,/* */ 0, 0,
                 0, 0, /* */ 1, 1,/* */ 1, 0, //

@@ -8,9 +8,24 @@ import vax.openglue.shader.ShaderProgram;
  @author toor
  */
 public class UniformManager /* implements LifecycleListenerGL */ {
+    private final static int GL_UNKNOWN_UNIFORM = -1;
+
     private final ArrayList<Uniform> managedUniforms = new ArrayList<>();
     private final HashMap<Uniform, Integer> uniformMap = new HashMap<>();
     private final HashMap<String, Uniform> uniformNameMap = new HashMap<>();
+
+    private boolean enableWarnings;
+
+    public UniformManager () {
+    }
+
+    public boolean isEnableWarnings () {
+        return enableWarnings;
+    }
+
+    public void setEnableWarnings ( boolean enableWarnings ) {
+        this.enableWarnings = enableWarnings;
+    }
 
     /*
      private final int shaderProgramHandle;
@@ -53,7 +68,13 @@ public class UniformManager /* implements LifecycleListenerGL */ {
             int uniformLocation = gl.glGetUniformLocation( shaderProgramHandle, uniform.getName() );
             uniformMap.put( uniform, uniformLocation );
             uniformNameMap.put( uniform.getName(), uniform );
-            uniform.updateGl( gl, uniformLocation );
+            if ( uniformLocation == GL_UNKNOWN_UNIFORM ) {
+                if ( enableWarnings ) {
+                    throw new GLException( "uniform not found: '" + uniform + "'" ); // TODO logger.warning() actually
+                }
+            } else {
+                uniform.updateGl( gl, uniformLocation ); // note: no-op on location == -1 by def
+            }
         }
     }
 

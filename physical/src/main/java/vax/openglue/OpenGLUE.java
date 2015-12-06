@@ -1,6 +1,7 @@
 package vax.openglue;
 
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import vax.math.Vector4f;
 import vax.openglue.constants.*;
@@ -78,20 +79,92 @@ public interface OpenGLUE extends OpenGL {
         glBindBuffer( bufferTarget.getValue(), handle );
     }
 
-    default void glUniform2fv ( int uniformLocation, float[] data ) {
-        glUniform2fv( uniformLocation, 1, data, 0 );
+    default void glUniform1fv ( int location, FloatBuffer value ) {
+        glUniform1fv( location, 1, value );
     }
 
-    default void glUniform3fv ( int uniformLocation, float[] data ) {
-        glUniform3fv( uniformLocation, 1, data, 0 );
+    default void glUniform1fv ( int location, float[] value ) {
+        glUniform1fv( location, 1, value, 0 );
     }
 
-    default void glUniform4fv ( int uniformLocation, float[] data ) {
-        glUniform4fv( uniformLocation, 1, data, 0 );
+    default void glUniform1iv ( int location, IntBuffer value ) {
+        glUniform1iv( location, 1, value );
     }
 
-    default void glUniformMatrix4fv ( int uniformLocation, float[] data ) {
-        glUniformMatrix4fv( uniformLocation, 1, false, data, 0 );
+    default void glUniform1iv ( int location, int[] data ) {
+        glUniform1iv( location, 1, data, 0 );
+    }
+
+    default void glUniform2fv ( int location, FloatBuffer value ) {
+        glUniform2fv( location, 1, value );
+    }
+
+    default void glUniform2fv ( int location, float[] data ) {
+        glUniform2fv( location, 1, data, 0 );
+    }
+
+    default void glUniform2iv ( int location, IntBuffer value ) {
+        glUniform2iv( location, 1, value );
+    }
+
+    default void glUniform2iv ( int location, int[] data ) {
+        glUniform2iv( location, 1, data, 0 );
+    }
+
+    default void glUniform3fv ( int location, FloatBuffer value ) {
+        glUniform3fv( location, 1, value );
+    }
+
+    default void glUniform3fv ( int location, float[] data ) {
+        glUniform3fv( location, 1, data, 0 );
+    }
+
+    default void glUniform3iv ( int location, IntBuffer value ) {
+        glUniform3iv( location, 1, value );
+    }
+
+    default void glUniform3iv ( int location, int[] data ) {
+        glUniform3iv( location, 1, data, 0 );
+    }
+
+    default void glUniform4fv ( int location, FloatBuffer value ) {
+        glUniform4fv( location, 1, value );
+    }
+
+    default void glUniform4fv ( int location, float[] data ) {
+        glUniform4fv( location, 1, data, 0 );
+    }
+
+    default void glUniform4iv ( int location, IntBuffer value ) {
+        glUniform4iv( location, 1, value );
+    }
+
+    default void glUniform4iv ( int location, int[] data ) {
+        glUniform4iv( location, 1, data, 0 );
+    }
+
+    default void glUniformMatrix2fv ( int location, FloatBuffer value ) {
+        glUniformMatrix2fv( location, 1, false, value );
+    }
+
+    default void glUniformMatrix2fv ( int location, float[] data ) {
+        glUniformMatrix2fv( location, 1, false, data, 0 );
+    }
+
+    default void glUniformMatrix3fv ( int location, FloatBuffer value ) {
+        glUniformMatrix3fv( location, 1, false, value );
+    }
+
+    default void glUniformMatrix3fv ( int location, float[] data ) {
+        glUniformMatrix3fv( location, 1, false, data, 0 );
+    }
+
+    default void glUniformMatrix4fv ( int location, FloatBuffer value ) {
+        glUniformMatrix4fv( location, 1, false, value );
+    }
+
+    default void glUniformMatrix4fv ( int location, float[] data ) {
+        glUniformMatrix4fv( location, 1, false, data, 0 );
     }
 
     default void glGetShaderiv ( int shaderHandle, int paramEnum, int[] params ) {

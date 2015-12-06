@@ -49,48 +49,153 @@ public class JoglUe3 extends AbstractGLUE {
     }
 
     @Override
-    public void glUniform1f ( int uniformLocation, float value ) {
-        gl.glUniform1f( uniformLocation, value );
+    public void glUniform1f ( int location, float v0 ) {
+        gl.glUniform1f( location, v0 );
     }
 
     @Override
-    public void glUniform2fv ( int uniformLocation, int i, float[] data, int offset ) {
-        gl.glUniform2fv( uniformLocation, i, data, offset );
+    public void glUniform1fv ( int location, int count, FloatBuffer value ) {
+        gl.glUniform1fv( location, count, value );
     }
 
     @Override
-    public void glUniform3fv ( int uniformLocation, int i, float[] data, int offset ) {
-        gl.glUniform3fv( uniformLocation, i, data, offset );
+    public void glUniform1fv ( int location, int count, float[] value, int valueOffset ) {
+        gl.glUniform1fv( location, count, value, valueOffset );
     }
 
     @Override
-    public void glUniform4fv ( int uniformLocation, int i, float[] data, int offset ) {
-        gl.glUniform4fv( uniformLocation, i, data, offset );
+    public void glUniform1i ( int location, int v0 ) {
+        gl.glUniform1i( location, v0 );
     }
 
     @Override
-    public void glUniformMatrix4fv ( int uniformLocation, int count, boolean transpose, float[] data, int offset ) {
-        gl.glUniformMatrix4fv( uniformLocation, count, transpose, data, offset );
+    public void glUniform1iv ( int location, int count, IntBuffer value ) {
+        gl.glUniform1iv( location, count, value );
     }
 
     @Override
-    public void glUniform2fv ( int uniformLocation, int count, FloatBuffer data ) {
-        gl.glUniform2fv( count, count, data );
+    public void glUniform1iv ( int location, int count, int[] value, int valueOffset ) {
+        gl.glUniform1iv( location, count, value, valueOffset );
     }
 
     @Override
-    public void glUniform3fv ( int uniformLocation, int count, FloatBuffer data ) {
-        gl.glUniform3fv( count, count, data );
+    public void glUniform2f ( int location, float v0, float v1 ) {
+        gl.glUniform2f( location, v0, v1 );
     }
 
     @Override
-    public void glUniform4fv ( int uniformLocation, int count, FloatBuffer data ) {
-        gl.glUniform3fv( count, count, data );
+    public void glUniform2fv ( int location, int count, FloatBuffer data ) {
+        gl.glUniform2fv( location, count, data );
     }
 
     @Override
-    public void glUniformMatrix4fv ( int uniformLocation, int count, boolean transpose, FloatBuffer data ) {
-        gl.glUniformMatrix4fv( uniformLocation, count, transpose, data );
+    public void glUniform2fv ( int location, int count, float[] value, int valueOffset ) {
+        gl.glUniform2fv( location, count, value, valueOffset );
+    }
+
+    @Override
+    public void glUniform2i ( int location, int v0, int v1 ) {
+        gl.glUniform2i( location, v0, v1 );
+    }
+
+    @Override
+    public void glUniform2iv ( int location, int count, IntBuffer value ) {
+        gl.glUniform2iv( location, count, value );
+    }
+
+    @Override
+    public void glUniform2iv ( int location, int count, int[] value, int valueOffset ) {
+        gl.glUniform2iv( location, count, value, valueOffset );
+    }
+
+    @Override
+    public void glUniform3f ( int location, float v0, float v1, float v2 ) {
+        gl.glUniform3f( location, v0, v1, v2 );
+    }
+
+    @Override
+    public void glUniform3fv ( int location, int count, FloatBuffer value ) {
+        gl.glUniform3fv( location, count, value );
+    }
+
+    @Override
+    public void glUniform3fv ( int location, int count, float[] value, int offset ) {
+        gl.glUniform3fv( location, count, value, offset );
+    }
+
+    @Override
+    public void glUniform3i ( int location, int v0, int v1, int v2 ) {
+        gl.glUniform3i( location, v0, v1, v2 );
+    }
+
+    @Override
+    public void glUniform3iv ( int location, int count, IntBuffer value ) {
+        gl.glUniform3iv( location, count, value );
+    }
+
+    @Override
+    public void glUniform3iv ( int location, int count, int[] value, int valueOffset ) {
+        gl.glUniform3iv( location, count, value, valueOffset );
+    }
+
+    @Override
+    public void glUniform4f ( int location, float v0, float v1, float v2, float v3 ) {
+        gl.glUniform4f( location, v0, v1, v2, v3 );
+    }
+
+    @Override
+    public void glUniform4fv ( int location, int count, FloatBuffer value ) {
+        gl.glUniform4fv( location, count, value );
+    }
+
+    @Override
+    public void glUniform4fv ( int location, int count, float[] value, int valueOffset ) {
+        gl.glUniform4fv( location, count, value, valueOffset );
+    }
+
+    @Override
+    public void glUniform4i ( int location, int v0, int v1, int v2, int v3 ) {
+        gl.glUniform4i( location, v0, v1, v2, v3 );
+    }
+
+    @Override
+    public void glUniform4iv ( int location, int count, IntBuffer value ) {
+        gl.glUniform4iv( location, count, value );
+    }
+
+    @Override
+    public void glUniform4iv ( int location, int count, int[] value, int valueOffset ) {
+        gl.glUniform4iv( location, count, value, valueOffset );
+    }
+
+    @Override
+    public void glUniformMatrix2fv ( int location, int count, boolean transpose, FloatBuffer value ) {
+        gl.glUniformMatrix2fv( location, count, transpose, value );
+    }
+
+    @Override
+    public void glUniformMatrix2fv ( int location, int count, boolean transpose, float[] value, int valueOffset ) {
+        gl.glUniformMatrix2fv( location, count, transpose, value, valueOffset );
+    }
+
+    @Override
+    public void glUniformMatrix3fv ( int location, int count, boolean transpose, FloatBuffer value ) {
+        gl.glUniformMatrix3fv( location, count, transpose, value );
+    }
+
+    @Override
+    public void glUniformMatrix3fv ( int location, int count, boolean transpose, float[] value, int valueOffset ) {
+        gl.glUniformMatrix3fv( location, count, transpose, value, valueOffset );
+    }
+
+    @Override
+    public void glUniformMatrix4fv ( int location, int count, boolean transpose, FloatBuffer value ) {
+        gl.glUniformMatrix4fv( location, count, transpose, value );
+    }
+
+    @Override
+    public void glUniformMatrix4fv ( int location, int count, boolean transpose, float[] value, int valueOffset ) {
+        gl.glUniformMatrix4fv( location, count, transpose, value, valueOffset );
     }
 
     @Override
