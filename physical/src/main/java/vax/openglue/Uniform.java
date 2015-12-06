@@ -7,7 +7,7 @@ import vax.math.*;
  @author toor
  */
 public interface Uniform {
-    void updateGl ( OpenGLUE gl, int uniformLocation );
+    void updateGL ( OpenGLUE gl, int uniformLocation );
 
     String getName ();
 
@@ -54,7 +54,7 @@ public interface Uniform {
         }
 
         @Override
-        abstract public void updateGl ( OpenGLUE gl, int uniformLocation );
+        abstract public void updateGL ( OpenGLUE gl, int uniformLocation );
 
         @Override
         abstract public String getPrefix ();
@@ -76,8 +76,8 @@ public interface Uniform {
         }
 
         @Override
-        public void updateGl ( OpenGLUE gl, int uniformLocation ) {
-            gl.glUniform2iv( uniformLocation, value.getData() );
+        public void updateGL ( OpenGLUE gl, int uniformLocation ) {
+            gl.glUniform2i( uniformLocation, gl.ueGetGLUtils().wrap( value.getData() ) );
         }
 
         @Override
@@ -92,8 +92,8 @@ public interface Uniform {
         }
 
         @Override
-        public void updateGl ( OpenGLUE gl, int uniformLocation ) {
-            gl.glUniform1f( uniformLocation, value.getValue() );
+        public void updateGL ( OpenGLUE gl, int uniformLocation ) {
+            gl.glUniform1f( uniformLocation, gl.ueGetGLUtils().wrap( value.getValue() ) );
         }
 
         @Override
@@ -108,8 +108,8 @@ public interface Uniform {
         }
 
         @Override
-        public void updateGl ( OpenGLUE gl, int uniformLocation ) {
-            gl.glUniform2fv( uniformLocation, value.getData() );
+        public void updateGL ( OpenGLUE gl, int uniformLocation ) {
+            gl.glUniform2f( uniformLocation, gl.ueGetGLUtils().wrap( value.getData() ) );
         }
 
         @Override
@@ -124,8 +124,8 @@ public interface Uniform {
         }
 
         @Override
-        public void updateGl ( OpenGLUE gl, int uniformLocation ) {
-            gl.glUniform3fv( uniformLocation, value.getData() );
+        public void updateGL ( OpenGLUE gl, int uniformLocation ) {
+            gl.glUniform3f( uniformLocation, gl.ueGetGLUtils().wrap( value.getData() ) );
         }
 
         @Override
@@ -140,8 +140,8 @@ public interface Uniform {
         }
 
         @Override
-        public void updateGl ( OpenGLUE gl, int uniformLocation ) {
-            gl.glUniform4fv( uniformLocation, value.getData() );
+        public void updateGL ( OpenGLUE gl, int uniformLocation ) {
+            gl.glUniform4f( uniformLocation, gl.ueGetGLUtils().wrap( value.getData() ) );
         }
 
         @Override
@@ -156,8 +156,8 @@ public interface Uniform {
         }
 
         @Override
-        public void updateGl ( OpenGLUE gl, int uniformLocation ) {
-            gl.glUniformMatrix4fv( uniformLocation, value.getData() );
+        public void updateGL ( OpenGLUE gl, int uniformLocation ) {
+            gl.glUniformMatrix4f( uniformLocation, gl.ueGetGLUtils().wrap( value.getData() ) );
         }
 
         @Override

@@ -47,6 +47,7 @@ public class BufferUtils {
         while( byteBuffer.hasRemaining() ) {
             sb.append( (char) byteBuffer.get() );
         }
+        byteBuffer.rewind();
         return sb.toString();
     }
 

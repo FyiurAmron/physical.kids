@@ -35,6 +35,10 @@ public class VectorInt {
         return data;
     }
 
+    public int getDataLength () {
+        return data.length;
+    }
+
     @Deprecated
     public void setData ( int[] data ) {
         this.data = data;

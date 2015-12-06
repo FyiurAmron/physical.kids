@@ -30,7 +30,7 @@ public class WireBoxMesh extends Mesh {
                 }
             }
         }
-        fb.rewind();
+        fb.flip();
         return new MeshData( fb, BufferUtils.createFloatBuffer( size ), BufferUtils.createFloatBuffer( size ), BOX_INDICES_BUF );
     }
 

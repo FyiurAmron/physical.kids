@@ -8,11 +8,19 @@ if (!hasProperty('mainClass')) {
 
 ext {
     joglVersion = "+"
+    lwjglVersion = "+"
+    //lwjglVersion = "3.0.0a"
     //joglVersion = "2.3.2"
-    platform = "windows-amd64"
-    //platform = "windows-i586"
-    //platform = "linux-amd64"
-    //platform = "macosx-universal"
+
+    platformJogl = "windows-amd64"
+    //platformJogl = "windows-i586"
+    platformLwjgl = "windows"
+
+    //platformJogl = "linux-amd64"
+    //platformLwjgl = "linux"
+
+    //platformJogl = "macosx-universal"
+    //platformLwjgl = "osx"
 }
 
 dependencies {
@@ -23,21 +31,24 @@ dependencies {
     compile "org.jogamp.gluegen:gluegen-rt:$joglVersion"
     //compile "org.jogamp.gluegen:gluegen-rt-main:$joglVersion"
 
-    compile "org.jogamp.gluegen:gluegen-rt:$joglVersion:natives-$platform"
+    compile "org.jogamp.gluegen:gluegen-rt:$joglVersion:natives-$platformJogl"
 
     compile "org.jogamp.jogl:jogl-all:$joglVersion"
     //compile "org.jogamp.jogl:jogl-all-main:$joglVersion"
 
-    compile "org.jogamp.jogl:jogl-all:$joglVersion:natives-$platform"
+    compile "org.jogamp.jogl:jogl-all:$joglVersion:natives-$platformJogl"
 
     compile "org.jogamp.jogl:newt:$joglVersion"
     //compile "org.jogamp.jogl:newt-main:$joglVersion"
-    compile "org.jogamp.jogl:newt:$joglVersion:natives-$platform"
+    compile "org.jogamp.jogl:newt:$joglVersion:natives-$platformJogl"
 
     compile "org.jogamp.jogl:nativewindow:$joglVersion"
-    compile "org.jogamp.jogl:nativewindow:$joglVersion:natives-$platform"
+    compile "org.jogamp.jogl:nativewindow:$joglVersion:natives-$platformJogl"
 
-    //   note that JUnit should have already been added in parent.gradle.
-    //   By default, only the Maven Central Repository is specified in
-    //   parent.gradle.
+    compile "org.lwjgl:lwjgl:${lwjglVersion}"
+    compile "org.lwjgl:lwjgl-platform:$lwjglVersion:natives-$platformLwjgl"
+
+    //compile "ar.com.hjg:pngj:2.1.0" // NOTE we could probably extract image handlers from libGDX (Pixmap)
+
+    // note that JUnit has already been added in parent.gradle.
 }
