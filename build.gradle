@@ -4,6 +4,7 @@ apply plugin: 'base' // To add "clean" task to the root project.
 
 repositories {
     mavenCentral()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 subprojects {

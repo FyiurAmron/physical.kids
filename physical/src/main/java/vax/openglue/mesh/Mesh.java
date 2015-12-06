@@ -218,7 +218,7 @@ public class Mesh implements Renderable {
         if ( positionVboHandle == 0 ) {
             return; // init() not called yet
         }
-        gl.glDeleteBuffers( new int[]{ positionVboHandle, normalVboHandle, uvsVboHandle, eboHandle } );
+        gl.glDeleteBuffers( gl.ueGetGLUtils().wrap( positionVboHandle, normalVboHandle, uvsVboHandle, eboHandle ) );
         gl.glDeleteVertexArray( vaoHandle );
     }
 }

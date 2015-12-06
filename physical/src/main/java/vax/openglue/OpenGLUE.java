@@ -1,8 +1,6 @@
 package vax.openglue;
 
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import java.nio.*;
 import vax.math.Vector4f;
 import vax.openglue.constants.*;
 
@@ -49,20 +47,18 @@ public interface OpenGLUE extends OpenGL {
     default String ueGetProgramInfoLog ( int shaderProgramHandle ) {
         GLUtils glu = ueGetGLUtils();
         ByteBuffer bb = glu.getLogBuffer();
-        IntBuffer lbsb = glu.getLogBufferSizeBuffer();
+        IntBuffer lbsb = glu.getTempIntBuffer();
         glGetProgramInfoLog( shaderProgramHandle, bb.capacity(), lbsb, bb );
-        lbsb.rewind();
-        bb.limit( lbsb.get() );
+        lbsb.flip();
         return ueGetLogBufferContent();
     }
 
     default String ueGetShaderInfoLog ( int shaderHandle ) {
         GLUtils glu = ueGetGLUtils();
         ByteBuffer bb = glu.getLogBuffer();
-        IntBuffer lbsb = glu.getLogBufferSizeBuffer();
+        IntBuffer lbsb = glu.getTempIntBuffer();
         glGetShaderInfoLog( shaderHandle, bb.capacity(), lbsb, bb );
-        lbsb.rewind();
-        bb.limit( lbsb.get() );
+        lbsb.flip();
         return ueGetLogBufferContent();
     }
 
@@ -79,259 +75,244 @@ public interface OpenGLUE extends OpenGL {
         glBindBuffer( bufferTarget.getValue(), handle );
     }
 
-    default void glUniform1fv ( int location, FloatBuffer value ) {
+    default void glUniform1f ( int location, FloatBuffer value ) {
         glUniform1fv( location, 1, value );
     }
 
-    default void glUniform1fv ( int location, float[] value ) {
-        glUniform1fv( location, 1, value, 0 );
+    default void glUniform1fv ( int location, FloatBuffer value ) {
+        glUniform1fv( location, value.remaining(), value );
     }
 
-    default void glUniform1iv ( int location, IntBuffer value ) {
+    default void glUniform1i ( int location, IntBuffer value ) {
         glUniform1iv( location, 1, value );
     }
 
-    default void glUniform1iv ( int location, int[] data ) {
-        glUniform1iv( location, 1, data, 0 );
+    default void glUniform1iv ( int location, IntBuffer value ) {
+        glUniform1iv( location, value.remaining(), value );
     }
 
-    default void glUniform2fv ( int location, FloatBuffer value ) {
+    default void glUniform2f ( int location, FloatBuffer value ) {
         glUniform2fv( location, 1, value );
     }
 
-    default void glUniform2fv ( int location, float[] data ) {
-        glUniform2fv( location, 1, data, 0 );
+    default void glUniform2fv ( int location, FloatBuffer value ) {
+        glUniform2fv( location, value.remaining() / 2, value );
     }
 
-    default void glUniform2iv ( int location, IntBuffer value ) {
+    default void glUniform2i ( int location, IntBuffer value ) {
         glUniform2iv( location, 1, value );
     }
 
-    default void glUniform2iv ( int location, int[] data ) {
-        glUniform2iv( location, 1, data, 0 );
+    default void glUniform2iv ( int location, IntBuffer value ) {
+        glUniform2iv( location, value.remaining() / 2, value );
     }
 
-    default void glUniform3fv ( int location, FloatBuffer value ) {
+    default void glUniform3f ( int location, FloatBuffer value ) {
         glUniform3fv( location, 1, value );
     }
 
-    default void glUniform3fv ( int location, float[] data ) {
-        glUniform3fv( location, 1, data, 0 );
+    default void glUniform3fv ( int location, FloatBuffer value ) {
+        glUniform3fv( location, value.remaining() / 3, value );
     }
 
-    default void glUniform3iv ( int location, IntBuffer value ) {
+    default void glUniform3i ( int location, IntBuffer value ) {
         glUniform3iv( location, 1, value );
     }
 
-    default void glUniform3iv ( int location, int[] data ) {
-        glUniform3iv( location, 1, data, 0 );
+    default void glUniform3iv ( int location, IntBuffer value ) {
+        glUniform3iv( location, value.remaining() / 3, value );
     }
 
-    default void glUniform4fv ( int location, FloatBuffer value ) {
+    default void glUniform4f ( int location, FloatBuffer value ) {
         glUniform4fv( location, 1, value );
     }
 
-    default void glUniform4fv ( int location, float[] data ) {
-        glUniform4fv( location, 1, data, 0 );
+    default void glUniform4fv ( int location, FloatBuffer value ) {
+        glUniform4fv( location, value.remaining() / 4, value );
     }
 
-    default void glUniform4iv ( int location, IntBuffer value ) {
+    default void glUniform4i ( int location, IntBuffer value ) {
         glUniform4iv( location, 1, value );
     }
 
-    default void glUniform4iv ( int location, int[] data ) {
-        glUniform4iv( location, 1, data, 0 );
+    default void glUniform4iv ( int location, IntBuffer value ) {
+        glUniform4iv( location, value.remaining() / 4, value );
     }
 
-    default void glUniformMatrix2fv ( int location, FloatBuffer value ) {
+    default void glUniformMatrix2f ( int location, FloatBuffer value ) {
         glUniformMatrix2fv( location, 1, false, value );
     }
 
-    default void glUniformMatrix2fv ( int location, float[] data ) {
-        glUniformMatrix2fv( location, 1, false, data, 0 );
+    default void glUniformMatrix2fv ( int location, FloatBuffer value ) {
+        glUniformMatrix2fv( location, value.remaining() / 4, false, value );
     }
 
-    default void glUniformMatrix3fv ( int location, FloatBuffer value ) {
+    default void glUniformMatrix3f ( int location, FloatBuffer value ) {
         glUniformMatrix3fv( location, 1, false, value );
     }
 
-    default void glUniformMatrix3fv ( int location, float[] data ) {
-        glUniformMatrix3fv( location, 1, false, data, 0 );
+    default void glUniformMatrix3fv ( int location, FloatBuffer value ) {
+        glUniformMatrix3fv( location, value.remaining() / 9, false, value );
     }
 
-    default void glUniformMatrix4fv ( int location, FloatBuffer value ) {
+    default void glUniformMatrix4f ( int location, FloatBuffer value ) {
         glUniformMatrix4fv( location, 1, false, value );
     }
 
-    default void glUniformMatrix4fv ( int location, float[] data ) {
-        glUniformMatrix4fv( location, 1, false, data, 0 );
-    }
-
-    default void glGetShaderiv ( int shaderHandle, int paramEnum, int[] params ) {
-        glGetShaderiv( shaderHandle, paramEnum, params, 0 );
+    default void glUniformMatrix4fv ( int location, FloatBuffer value ) {
+        glUniformMatrix4fv( location, value.remaining() / 16, false, value );
     }
 
     default int glGetShaderi ( int shaderHandle, int paramEnum ) {
-        int[] iArr = ueGetGLUtils().getSingleIntArray();
-        glGetShaderiv( shaderHandle, paramEnum, iArr, 0 );
-        return iArr[0];
-    }
-
-    default void glGetProgramiv ( int shaderProgramHandle, int paramEnum, int[] params ) {
-        glGetProgramiv( shaderProgramHandle, paramEnum, params, 0 );
+        IntBuffer ib = ueGetGLUtils().getTempIntBuffer( 1 );
+        glGetShaderiv( shaderHandle, paramEnum, ib );
+        ib.rewind();
+        return ib.get();
     }
 
     default int glGetProgrami ( int shaderProgramHandle, int paramEnum ) {
-        int[] iArr = ueGetGLUtils().getSingleIntArray();
-        glGetProgramiv( shaderProgramHandle, paramEnum, iArr, 0 );
-        return iArr[0];
-    }
-
-    default void glGetShaderInfoLog ( int vertexShaderHandle, int maxLength,
-            int[] length, byte[] infoLog ) {
-        glGetShaderInfoLog( vertexShaderHandle, maxLength, length, 0, infoLog, 0 );
-    }
-
-    default void glGetProgramInfoLog ( int shaderProgramHandle, int maxLength,
-            int[] length, byte[] infoLog ) {
-        glGetProgramInfoLog( shaderProgramHandle, maxLength, length, 0, infoLog, 0 );
+        IntBuffer ib = ueGetGLUtils().getTempIntBuffer( 1 );
+        glGetProgramiv( shaderProgramHandle, paramEnum, ib );
+        ib.rewind();
+        return ib.get();
     }
 
     default void glShaderSource ( int shaderHandle, String source ) {
         glShaderSource( shaderHandle, 1, ueGetGLUtils().toArray( source ), null );
     }
 
-    default void glGenVertexArrays ( int[] outBuffer ) {
-        glGenVertexArrays( outBuffer.length, outBuffer, 0 );
-    }
-
-    default void glGenVertexArrays ( int count, int[] outBuffer ) {
-        glGenVertexArrays( count, outBuffer, 0 );
-    }
-
     default int glGenVertexArray () {
-        int[] intArr = ueGetGLUtils().getSingleIntArray();
-        glGenVertexArrays( 1, intArr, 0 );
-        return intArr[0];
+        IntBuffer ib = ueGetGLUtils().getTempIntBuffer( 1 );
+        glGenVertexArrays( 1, ib );
+        ib.rewind();
+        return ib.get();
     }
 
-    default void glDeleteVertexArrays ( int[] vertexArrayNames ) {
-        glDeleteVertexArrays( vertexArrayNames.length, vertexArrayNames, 0 );
-    }
-
-    default void glDeleteVertexArrays ( int count, int[] vertexArrayNames ) {
-        glDeleteVertexArrays( count, vertexArrayNames, 0 );
+    default void glDeleteVertexArrays ( IntBuffer vertexArrayNames ) {
+        glDeleteVertexArrays( vertexArrayNames.remaining(), vertexArrayNames );
     }
 
     default void glDeleteVertexArray ( int vertexArrayHandle ) {
-        glDeleteVertexArrays( 1, ueGetGLUtils().toArray( vertexArrayHandle ), 0 );
-    }
-
-    default void glGenTextures ( int[] outBuffer ) {
-        glGenTextures( outBuffer.length, outBuffer, 0 );
-    }
-
-    default void glGenTextures ( int count, int[] outBuffer ) {
-        glGenTextures( count, outBuffer, 0 );
+        glDeleteVertexArrays( 1, ueGetGLUtils().wrap( vertexArrayHandle ) );
     }
 
     default int glGenTexture () {
-        int[] intArr = ueGetGLUtils().getSingleIntArray();
-        glGenTextures( 1, intArr, 0 );
-        return intArr[0];
+        IntBuffer ib = ueGetGLUtils().getTempIntBuffer( 1 );
+        glGenTextures( 1, ib );
+        ib.rewind();
+        return ib.get();
     }
 
-    default void glDeleteTextures ( int[] textureNames ) {
-        glDeleteTextures( textureNames.length, textureNames, 0 );
-    }
-
-    default void glDeleteTextures ( int count, int[] textureNames ) {
-        glDeleteTextures( count, textureNames, 0 );
+    default void glDeleteTextures ( IntBuffer textureNames ) {
+        glDeleteTextures( textureNames.remaining(), textureNames );
     }
 
     default void glDeleteTexture ( int textureHandle ) {
-        glDeleteTextures( 1, ueGetGLUtils().toArray( textureHandle ), 0 );
-    }
-
-    default void glGenBuffers ( int[] outBuffer ) {
-        glGenBuffers( outBuffer.length, outBuffer, 0 );
-    }
-
-    default void glGenBuffers ( int count, int[] outBuffer ) {
-        glGenBuffers( count, outBuffer, 0 );
+        glDeleteTextures( 1, ueGetGLUtils().wrap( textureHandle ) );
     }
 
     default int glGenBuffer () {
-        int[] intArr = ueGetGLUtils().getSingleIntArray();
-        glGenBuffers( 1, intArr, 0 );
-        return intArr[0];
+        IntBuffer ib = ueGetGLUtils().getTempIntBuffer( 1 );
+        glGenBuffers( 1, ib );
+        ib.rewind();
+        return ib.get();
     }
 
-    default void glDeleteBuffers ( int[] bufferNames ) {
-        glDeleteBuffers( bufferNames.length, bufferNames, 0 );
-    }
-
-    default void glDeleteBuffers ( int count, int[] bufferNames ) {
-        glDeleteBuffers( count, bufferNames, 0 );
+    default void glDeleteBuffers ( IntBuffer bufferNames ) {
+        glDeleteBuffers( bufferNames.remaining(), bufferNames );
     }
 
     default void glDeleteBuffer ( int bufferHandle ) {
-        glDeleteBuffers( 1, ueGetGLUtils().toArray( bufferHandle ), 0 );
-    }
-
-    default void glGenFramebuffers ( int[] outBuffer ) {
-        glGenFramebuffers( outBuffer.length, outBuffer, 0 );
-    }
-
-    default void glGenFramebuffers ( int count, int[] outBuffer ) {
-        glGenFramebuffers( count, outBuffer, 0 );
+        glDeleteBuffers( 1, ueGetGLUtils().wrap( bufferHandle ) );
     }
 
     default int glGenFramebuffer () {
-        int[] intArr = ueGetGLUtils().getSingleIntArray();
-        glGenFramebuffers( 1, intArr, 0 );
-        return intArr[0];
+        IntBuffer ib = ueGetGLUtils().getTempIntBuffer( 1 );
+        glGenFramebuffers( 1, ib );
+        ib.rewind();
+        return ib.get();
     }
 
-    default void glDeleteFramebuffers ( int[] bufferNames ) {
-        glDeleteFramebuffers( bufferNames.length, bufferNames, 0 );
-    }
-
-    default void glDeleteFramebuffers ( int count, int[] bufferNames ) {
-        glDeleteFramebuffers( count, bufferNames, 0 );
+    default void glDeleteFramebuffers ( IntBuffer bufferNames ) {
+        glDeleteFramebuffers( bufferNames.remaining(), bufferNames );
     }
 
     default void glDeleteFramebuffer ( int bufferHandle ) {
-        glDeleteFramebuffers( 1, ueGetGLUtils().toArray( bufferHandle ), 0 );
-    }
-
-    default void glGenRenderbuffers ( int[] outBuffer ) {
-        glGenRenderbuffers( outBuffer.length, outBuffer, 0 );
-    }
-
-    default void glGenRenderbuffers ( int count, int[] outBuffer ) {
-        glGenRenderbuffers( count, outBuffer, 0 );
+        glDeleteFramebuffers( 1, ueGetGLUtils().wrap( bufferHandle ) );
     }
 
     default int glGenRenderbuffer () {
-        int[] intArr = ueGetGLUtils().getSingleIntArray();
-        glGenRenderbuffers( 1, intArr, 0 );
-        return intArr[0];
+        IntBuffer ib = ueGetGLUtils().getTempIntBuffer( 1 );
+        glGenRenderbuffers( 1, ib );
+        ib.rewind();
+        return ib.get();
     }
 
-    default void glDeleteRenderbuffers ( int[] bufferNames ) {
-        glDeleteRenderbuffers( bufferNames.length, bufferNames, 0 );
-    }
-
-    default void glDeleteRenderbuffers ( int count, int[] bufferNames ) {
-        glDeleteRenderbuffers( count, bufferNames, 0 );
+    default void glDeleteRenderbuffers ( IntBuffer bufferNames ) {
+        glDeleteRenderbuffers( bufferNames.remaining(), bufferNames );
     }
 
     default void glDeleteRenderbuffer ( int bufferHandle ) {
-        glDeleteRenderbuffers( 1, ueGetGLUtils().toArray( bufferHandle ), 0 );
+        glDeleteRenderbuffers( 1, ueGetGLUtils().wrap( bufferHandle ) );
     }
 
     default void glClearColor ( Vector4f backgroundColor ) {
         glClearColor( backgroundColor.getX(), backgroundColor.getY(), backgroundColor.getZ(), backgroundColor.getW() );
+    }
+
+    /**
+     This method <b>may</b> use <code>instanceof</code> to determine <code>Buffer</code> type
+     (default behaviour if the implementation doesn't allow unknown <code>Buffer</code> calls directly)
+
+     @param targetEnum
+     @param level
+     @param internalFormat
+     @param width
+     @param height
+     @param border
+     @param format
+     @param type
+     @param data
+     */
+    default void glTexImage2D ( int targetEnum, int level, int internalFormat,
+            int width, int height, int border, int format, int type, Buffer data ) {
+        if ( data instanceof ByteBuffer ) {
+            glTexImage2D( targetEnum, level, internalFormat, width, height, border, format, type, (ByteBuffer) data );
+        } else if ( data instanceof ShortBuffer ) {
+            glTexImage2D( targetEnum, level, internalFormat, width, height, border, format, type, (ShortBuffer) data );
+        } else if ( data instanceof IntBuffer ) {
+            glTexImage2D( targetEnum, level, internalFormat, width, height, border, format, type, (IntBuffer) data );
+        } else if ( data instanceof FloatBuffer ) {
+            glTexImage2D( targetEnum, level, internalFormat, width, height, border, format, type, (FloatBuffer) data );
+        } else if ( data instanceof DoubleBuffer ) {
+            glTexImage2D( targetEnum, level, internalFormat, width, height, border, format, type, (DoubleBuffer) data );
+        } else {
+            throw new GLException( "unknown buffer type" );
+        }
+    }
+
+    /**
+     This method <b>may</b> use <code>instanceof</code> to determine <code>Buffer</code> type
+     (default behaviour if the implementation doesn't allow unknown <code>Buffer</code> calls directly)
+
+     @param bufferTarget
+     @param size
+     @param data
+     @param usageEnum
+     */
+    default void glBufferData ( int bufferTarget, long size, Buffer data, int usageEnum ) {
+        if ( data instanceof ByteBuffer ) {
+            glBufferData( bufferTarget, size, (ByteBuffer) data, usageEnum );
+        } else if ( data instanceof ShortBuffer ) {
+            glBufferData( bufferTarget, size, (ShortBuffer) data, usageEnum );
+        } else if ( data instanceof IntBuffer ) {
+            glBufferData( bufferTarget, size, (IntBuffer) data, usageEnum );
+        } else if ( data instanceof FloatBuffer ) {
+            glBufferData( bufferTarget, size, (FloatBuffer) data, usageEnum );
+        } else if ( data instanceof DoubleBuffer ) {
+            glBufferData( bufferTarget, size, (DoubleBuffer) data, usageEnum );
+        } else {
+            throw new GLException( "unknown buffer type" );
+        }
     }
 }

@@ -41,6 +41,10 @@ public class VectorFloat {
         return data;
     }
 
+    public int getDataLength () {
+        return data.length;
+    }
+
     /**
      Note: this method doesn't copy the data into the vector - it forces it to use external array as its data instead.
      Intended for debugging uses.

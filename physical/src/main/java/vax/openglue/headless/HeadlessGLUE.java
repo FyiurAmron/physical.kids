@@ -36,19 +36,11 @@ public class HeadlessGLUE extends AbstractGLUE {
     }
 
     @Override
-    public void glUniform1fv ( int location, int count, float[] value, int valueOffset ) {
-    }
-
-    @Override
     public void glUniform1i ( int location, int v0 ) {
     }
 
     @Override
     public void glUniform1iv ( int location, int count, IntBuffer value ) {
-    }
-
-    @Override
-    public void glUniform1iv ( int location, int count, int[] value, int valueOffset ) {
     }
 
     @Override
@@ -60,19 +52,11 @@ public class HeadlessGLUE extends AbstractGLUE {
     }
 
     @Override
-    public void glUniform2fv ( int location, int count, float[] value, int valueOffset ) {
-    }
-
-    @Override
     public void glUniform2i ( int location, int v0, int v1 ) {
     }
 
     @Override
     public void glUniform2iv ( int location, int count, IntBuffer value ) {
-    }
-
-    @Override
-    public void glUniform2iv ( int location, int count, int[] value, int valueOffset ) {
     }
 
     @Override
@@ -82,21 +66,12 @@ public class HeadlessGLUE extends AbstractGLUE {
     @Override
     public void glUniform3fv ( int location, int count, FloatBuffer value ) {
     }
-
-    @Override
-    public void glUniform3fv ( int location, int count, float[] value, int offset ) {
-    }
-
     @Override
     public void glUniform3i ( int location, int v0, int v1, int v2 ) {
     }
 
     @Override
     public void glUniform3iv ( int location, int count, IntBuffer value ) {
-    }
-
-    @Override
-    public void glUniform3iv ( int location, int count, int[] value, int valueOffset ) {
     }
 
     @Override
@@ -108,10 +83,6 @@ public class HeadlessGLUE extends AbstractGLUE {
     }
 
     @Override
-    public void glUniform4fv ( int location, int count, float[] value, int valueOffset ) {
-    }
-
-    @Override
     public void glUniform4i ( int location, int v0, int v1, int v2, int v3 ) {
     }
 
@@ -120,15 +91,7 @@ public class HeadlessGLUE extends AbstractGLUE {
     }
 
     @Override
-    public void glUniform4iv ( int location, int count, int[] value, int valueOffset ) {
-    }
-
-    @Override
     public void glUniformMatrix2fv ( int location, int count, boolean transpose, FloatBuffer value ) {
-    }
-
-    @Override
-    public void glUniformMatrix2fv ( int location, int count, boolean transpose, float[] value, int valueOffset ) {
     }
 
     @Override
@@ -136,15 +99,7 @@ public class HeadlessGLUE extends AbstractGLUE {
     }
 
     @Override
-    public void glUniformMatrix3fv ( int location, int count, boolean transpose, float[] value, int valueOffset ) {
-    }
-
-    @Override
     public void glUniformMatrix4fv ( int location, int count, boolean transpose, FloatBuffer value ) {
-    }
-
-    @Override
-    public void glUniformMatrix4fv ( int location, int count, boolean transpose, float[] value, int valueOffset ) {
     }
 
     @Override
@@ -186,10 +141,6 @@ public class HeadlessGLUE extends AbstractGLUE {
     }
 
     @Override
-    public void glShaderSource ( int shaderHandle, int count, String[] sources, int[] lengths, int lengthsOffset ) {
-    }
-
-    @Override
     public void glAttachShader ( int shaderProgramHandle, int vertexShaderHandle ) {
     }
 
@@ -210,15 +161,7 @@ public class HeadlessGLUE extends AbstractGLUE {
     }
 
     @Override
-    public void glGetShaderiv ( int shaderHandle, int paramEnum, int[] params, int offset ) {
-    }
-
-    @Override
     public void glGetShaderiv ( int shaderHandle, int paramEnum, IntBuffer params ) {
-    }
-
-    @Override
-    public void glGetProgramiv ( int shaderHandle, int paramEnum, int[] params, int offset ) {
     }
 
     @Override
@@ -231,18 +174,6 @@ public class HeadlessGLUE extends AbstractGLUE {
 
     @Override
     public void glGetShaderInfoLog ( int vertexShaderHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf ) {
-    }
-
-    @Override
-    public void glGetProgramInfoLog ( int program, int bufSize, int[] length, int lengthOffset, byte[] infoLog, int infoLogOffset ) {
-    }
-
-    @Override
-    public void glGetShaderInfoLog ( int shader, int bufSize, int[] length, int lengthOffset, byte[] infoLog, int infoLogOffset ) {
-    }
-
-    @Override
-    public void glGenTextures ( int count, int[] outBuffer, int offset ) {
     }
 
     @Override
@@ -262,15 +193,32 @@ public class HeadlessGLUE extends AbstractGLUE {
     }
 
     @Override
-    public void glTexImage2D ( int targetEnum, int level, int internalFormat, int width, int height, int border, int format, int type, Buffer data ) {
+    public void glTexImage2D ( int targetEnum, int level, int internalFormat, int width, int height, int border, int format, int type,
+            ByteBuffer data ) {
+    }
+
+    @Override
+    public void glTexImage2D ( int targetEnum, int level, int internalFormat, int width, int height, int border, int format, int type,
+            ShortBuffer data ) {
+    }
+
+    @Override
+    public void glTexImage2D ( int targetEnum, int level, int internalFormat, int width, int height, int border, int format, int type,
+            IntBuffer data ) {
+    }
+
+    @Override
+    public void glTexImage2D ( int targetEnum, int level, int internalFormat, int width, int height, int border, int format, int type,
+            FloatBuffer data ) {
+    }
+
+    @Override
+    public void glTexImage2D ( int targetEnum, int level, int internalFormat, int width, int height, int border, int format, int type,
+            DoubleBuffer data ) {
     }
 
     @Override
     public void glGenerateMipmap ( int targetEnum ) {
-    }
-
-    @Override
-    public void glGenBuffers ( int count, int[] outBuffer, int offset ) {
     }
 
     @Override
@@ -280,11 +228,6 @@ public class HeadlessGLUE extends AbstractGLUE {
     @Override
     public void glBindBuffer ( int targetEnum, int handle ) {
     }
-
-    @Override
-    public void glDeleteBuffers ( int count, int[] bufferNames, int offset ) {
-    }
-
     @Override
     public void glDeleteBuffers ( int count, IntBuffer bufferNames ) {
     }
@@ -295,10 +238,6 @@ public class HeadlessGLUE extends AbstractGLUE {
 
     @Override
     public void glGenVertexArrays ( int count, IntBuffer outBuffer ) {
-    }
-
-    @Override
-    public void glGenVertexArrays ( int count, int[] outBuffer, int offset ) {
     }
 
     @Override
@@ -322,7 +261,27 @@ public class HeadlessGLUE extends AbstractGLUE {
     }
 
     @Override
-    public void glBufferData ( int bufferTarget, long size, Buffer data, int usageEnum ) {
+    public void glBufferData ( int bufferTarget, long size, ByteBuffer data, int usageEnum ) {
+    }
+
+    @Override
+    public void glBufferData ( int bufferTarget, ByteBuffer data, int usageEnum ) {
+    }
+
+    @Override
+    public void glBufferData ( int bufferTarget, long size, ShortBuffer data, int usageEnum ) {
+    }
+
+    @Override
+    public void glBufferData ( int bufferTarget, long size, IntBuffer data, int usageEnum ) {
+    }
+
+    @Override
+    public void glBufferData ( int bufferTarget, long size, FloatBuffer data, int usageEnum ) {
+    }
+
+    @Override
+    public void glBufferData ( int bufferTarget, long size, DoubleBuffer data, int usageEnum ) {
     }
 
     @Override
@@ -343,15 +302,7 @@ public class HeadlessGLUE extends AbstractGLUE {
     }
 
     @Override
-    public void glDeleteTextures ( int n, int[] textures, int offset ) {
-    }
-
-    @Override
     public void glGenFramebuffers ( int n, IntBuffer framebuffers ) {
-    }
-
-    @Override
-    public void glGenFramebuffers ( int n, int[] framebuffers, int offset ) {
     }
 
     @Override
@@ -363,15 +314,7 @@ public class HeadlessGLUE extends AbstractGLUE {
     }
 
     @Override
-    public void glDeleteFramebuffers ( int n, int[] framebuffers, int offset ) {
-    }
-
-    @Override
     public void glGenRenderbuffers ( int n, IntBuffer renderbuffers ) {
-    }
-
-    @Override
-    public void glGenRenderbuffers ( int n, int[] renderbuffers, int offset ) {
     }
 
     @Override
@@ -383,14 +326,6 @@ public class HeadlessGLUE extends AbstractGLUE {
     }
 
     @Override
-    public void glDeleteRenderbuffers ( int n, int[] renderbuffers, int offset ) {
-    }
-
-    @Override
     public void glDeleteVertexArrays ( int n, IntBuffer arrays ) {
-    }
-
-    @Override
-    public void glDeleteVertexArrays ( int n, int[] arrays, int offset ) {
     }
 }

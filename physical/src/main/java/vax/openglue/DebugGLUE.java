@@ -58,12 +58,6 @@ public class DebugGLUE implements OpenGLUE {
     }
 
     @Override
-    public void glUniform1fv ( int location, int count, float[] value, int valueOffset ) {
-        gl.glUniform1fv( location, count, value, valueOffset );
-        ueCheckError();
-    }
-
-    @Override
     public void glUniform1i ( int location, int v0 ) {
         gl.glUniform1i( location, v0 );
         ueCheckError();
@@ -72,12 +66,6 @@ public class DebugGLUE implements OpenGLUE {
     @Override
     public void glUniform1iv ( int location, int count, IntBuffer value ) {
         gl.glUniform1iv( location, count, value );
-        ueCheckError();
-    }
-
-    @Override
-    public void glUniform1iv ( int location, int count, int[] value, int valueOffset ) {
-        gl.glUniform1iv( location, count, value, valueOffset );
         ueCheckError();
     }
 
@@ -94,12 +82,6 @@ public class DebugGLUE implements OpenGLUE {
     }
 
     @Override
-    public void glUniform2fv ( int location, int count, float[] value, int valueOffset ) {
-        gl.glUniform2fv( location, count, value, valueOffset );
-        ueCheckError();
-    }
-
-    @Override
     public void glUniform2i ( int location, int v0, int v1 ) {
         gl.glUniform2i( location, v0, v1 );
         ueCheckError();
@@ -108,12 +90,6 @@ public class DebugGLUE implements OpenGLUE {
     @Override
     public void glUniform2iv ( int location, int count, IntBuffer value ) {
         gl.glUniform2iv( location, count, value );
-        ueCheckError();
-    }
-
-    @Override
-    public void glUniform2iv ( int location, int count, int[] value, int valueOffset ) {
-        gl.glUniform2iv( location, count, value, valueOffset );
         ueCheckError();
     }
 
@@ -130,12 +106,6 @@ public class DebugGLUE implements OpenGLUE {
     }
 
     @Override
-    public void glUniform3fv ( int location, int count, float[] value, int offset ) {
-        gl.glUniform3fv( location, count, value, offset );
-        ueCheckError();
-    }
-
-    @Override
     public void glUniform3i ( int location, int v0, int v1, int v2 ) {
         gl.glUniform3i( location, v0, v1, v2 );
         ueCheckError();
@@ -144,12 +114,6 @@ public class DebugGLUE implements OpenGLUE {
     @Override
     public void glUniform3iv ( int location, int count, IntBuffer value ) {
         gl.glUniform3iv( location, count, value );
-        ueCheckError();
-    }
-
-    @Override
-    public void glUniform3iv ( int location, int count, int[] value, int valueOffset ) {
-        gl.glUniform3iv( location, count, value, valueOffset );
         ueCheckError();
     }
 
@@ -166,12 +130,6 @@ public class DebugGLUE implements OpenGLUE {
     }
 
     @Override
-    public void glUniform4fv ( int location, int count, float[] value, int valueOffset ) {
-        gl.glUniform4fv( location, count, value, valueOffset );
-        ueCheckError();
-    }
-
-    @Override
     public void glUniform4i ( int location, int v0, int v1, int v2, int v3 ) {
         gl.glUniform4i( location, v0, v1, v2, v3 );
         ueCheckError();
@@ -184,20 +142,8 @@ public class DebugGLUE implements OpenGLUE {
     }
 
     @Override
-    public void glUniform4iv ( int location, int count, int[] value, int valueOffset ) {
-        gl.glUniform4iv( location, count, value, valueOffset );
-        ueCheckError();
-    }
-
-    @Override
     public void glUniformMatrix2fv ( int location, int count, boolean transpose, FloatBuffer value ) {
         gl.glUniformMatrix2fv( location, count, transpose, value );
-        ueCheckError();
-    }
-
-    @Override
-    public void glUniformMatrix2fv ( int location, int count, boolean transpose, float[] value, int valueOffset ) {
-        gl.glUniformMatrix2fv( location, count, transpose, value, valueOffset );
         ueCheckError();
     }
 
@@ -208,20 +154,8 @@ public class DebugGLUE implements OpenGLUE {
     }
 
     @Override
-    public void glUniformMatrix3fv ( int location, int count, boolean transpose, float[] value, int valueOffset ) {
-        gl.glUniformMatrix3fv( location, count, transpose, value, valueOffset );
-        ueCheckError();
-    }
-
-    @Override
     public void glUniformMatrix4fv ( int location, int count, boolean transpose, FloatBuffer value ) {
         gl.glUniformMatrix4fv( location, count, transpose, value );
-        ueCheckError();
-    }
-
-    @Override
-    public void glUniformMatrix4fv ( int location, int count, boolean transpose, float[] value, int valueOffset ) {
-        gl.glUniformMatrix4fv( location, count, transpose, value, valueOffset );
         ueCheckError();
     }
 
@@ -282,12 +216,6 @@ public class DebugGLUE implements OpenGLUE {
     }
 
     @Override
-    public void glShaderSource ( int shaderHandle, int count, String[] sources, int[] lengths, int lengthsOffset ) {
-        gl.glShaderSource( shaderHandle, count, sources, lengths, lengthsOffset );
-        ueCheckError();
-    }
-
-    @Override
     public void glAttachShader ( int shaderProgramHandle, int vertexShaderHandle ) {
         gl.glAttachShader( shaderProgramHandle, vertexShaderHandle );
         ueCheckError();
@@ -318,20 +246,8 @@ public class DebugGLUE implements OpenGLUE {
     }
 
     @Override
-    public void glGetShaderiv ( int shaderHandle, int paramEnum, int[] params, int offset ) {
-        gl.glGetShaderiv( shaderHandle, paramEnum, params, offset );
-        ueCheckError();
-    }
-
-    @Override
     public void glGetShaderiv ( int shaderHandle, int paramEnum, IntBuffer params ) {
         gl.glGetShaderiv( shaderHandle, paramEnum, params );
-        ueCheckError();
-    }
-
-    @Override
-    public void glGetProgramiv ( int shaderProgramHandle, int paramEnum, int[] params, int offset ) {
-        gl.glGetProgramiv( shaderProgramHandle, paramEnum, params, offset );
         ueCheckError();
     }
 
@@ -350,26 +266,6 @@ public class DebugGLUE implements OpenGLUE {
     @Override
     public void glGetShaderInfoLog ( int shaderHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf ) {
         gl.glGetShaderInfoLog( shaderHandle, maxLength, lengthBuf, infoLogBuf );
-        ueCheckError();
-    }
-
-    @Override
-    public void glGetShaderInfoLog ( int vertexShaderHandle, int maxLength,
-            int[] length, int lengthOffset, byte[] infoLog, int infoLogOffset ) {
-        gl.glGetShaderInfoLog( vertexShaderHandle, maxLength, length, lengthOffset, infoLog, infoLogOffset );
-        ueCheckError();
-    }
-
-    @Override
-    public void glGetProgramInfoLog ( int shaderProgramHandle, int maxLength,
-            int[] length, int lengthOffset, byte[] infoLog, int infoLogOffset ) {
-        gl.glGetProgramInfoLog( shaderProgramHandle, maxLength, length, lengthOffset, infoLog, infoLogOffset );
-        ueCheckError();
-    }
-
-    @Override
-    public void glGenTextures ( int count, int[] outBuffer, int offset ) {
-        gl.glGenTextures( count, outBuffer, offset );
         ueCheckError();
     }
 
@@ -399,7 +295,35 @@ public class DebugGLUE implements OpenGLUE {
 
     @Override
     public void glTexImage2D ( int targetEnum, int level, int internalFormat, int width, int height, int border, int format, int type,
-            Buffer data ) {
+            ByteBuffer data ) {
+        gl.glTexImage2D( targetEnum, level, internalFormat, width, height, border, format, type, data );
+        ueCheckError();
+    }
+
+    @Override
+    public void glTexImage2D ( int targetEnum, int level, int internalFormat, int width, int height, int border, int format, int type,
+            ShortBuffer data ) {
+        gl.glTexImage2D( targetEnum, level, internalFormat, width, height, border, format, type, data );
+        ueCheckError();
+    }
+
+    @Override
+    public void glTexImage2D ( int targetEnum, int level, int internalFormat, int width, int height, int border, int format, int type,
+            IntBuffer data ) {
+        gl.glTexImage2D( targetEnum, level, internalFormat, width, height, border, format, type, data );
+        ueCheckError();
+    }
+
+    @Override
+    public void glTexImage2D ( int targetEnum, int level, int internalFormat, int width, int height, int border, int format, int type,
+            FloatBuffer data ) {
+        gl.glTexImage2D( targetEnum, level, internalFormat, width, height, border, format, type, data );
+        ueCheckError();
+    }
+
+    @Override
+    public void glTexImage2D ( int targetEnum, int level, int internalFormat, int width, int height, int border, int format, int type,
+            DoubleBuffer data ) {
         gl.glTexImage2D( targetEnum, level, internalFormat, width, height, border, format, type, data );
         ueCheckError();
     }
@@ -407,12 +331,6 @@ public class DebugGLUE implements OpenGLUE {
     @Override
     public void glGenerateMipmap ( int targetEnum ) {
         gl.glGenerateMipmap( targetEnum );
-        ueCheckError();
-    }
-
-    @Override
-    public void glGenBuffers ( int count, int[] outBuffer, int offset ) {
-        gl.glGenBuffers( count, outBuffer, offset );
         ueCheckError();
     }
 
@@ -425,12 +343,6 @@ public class DebugGLUE implements OpenGLUE {
     @Override
     public void glBindBuffer ( int targetEnum, int handle ) {
         gl.glBindBuffer( targetEnum, handle );
-        ueCheckError();
-    }
-
-    @Override
-    public void glDeleteBuffers ( int count, int[] bufferNames, int offset ) {
-        gl.glDeleteBuffers( count, bufferNames, offset );
         ueCheckError();
     }
 
@@ -453,32 +365,14 @@ public class DebugGLUE implements OpenGLUE {
     }
 
     @Override
-    public void glGenVertexArrays ( int count, int[] outBuffer, int offset ) {
-        gl.glGenVertexArrays( count, outBuffer, offset );
-        ueCheckError();
-    }
-
-    @Override
     public void glDeleteTextures ( int n, IntBuffer textures ) {
         gl.glDeleteTextures( n, textures );
         ueCheckError();
     }
 
     @Override
-    public void glDeleteTextures ( int n, int[] textures, int offset ) {
-        gl.glDeleteTextures( n, textures, offset );
-        ueCheckError();
-    }
-
-    @Override
     public void glGenFramebuffers ( int n, IntBuffer framebuffers ) {
         gl.glGenFramebuffers( n, framebuffers );
-        ueCheckError();
-    }
-
-    @Override
-    public void glGenFramebuffers ( int n, int[] framebuffers, int offset ) {
-        gl.glGenFramebuffers( n, framebuffers, offset );
         ueCheckError();
     }
 
@@ -495,20 +389,8 @@ public class DebugGLUE implements OpenGLUE {
     }
 
     @Override
-    public void glDeleteFramebuffers ( int n, int[] framebuffers, int offset ) {
-        gl.glDeleteFramebuffers( n, framebuffers, offset );
-        ueCheckError();
-    }
-
-    @Override
     public void glGenRenderbuffers ( int n, IntBuffer renderbuffers ) {
         gl.glGenRenderbuffers( n, renderbuffers );
-        ueCheckError();
-    }
-
-    @Override
-    public void glGenRenderbuffers ( int n, int[] renderbuffers, int offset ) {
-        gl.glGenRenderbuffers( n, renderbuffers, offset );
         ueCheckError();
     }
 
@@ -525,20 +407,8 @@ public class DebugGLUE implements OpenGLUE {
     }
 
     @Override
-    public void glDeleteRenderbuffers ( int n, int[] renderbuffers, int offset ) {
-        gl.glDeleteRenderbuffers( n, renderbuffers, offset );
-        ueCheckError();
-    }
-
-    @Override
     public void glDeleteVertexArrays ( int n, IntBuffer arrays ) {
         gl.glDeleteVertexArrays( n, arrays );
-        ueCheckError();
-    }
-
-    @Override
-    public void glDeleteVertexArrays ( int n, int[] arrays, int offset ) {
-        gl.glDeleteVertexArrays( n, arrays, offset );
         ueCheckError();
     }
 
@@ -573,12 +443,6 @@ public class DebugGLUE implements OpenGLUE {
     }
 
     @Override
-    public void glBufferData ( int bufferTarget, long size, Buffer data, int usageEnum ) {
-        gl.glBufferData( bufferTarget, size, data, usageEnum );
-        ueCheckError();
-    }
-
-    @Override
     public void glBlendFunc ( int blendSourceEnum, int blendDestEnum ) {
         gl.glBlendFunc( blendSourceEnum, blendDestEnum );
         ueCheckError();
@@ -587,6 +451,42 @@ public class DebugGLUE implements OpenGLUE {
     @Override
     public void glBlendFuncSeparate ( int blendRgbSourceEnum, int blendRgbDestEnum, int blendAlphaSourceEnum, int blendAlphaDestEnum ) {
         gl.glBlendFuncSeparate( blendRgbSourceEnum, blendRgbDestEnum, blendAlphaSourceEnum, blendAlphaDestEnum );
+        ueCheckError();
+    }
+
+    @Override
+    public void glBufferData ( int bufferTarget, long size, ByteBuffer data, int usageEnum ) {
+        gl.glBufferData( bufferTarget, size, data, usageEnum );
+        ueCheckError();
+    }
+
+    @Override
+    public void glBufferData ( int bufferTarget, ByteBuffer data, int usageEnum ) {
+        gl.glBufferData( bufferTarget, data, usageEnum );
+        ueCheckError();
+    }
+
+    @Override
+    public void glBufferData ( int bufferTarget, long size, ShortBuffer data, int usageEnum ) {
+        gl.glBufferData( bufferTarget, size, data, usageEnum );
+        ueCheckError();
+    }
+
+    @Override
+    public void glBufferData ( int bufferTarget, long size, IntBuffer data, int usageEnum ) {
+        gl.glBufferData( bufferTarget, size, data, usageEnum );
+        ueCheckError();
+    }
+
+    @Override
+    public void glBufferData ( int bufferTarget, long size, FloatBuffer data, int usageEnum ) {
+        gl.glBufferData( bufferTarget, size, data, usageEnum );
+        ueCheckError();
+    }
+
+    @Override
+    public void glBufferData ( int bufferTarget, long size, DoubleBuffer data, int usageEnum ) {
+        gl.glBufferData( bufferTarget, size, data, usageEnum );
         ueCheckError();
     }
 
