@@ -34,6 +34,7 @@ public class SceneManager implements EventListenerGL {
             projectionMatrix = new Matrix4f(),
             modelviewMatrix = new Matrix4f(),
             transformMatrix = new Matrix4f( true );
+    private final Vector2i viewportSize = new Vector2i();
 
     private final DebugGLUE debugGLUE = new DebugGLUE();
 
@@ -57,7 +58,7 @@ public class SceneManager implements EventListenerGL {
         TextureData<?> dilloTD = glue.readTextureData( "angry-armadillo.png", Resource.class );
         TextureData<?> leftInterfaceTD = glue.readTextureData( "interface.png", Resource.class );
         SphereMesh ball = new SphereMesh( 0.1f, 12, 12, true );
-        RectangleMesh leftInterface = new RectangleMesh( -1f, -2f );
+        RectangleMesh leftInterface = new RectangleMesh( -1f, -2f, RectangleMesh.RECT_VT_PROTO_2 );
         leftInterface.getTransform().setTranslationX( -0.5f );
         leftInterface.getTransform().setTranslationY( 1f );
         //RectangleMesh leftInterface = new RectangleMesh( 2, 2, 2 );
@@ -98,9 +99,9 @@ public class SceneManager implements EventListenerGL {
         //float aspectRatio = ( (float) settings.windowSize.getX() ) / settings.windowSize.getY();
         float aspectRatio = 4f / 3; // TODO infer this from window size
         //gl.glPolygonMode( OpenGLUE.Constants.GL_FRONT_AND_BACK, OpenGLUE.Constants.GL_LINE ); // DEBUG
-        //gl.glCullFace( OpenGLUE.Constants.GL_BACK );
-        //gl.glEnable( GL.GL_CULL_FACE );
-        //gl.glEnable( GL.GL_DEPTH_TEST );
+        gl.glCullFace( OpenGLUE.Constants.GL_BACK );
+        gl.glEnable( GL.GL_CULL_FACE );
+        gl.glEnable( GL.GL_DEPTH_TEST );
         //gl.glEnable( GL.GL_BLEND ); // per-mesh now
         gl.glBlendFunc( GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA );
         //projectionMatrix.setToPerspective( 0.1f, 100f, 67, aspectRatio );
@@ -127,7 +128,8 @@ public class SceneManager implements EventListenerGL {
             Uniform.from( "lightDirUnit", lightDirUnit ),
             Uniform.from( "time", time ),
             Uniform.from( "random", random ),
-            Uniform.from( "textureSamples", textureSampler )
+            Uniform.from( "textureSamples", textureSampler ),
+            Uniform.from( "viewportSize", viewportSize )
         };
 
         Uniform[] perMeshUniforms = {
@@ -179,6 +181,7 @@ public class SceneManager implements EventListenerGL {
             debugGLUE.setGlue( gl );
             gl = debugGLUE;
         }
+        viewportSize.set( width, height );
         // TODO if aspect changed & persp. used: recalc persp. matrix
     }
 
