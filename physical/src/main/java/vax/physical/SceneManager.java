@@ -17,7 +17,7 @@ public class SceneManager implements EventListenerGL {
     private final ArrayList<Mesh> meshes = new ArrayList<>();
     private final ArrayList<Texture> textures = new ArrayList<>();
 
-    private final boolean debug = true;
+    private final boolean debug = false;
 
     private MeshBatch mainMeshBatch, noiseMeshBatch;
 

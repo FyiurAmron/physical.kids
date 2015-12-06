@@ -55,6 +55,7 @@ public class Texture {
         gl.glTexImage2D( targetEnum, 0, td.getInternalFormat(),
                 td.getWidth(), td.getHeight(), 0,
                 td.getPixelFormat(), td.getType(), textureData.getBuffer() );
+
         if ( generateMipmaps ) {
             gl.glGenerateMipmap( targetEnum ); // don't do this if using legacy param (GL_GENERATE_MIPMAP set to 'true')
             mipmaps = true;

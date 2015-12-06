@@ -5,7 +5,7 @@ import com.jogamp.newt.Screen;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.util.Animator;
-import vax.openglue.CanvasGLUE;
+
 import vax.openglue.EventListenerGL;
 import vax.openglue.WindowGLUE;
 
@@ -104,6 +104,14 @@ public class JoglWindowGLUE implements WindowGLUE {
     @Override
     public JoglUe3 getOpenGLUE () {
         return ue;
+    }
+
+    public boolean isDebug () {
+        return debug;
+    }
+
+    public void setDebug ( boolean debug ) {
+        this.debug = debug;
     }
 
     @Override

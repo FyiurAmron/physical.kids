@@ -24,7 +24,8 @@ public class LwjglUe3 extends AbstractGLUE {
 
     @Override
     public Class<? extends ImageIO.GLUE> getClassImageIO_GLUE () {
-        return LwjglImageIoGLUE.class;
+        //return LwjglImageIoGLUE.class;
+        return vax.openglue.jogl.JoglImageIoGLUE.class;
     }
 
     @Override
@@ -341,13 +342,13 @@ public class LwjglUe3 extends AbstractGLUE {
 
     @Override
     public void glGetShaderInfoLog ( int vertexShaderHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf ) {
-        //GL20.glGetShaderInfoLog( vertexShaderHandle, maxLength, lengthBuf, infoLogBuf );
+        GL20.glGetShaderInfoLog( vertexShaderHandle, lengthBuf, infoLogBuf );
         throw new UnsupportedOperationException();
     }
 
     @Override
     public void glGetProgramInfoLog ( int shaderProgramHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf ) {
-        //GL20.glGetProgramInfoLog( shaderProgramHandle, maxLength, lengthBuf, infoLogBuf );
+        GL20.glGetProgramInfoLog( shaderProgramHandle, lengthBuf, infoLogBuf );
         throw new UnsupportedOperationException();
     }
 
@@ -363,8 +364,9 @@ public class LwjglUe3 extends AbstractGLUE {
 
     @Override
     public void glShaderSource ( int shaderHandle, int count, String[] sources, IntBuffer lengths ) {
-        //GL20.glShaderSource( shaderHandle, count, sources, lengths );
-        throw new UnsupportedOperationException();
+        for( String s : sources ) {
+            GL20.glShaderSource( shaderHandle, s );
+        }
     }
 
     @Override

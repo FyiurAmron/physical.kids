@@ -1306,10 +1306,10 @@ public interface OpenGL {
     //void glGetProgramiv ( int shaderProgramHandle, int paramEnum, int[] params, int offset );
     void glGetProgramiv ( int shaderProgramHandle, int paramEnum, IntBuffer params );
 
-    void glGetProgramInfoLog ( int shaderProgramHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf );
+    void glGetProgramInfoLog ( int shaderProgramHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf ); // FIXME simplify
 
     //void glGetProgramInfoLog ( int program, int bufSize, int[] length, int lengthOffset, byte[] infoLog, int infoLogOffset );
-    void glGetShaderInfoLog ( int shaderHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf );
+    void glGetShaderInfoLog ( int shaderHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf ); // FIXME simplify
 
     //void glGetShaderInfoLog ( int shader, int bufSize, int[] length, int lengthOffset, byte[] infoLog, int infoLogOffset );
     void glGenerateMipmap ( int targetEnum );
