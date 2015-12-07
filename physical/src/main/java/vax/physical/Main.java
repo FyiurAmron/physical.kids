@@ -20,10 +20,10 @@ public class Main {
 
         SceneManager sm = new vax.physical.SceneManager();
         /*
-        JoglWindowGLUE jwg = new vax.openglue.jogl.JoglWindowGLUE( sm,
+        WindowGLUE wg = new vax.openglue.jogl.JoglWindowGLUE( sm,
                 new WindowGLUE.Settings( APP_NAME, 800, 600, 100, 100, false, false, false, true, false ) );
 */
-        LwjglWindowGLUE lwg = new vax.openglue.lwjgl.LwjglWindowGLUE( sm,
+        WindowGLUE wg = new vax.openglue.lwjgl.LwjglWindowGLUE( sm,
                 new WindowGLUE.Settings( APP_NAME, 800, 600, 100, 100, false, false, false, true, false ) );
 
     }

@@ -13,10 +13,7 @@ import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.util.Animator;
 import vax.math.Vector2i;
 
-/**
-
- @author gbarbieri
- */
+// TODO change to a proper unit test
 public class JoglTestWindowWithoutGLUE {
     private int screenIdx = 0;
     private Vector2i windowSize = new Vector2i( 1000, 800 );
