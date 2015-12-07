@@ -17,6 +17,7 @@ import com.jogamp.opengl.util.glsl.ShaderProgram;
 import vax.openglue.shader.Shader;
 import vax.util.MiscUtils;
 
+// TODO change to a proper unit test
 /**
 
  @author toor

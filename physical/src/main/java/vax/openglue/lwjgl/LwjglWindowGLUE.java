@@ -1,9 +1,11 @@
 package vax.openglue.lwjgl;
 
 import org.lwjgl.glfw.*;
+import static org.lwjgl.glfw.GLFW.glfwGetVideoMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryUtil;
 
+import vax.math.Vector2i;
 import vax.openglue.EventListenerGL;
 import vax.openglue.WindowGLUE;
 
@@ -16,7 +18,7 @@ public class LwjglWindowGLUE implements WindowGLUE {
     private boolean debug;
 
     private EventListenerGL cvel;
-    private WindowGLUE.Settings settings;
+    private WindowGLUE.Settings initialSettings;
 
     private GLFWErrorCallback errorCallback;
     private GLFWKeyCallback keyCallback;
@@ -29,17 +31,15 @@ public class LwjglWindowGLUE implements WindowGLUE {
 
     public LwjglWindowGLUE ( EventListenerGL cvel, WindowGLUE.Settings settings, boolean debug ) {
         this.cvel = cvel;
-        this.settings = settings;
+        this.initialSettings = settings;
 
         try {
             init();
             loop();
 
-            // Release window and window callbacks
             GLFW.glfwDestroyWindow( windowHandle );
             keyCallback.release();
         } finally {
-            // Terminate GLFW and release the GLFWErrorCallback
             GLFW.glfwTerminate();
             errorCallback.release();
             cvel.dispose( ue );
@@ -47,34 +47,37 @@ public class LwjglWindowGLUE implements WindowGLUE {
     }
 
     private void init () {
-        // Setup an error callback. The default implementation
-        // will print the error message in System.err.
-
         errorCallback = GLFWErrorCallback.createPrint( System.err );
         GLFW.glfwSetErrorCallback( errorCallback );
 
-        // Initialize GLFW. Most GLFW functions will not work before doing this.
         if ( GLFW.glfwInit() != GLFW.GLFW_TRUE ) {
-            throw new IllegalStateException( "Unable to initialize GLFW" );
+            throw new IllegalStateException( "unable to initialize GLFW" );
         }
 
-        // Configure our windowHandle
         GLFW.glfwDefaultWindowHints(); // optional, the current windowHandle hints are already the default
+        windowHint( GLFW.GLFW_VISIBLE, false );
+        windowHint( GLFW.GLFW_RESIZABLE, true );
 
-        GLFW.glfwWindowHint( GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE ); // the windowHandle will stay hidden after creation
+        int width = initialSettings.windowSize.getX(), height = initialSettings.windowSize.getY();
+        long monitor;
+        if ( initialSettings.fullscreen ) {
+            monitor = GLFW.glfwGetPrimaryMonitor();
+            GLFWVidMode mode = glfwGetVideoMode( monitor );
+            GLFW.glfwWindowHint( GLFW.GLFW_RED_BITS, mode.redBits() );
+            GLFW.glfwWindowHint( GLFW.GLFW_GREEN_BITS, mode.greenBits() );
+            GLFW.glfwWindowHint( GLFW.GLFW_BLUE_BITS, mode.blueBits() );
+            GLFW.glfwWindowHint( GLFW.GLFW_REFRESH_RATE, mode.refreshRate() );
+        } else {
+            monitor = MemoryUtil.NULL;
+        }
 
-        GLFW.glfwWindowHint( GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE ); // the windowHandle will be resizable
-
-        int width = settings.windowSize.getX(), height = settings.windowSize.getY();
-
-        // Create the windowHandle
-        windowHandle = GLFW.glfwCreateWindow( width, height, settings.title, MemoryUtil.NULL, MemoryUtil.NULL );
-
+        windowHandle = GLFW.glfwCreateWindow( width, height, initialSettings.title, monitor, MemoryUtil.NULL );
         if ( windowHandle == MemoryUtil.NULL ) {
             throw new RuntimeException( "Failed to create the GLFW window" );
         }
 
-        // Setup a key callback. It will be called every time a key is pressed, repeated or released.
+        _applySettings( initialSettings );
+
         keyCallback = new GLFWKeyCallback() {
             @Override
             public void invoke ( long window, int key, int scancode, int action, int mods ) {
@@ -85,20 +88,9 @@ public class LwjglWindowGLUE implements WindowGLUE {
         };
         GLFW.glfwSetKeyCallback( windowHandle, keyCallback );
 
-        // Get the resolution of the primary monitor
-        GLFWVidMode vidmode = GLFW.glfwGetVideoMode( GLFW.glfwGetPrimaryMonitor() );
-        // Center our windowHandle
-
-        GLFW.glfwSetWindowPos( windowHandle, settings.windowPosition.getX(), settings.windowPosition.getY() );
-
-        // Make the OpenGL context current
-        GLFW.glfwMakeContextCurrent( windowHandle );
-
-        // Enable v-sync
-        GLFW.glfwSwapInterval( 1 );
-
-        // Make the windowHandle visible
-        GLFW.glfwShowWindow( windowHandle );
+        GLFW.glfwMakeContextCurrent( windowHandle ); // make the OpenGL context current
+        GLFW.glfwSwapInterval( 1 ); // enable v-sync
+        GLFW.glfwShowWindow( windowHandle ); // make the windowHandle visible
 
         GL.createCapabilities();
 
@@ -106,35 +98,36 @@ public class LwjglWindowGLUE implements WindowGLUE {
     }
 
     private void loop () {
-        // This line is critical for LWJGL's interoperation with GLFW's
-        // OpenGL context, or any context that is managed externally.
-        // LWJGL detects the context that is current in the current thread,
-        // creates the GLCapabilities instance and makes the OpenGL
-        // bindings available for use.
         GL.createCapabilities();
 
-        // Run the rendering loop until the user has attempted to close
-        // the windowHandle or has pressed the ESCAPE key.
         while( GLFW.glfwWindowShouldClose( windowHandle ) == GLFW.GLFW_FALSE ) {
             cvel.render( ue );
-
-            GLFW.glfwSwapBuffers( windowHandle ); // swap the color buffers
-
-            // Poll for windowHandle events. The key callback above will only be
-            // invoked during this call.
-            GLFW.glfwPollEvents();
+            GLFW.glfwSwapBuffers( windowHandle ); // with GLFW.glfwSwapInterval(1) this call blocks until VSYNC
+            GLFW.glfwPollEvents(); // key callback will only be invoked during this call
         }
     }
 
+    private void windowHint ( int hintEnum, boolean value ) {
+        GLFW.glfwWindowHint( hintEnum, value ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE );
+    }
+
     private void _applySettings ( WindowGLUE.Settings settings ) {
+        windowHint( GLFW.GLFW_DECORATED, !settings.undecorated );
+        windowHint( GLFW.GLFW_FLOATING, settings.alwaysOnTop );
+        if ( settings.mouseConfined && settings.mouseVisible ) {
+            throw new UnsupportedOperationException( "confined & visible hardware cursor unsupported by LWJGL" );
+        }
+        GLFW.glfwSetInputMode( windowHandle, GLFW.GLFW_CURSOR,
+                settings.mouseConfined ? GLFW.GLFW_CURSOR_DISABLED
+                        : ( settings.mouseVisible ? GLFW.GLFW_CURSOR_NORMAL : GLFW.GLFW_CURSOR_HIDDEN ) );
+        Vector2i dim = settings.windowPosition;
+        GLFW.glfwSetWindowPos( windowHandle, dim.getX(), dim.getY() );
+        dim = settings.windowSize;
+        GLFW.glfwSetWindowSize( windowHandle, dim.getX(), dim.getY() );
+        GLFW.glfwSetWindowTitle( windowHandle, settings.title );
+
         /*
-         glWindow.setSize( settings.windowSize.getX(), settings.windowSize.getY() );
-         glWindow.setPosition( settings.windowPosition.getX(), settings.windowPosition.getY() );
-         glWindow.setUndecorated( settings.undecorated );
-         glWindow.setAlwaysOnTop( settings.alwaysOnTop );
          glWindow.setFullscreen( settings.fullscreen );
-         glWindow.setPointerVisible( settings.mouseVisible );
-         glWindow.confinePointer( settings.mouseConfined );
          */
     }
 
