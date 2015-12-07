@@ -14,66 +14,40 @@ public class TriangleTriangleCollider extends Collider<TriangleBody, TriangleBod
 
     @Override
     public boolean collide ( Body body1, Body body2 ) {
-
-        TriangleBody tb1 = (TriangleBody) body1;
-        TriangleBody tb2 = (TriangleBody) body2;
-        if ( tb1 == null || tb2 == null ) {
+        if ( body1 == null || body2 == null ) {
             throw new NullPointerException();
         }
 
-        boolean tb1Collision = false;
-        boolean tb2Collision = false;
-        Vector3f cross;
-        Vector3f crossPrev;
-        Vector3f pointRelative;
+        TriangleBody tb1 = (TriangleBody) body1;
+        TriangleBody tb2 = (TriangleBody) body2;
+
         Line3f line = tb1.getPlane3f().intersect( tb2.getPlane3f() );
 
         // FIXME do poprawki, czy plaszczyzny sa rownolegle lub pokrywaja sie i co wtedy
         if ( line == null ) {
             return ( tb1.equals( tb2 ) );
         }
-        Vector3f lineOrigin = line.getOrigin();
 
-        cross = null;
-        for( Vector3f point : tb1.points ) {
-            pointRelative = new Vector3f( point );
-            pointRelative.add( -lineOrigin.getX(), -lineOrigin.getY(), -lineOrigin.getZ() );
-            crossPrev = ( cross != null ) ? cross : null;
-            cross = line.getDirection().createCross( pointRelative );
+        return checkTriangle( line, tb1.getPoints() ) && checkTriangle( line, tb2.getPoints() );
+    }
 
-            if ( cross.calcLength() == 0 ) {
-                tb1Collision = true;
-                break;
-            }
+    private boolean checkTriangle ( Line3f line, Vector3f[] points ) {
+        Vector3f cross = new Vector3f();
+        Vector3f crossPrev = new Vector3f();
+        Vector3f pointRelative = new Vector3f();
 
-            if ( crossPrev != null ) {
-                if ( cross.dot( crossPrev ) < 0 ) {
-                    tb1Collision = true;
-                    break;
-                }
-            }
-        }
+        Vector3f lineOrigin = line.getOrigin(), direction = line.getDirection();
 
-        cross = null;
-        for( Vector3f point : tb2.points ) {
-            pointRelative = new Vector3f( point );
-            pointRelative.add( -lineOrigin.getX(), -lineOrigin.getY(), -lineOrigin.getZ() );
-            crossPrev = ( cross != null ) ? cross : null;
-            cross = line.getDirection().createCross( pointRelative );
+        for( int i = 0; i < points.length; i++ ) {
+            Vector3f point = points[i];
+            pointRelative.set( point ).subtract( lineOrigin );
+            crossPrev.set( cross );
+            cross.setToCross( direction, pointRelative );
 
-            if ( cross.calcLength() == 0 ) {
-                tb1Collision = true;
-                break;
-            }
-
-            if ( crossPrev != null ) {
-                if ( cross.dot( crossPrev ) < 0 ) {
-                    tb1Collision = true;
-                    break;
-                }
+            if ( cross.isZero() || ( i != 0 && cross.dot( crossPrev ) < 0 ) ) {
+                return true;
             }
         }
-
-        return tb1Collision && tb2Collision;
+        return false;
     }
 }
