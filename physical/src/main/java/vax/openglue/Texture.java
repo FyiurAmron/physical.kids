@@ -1,5 +1,6 @@
 package vax.openglue;
 
+import java.nio.Buffer;
 import vax.openglue.constants.TextureTarget;
 
 /**
@@ -52,9 +53,12 @@ public class Texture {
         bind( gl ); // sets the params
         TextureDescriptor td = textureData.getTextureDescriptor();
 
+        Buffer buf = textureData.getBuffer();
+        buf.rewind(); // sanity OP; otherwise we could get nasty native OpenGL driver crashes
+
         gl.glTexImage2D( targetEnum, 0, td.getInternalFormat(),
                 td.getWidth(), td.getHeight(), 0,
-                td.getPixelFormat(), td.getType(), textureData.getBuffer() );
+                td.getPixelFormat(), td.getType(), buf );
 
         if ( generateMipmaps ) {
             gl.glGenerateMipmap( targetEnum ); // don't do this if using legacy param (GL_GENERATE_MIPMAP set to 'true')

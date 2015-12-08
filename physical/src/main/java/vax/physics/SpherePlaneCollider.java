@@ -9,11 +9,13 @@ public class SpherePlaneCollider extends Collider<SphereBody, PlaneBody> {
 
     @Override
     public boolean collide ( /* Sphere */ Body body1, /* Plane */ Body body2 ) {
-        SphereBody sb = (SphereBody) body1;
-        PlaneBody pb = (PlaneBody) body2;
-        if ( sb == null || pb == null ) {
+        if ( body1 == null || body2 == null ) {
             throw new NullPointerException();
         }
+
+        SphereBody sb = (SphereBody) body1;
+        PlaneBody pb = (PlaneBody) body2;
+
         float dist = pb.plane3f.calcDistance( sb.transform );
         float depth = sb.radius - dist;
         if ( depth < 0 || depth > sb.radius ) // a) sphere-to-plane collision occured, b) not too far yet

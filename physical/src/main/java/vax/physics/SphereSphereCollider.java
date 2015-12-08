@@ -10,11 +10,12 @@ public class SphereSphereCollider extends Collider<SphereBody, SphereBody> {
 
     @Override
     public boolean collide ( /* Sphere */ Body body1, /* Sphere */ Body body2 ) {
-        SphereBody sb1 = (SphereBody) body1;
-        SphereBody sb2 = (SphereBody) body2;
-        if ( sb1 == null || sb2 == null ) {
+        if ( body1 == null || body2 == null ) {
             throw new NullPointerException();
         }
+
+        SphereBody sb1 = (SphereBody) body1;
+        SphereBody sb2 = (SphereBody) body2;
 
         float res = sb1.restitution * sb2.restitution;
         Vector3f disp = sb1.transform.createDisplacement( sb2.transform );
