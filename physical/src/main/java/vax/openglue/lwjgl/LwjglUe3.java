@@ -24,8 +24,7 @@ public class LwjglUe3 extends AbstractGLUE {
 
     @Override
     public Class<? extends ImageIO.GLUE> getClassImageIO_GLUE () {
-        //return LwjglImageIoGLUE.class;
-        return vax.openglue.jogl.JoglImageIoGLUE.class;
+        return LwjglImageIoGLUE.class;
     }
 
     @Override
