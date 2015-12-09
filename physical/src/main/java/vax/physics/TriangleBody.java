@@ -6,11 +6,12 @@ import vax.math.Vector3f;
 /**
  Created by Kuba on 2015-12-02.
  */
-public class TriangleBody extends PlaneBody {
+public class TriangleBody extends Body {
     protected final Vector3f //
             point1 = new Vector3f(),
             point2 = new Vector3f(),
             point3 = new Vector3f();
+    protected Plane3f plane = new Plane3f();
 
     /**
      No-arg for serialization/subclassing.
@@ -54,16 +55,20 @@ public class TriangleBody extends PlaneBody {
     }
 
     private void _setPoints ( Vector3f v1, Vector3f v2, Vector3f v3 ) {
-        setPlane3f( new Plane3f( v1, v2, v3 ) );
         point1.set( v1 );
         point2.set( v2 );
         point3.set( v3 );
+        plane.set( point1, point2, point3 );
     }
 
     public boolean equals ( TriangleBody tb ) {
         return point1.equals( tb.point1 )
                 && point2.equals( tb.point2 )
                 && point3.equals( tb.point3 );
+    }
+
+    public Plane3f getPlane () {
+        return plane;
     }
 
     @Override

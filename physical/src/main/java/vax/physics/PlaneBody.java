@@ -3,7 +3,6 @@ package vax.physics;
 import vax.math.*;
 
 public class PlaneBody extends Body {
-
     protected Plane3f plane3f;
 
     /**
@@ -20,11 +19,11 @@ public class PlaneBody extends Body {
         this( new Plane3f( normal, distanceToOrigin ) );
     }
 
-    public Plane3f getPlane3f () {
+    public Plane3f getPlane () {
         return plane3f;
     }
 
-    public void setPlane3f ( Plane3f plane3f ) {
+    public void setPlane ( Plane3f plane3f ) {
         this.plane3f = plane3f;
     }
 }
