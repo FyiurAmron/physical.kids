@@ -21,7 +21,7 @@ public class TriangleTriangleCollider extends Collider<TriangleBody, TriangleBod
         TriangleBody tb1 = (TriangleBody) body1;
         TriangleBody tb2 = (TriangleBody) body2;
 
-        Line3f line = tb1.getPlane3f().intersect( tb2.getPlane3f() );
+        Line3f line = tb1.getPlane().intersect( tb2.getPlane() );
 
         // FIXME do poprawki, czy plaszczyzny sa rownolegle lub pokrywaja sie i co wtedy
         if ( line == null ) {
