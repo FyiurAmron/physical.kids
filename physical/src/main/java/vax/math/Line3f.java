@@ -56,6 +56,18 @@ public class Line3f {
         this.direction = direction;
     }
 
+    /**
+     Sets the components of output (direction, origin) to this object's values.
+
+     @param output
+     @return output, for chaining
+     */
+    public Line3f set ( Line3f output ) {
+        output.direction.set( direction );
+        output.origin.set( origin );
+        return output;
+    }
+
     //    http://mathworld.wolfram.com/Point-LineDistance3-Dimensional.html
     public float calcDistance ( Vector3f point ) {
         throw new UnsupportedOperationException( "not yet implemented" );

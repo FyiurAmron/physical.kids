@@ -31,6 +31,18 @@ public class LineSegment3f {
         this.point2 = point2;
     }
 
+    /**
+     Sets the components of output (point1, point2) to this object's values.
+
+     @param output
+     @return output, for chaining
+     */
+    public LineSegment3f set ( LineSegment3f output ) {
+        output.point1.set( point1 );
+        output.point2.set( point2 );
+        return output;
+    }
+
 //    http://mathworld.wolfram.com/Point-LineDistance3-Dimensional.html
     public float calcDistance ( Vector3f point ) {
         throw new UnsupportedOperationException( "not yet implemented" );
