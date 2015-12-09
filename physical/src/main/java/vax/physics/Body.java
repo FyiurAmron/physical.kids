@@ -68,7 +68,7 @@ public class Body {
         velocity.add( impulse.createScaled( 1 / mass ) );
     }
 
-    Vector3f getForce () {
+    protected Vector3f getForce () {
         Vector3f v3f = new Vector3f( acceleration );
         v3f.scale( mass );
         return v3f;
@@ -159,4 +159,6 @@ public class Body {
     public void setMass ( float mass ) {
         this.mass = mass;
     }
+
+    // TODO toString()
 }

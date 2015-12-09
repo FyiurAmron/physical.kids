@@ -28,7 +28,12 @@ public class TriangleTriangleCollider extends Collider<TriangleBody, TriangleBod
             return ( tb1.equals( tb2 ) );
         }
 
-        return checkTriangle( line, tb1.getPoints() ) && checkTriangle( line, tb2.getPoints() );
+        Vector3f[] points = { new Vector3f(), new Vector3f(), new Vector3f() };
+        tb1.getPoints( points[0], points[1], points[2] );
+        if ( !checkTriangle( line, points ))
+            return false;
+        tb2.getPoints( points[0], points[1], points[2] );
+        return checkTriangle( line, points );
     }
 
     private boolean checkTriangle ( Line3f line, Vector3f[] points ) {
