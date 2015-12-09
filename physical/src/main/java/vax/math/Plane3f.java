@@ -60,6 +60,11 @@ public class Plane3f {
         _set( point1, point2, point3 );
     }
 
+    public void set ( Plane3f plane3f ) {
+        normal.set( plane3f.normal );
+        distanceToOrigin = plane3f.distanceToOrigin;
+    }
+
     private void _set ( Vector3f point1, Vector3f point2, Vector3f point3 ) {
         normal.setToNormal( point1, point2, point3 );
         distanceToOrigin = -point1.dot( normal );
