@@ -1,6 +1,7 @@
 package vax.physics;
 
 import vax.math.Line3f;
+import vax.math.Plane3f;
 import vax.math.Vector3f;
 
 /**
@@ -21,7 +22,8 @@ public class TriangleTriangleCollider extends Collider<TriangleBody, TriangleBod
         TriangleBody tb1 = (TriangleBody) body1;
         TriangleBody tb2 = (TriangleBody) body2;
 
-        Line3f line = tb1.getPlane().intersect( tb2.getPlane() );
+        Plane3f tb1p = tb1.getPlane( new Plane3f() ), tb2p = tb2.getPlane( new Plane3f() );
+        Line3f line = tb1p.intersect( tb2p );
 
         // FIXME do poprawki, czy plaszczyzny sa rownolegle lub pokrywaja sie i co wtedy
         if ( line == null ) {
