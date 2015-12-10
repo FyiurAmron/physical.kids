@@ -32,7 +32,7 @@ public class SpherePlaneColliderTest {
             planeBody = new PlaneBody( new Plane3f( new Vector3f( f1 ), 0 ) );
             sphereBody = new SphereBody( 1f, 1f );
             sphereBody.getTransform().addTranslation( f2 );
-            float distance = planeBody.getPlane3f().calcDistance( sphereBody.getTransform() );
+            float distance = planeBody.getPlane().calcDistance( sphereBody.getTransform() );
 
             assertEquals( distance <= 1f, collider.collide( sphereBody, planeBody ) );
 
