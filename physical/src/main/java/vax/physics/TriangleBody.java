@@ -67,8 +67,15 @@ public class TriangleBody extends Body {
                 && point3.equals( tb.point3 );
     }
 
-    public Plane3f getPlane () {
-        return plane;
+    /**
+     Copies local plane values to output.
+
+     @param output
+     @return reference to output, for chaining
+     */
+    public Plane3f getPlane ( Plane3f output ) {
+        output.set( plane );
+        return output;
     }
 
     @Override
