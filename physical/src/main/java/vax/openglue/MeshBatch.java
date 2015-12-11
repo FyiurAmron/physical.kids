@@ -121,7 +121,7 @@ public class MeshBatch implements EventListenerGL {
     }
 
     @Override
-    public void reshape ( OpenGLUE gl, int x, int y, int width, int height ) {
+    public void resize ( OpenGLUE gl, int x, int y, int width, int height ) {
         // updating all of the matrices handled in the render(gl) itself
     }
 

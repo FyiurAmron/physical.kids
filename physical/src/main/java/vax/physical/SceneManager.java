@@ -2,10 +2,14 @@ package vax.physical;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import com.jogamp.opengl.GL;
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL30;
 import vax.math.*;
 import vax.openglue.*;
 import vax.openglue.constants.ClearBufferMask;
+import vax.openglue.constants.FramebufferType;
 import vax.openglue.mesh.*;
 import vax.physical.resource.Resource;
 
@@ -38,7 +42,14 @@ public class SceneManager implements EventListenerGL {
 
     private final DebugGLUE debugGLUE = new DebugGLUE();
 
-    public SceneManager () {
+    // misc junk
+    private Texture dilloTex;
+    private Mesh ball;
+    private Framebuffer framebuffer;
+    private final WindowGLUE.Settings initialSettings;
+
+    public SceneManager ( WindowGLUE.Settings initialSettings ) {
+        this.initialSettings = initialSettings;
     }
 
     private float getTime () {
@@ -57,15 +68,17 @@ public class SceneManager implements EventListenerGL {
 
         TextureData<?> dilloTD = glue.readTextureData( "angry-armadillo.png", Resource.class );
         TextureData<?> leftInterfaceTD = glue.readTextureData( "interface.png", Resource.class );
-        SphereMesh ball = new SphereMesh( 0.1f, 12, 12, true );
+        /* SphereMesh */ ball = new SphereMesh( /*0.1f*/ 0.3f, 12, 12, true );
         RectangleMesh leftInterface = new RectangleMesh( -1f, -2f, RectangleMesh.RECT_VT_PROTO_2 );
         leftInterface.getTransform().setTranslationX( -0.5f );
         leftInterface.getTransform().setTranslationY( 1f );
+
+
         //RectangleMesh leftInterface = new RectangleMesh( 2, 2, 2 );
 
+        /* Texture */ dilloTex = new Texture( dilloTD, TextureParameters.TRILINEAR_ANISO_CLAMP, true );
         Texture //
-                dilloTex = new Texture( dilloTD, TextureParameters.TRILINEAR, true ),
-                interfaceLeftTex = new Texture( leftInterfaceTD, TextureParameters.TRILINEAR, true );
+                interfaceLeftTex = new Texture( leftInterfaceTD, TextureParameters.TRILINEAR_ANISO_CLAMP, true );
         ball.setTexture( dilloTex );
         leftInterface.setTexture( interfaceLeftTex );
 
@@ -96,14 +109,13 @@ public class SceneManager implements EventListenerGL {
         //mainMeshBatch.getNonAlphaBlendedMeshes().add( leftInterface );
         noiseMeshBatch.getAlphaBlendedMeshes().add( leftInterface );
 
-        //float aspectRatio = ( (float) settings.windowSize.getX() ) / settings.windowSize.getY();
-        float aspectRatio = 4f / 3; // TODO infer this from window size
+        float aspectRatio = initialSettings.getAspectRatio();
         //gl.glPolygonMode( OpenGLUE.Constants.GL_FRONT_AND_BACK, OpenGLUE.Constants.GL_LINE ); // DEBUG
         gl.glCullFace( OpenGLUE.Constants.GL_BACK );
-        gl.glEnable( GL.GL_CULL_FACE );
-        gl.glEnable( GL.GL_DEPTH_TEST );
+        gl.glEnable( OpenGLUE.Constants.GL_CULL_FACE );
+        gl.glEnable( OpenGLUE.Constants.GL_DEPTH_TEST );
         //gl.glEnable( GL.GL_BLEND ); // per-mesh now
-        gl.glBlendFunc( GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA );
+        gl.glBlendFunc( OpenGLUE.Constants.GL_SRC_ALPHA, OpenGLUE.Constants.GL_ONE_MINUS_SRC_ALPHA );
         //projectionMatrix.setToPerspective( 0.1f, 100f, 67, aspectRatio );
         float halfSizeX = 1f, halfSizeY = 1f, sizeX = 2 * halfSizeX, sizeY = 2 * halfSizeY;
         projectionMatrix.setToOrthoWindow( -halfSizeX, -halfSizeY, sizeX, sizeY, -10, 10 );
@@ -113,7 +125,8 @@ public class SceneManager implements EventListenerGL {
         //modelviewMatrix.scaleY( -1f );
         modelviewMatrix.setTranslationZ( 3f );
 
-        backgroundColor.set( 0.01f, 0.01f, 0.01f, 0.01f );
+        //backgroundColor.set( 0.01f, 0.01f, 0.01f, 0.01f );
+        backgroundColor.set( 0.1f, 0.1f, 0.1f, 0.1f );
         ambientColor.set( 0.4f, 0.4f, 0.4f, 1.0f );
         lightColor.set( 1.0f, 1.0f, 1.0f, 1.0f );
         lightDirUnit.set( 0.5f, 1.0f, 0.5f );
@@ -153,6 +166,10 @@ public class SceneManager implements EventListenerGL {
 
         mainMeshBatch.init( gl );
         noiseMeshBatch.init( gl );
+
+        Vector2i windowSize = initialSettings.windowSize;
+        framebuffer = new Framebuffer( windowSize.getX(), windowSize.getY() );
+        framebuffer.init( gl );
     }
 
     @Override
@@ -161,28 +178,71 @@ public class SceneManager implements EventListenerGL {
             debugGLUE.setGlue( gl );
             gl = debugGLUE;
         }
-        gl.glClearColor( backgroundColor );
-        gl.glClear( ClearBufferMask.ColorBufferBit, ClearBufferMask.DepthBufferBit );
 
         random.setValue( MathUtils.nextFloat() );
         //float ftime = (float) ( System.currentTimeMillis() % 1000 ) / 1000;
         //System.out.println( ftime );
         time.setValue( getTime() );
 
+        if ( framebuffer != null ) {
+            framebuffer.bind( gl );
+            ball.setTexture( dilloTex );
+        }
+        gl.glClearColor( backgroundColor );
+        gl.glClear( ClearBufferMask.ColorBufferBit, ClearBufferMask.DepthBufferBit );
+
         //modelviewMatrix.setTranslationX( (float) Math.sin( ftime ) );
         //modelviewMatrix.setTranslationZ( -1.5f + (float) Math.cos( ftime ) );
         mainMeshBatch.render( gl );
         noiseMeshBatch.render( gl );
+        if ( framebuffer != null ) {
+            i++;
+            if ( i % 60 == 0 ) {
+                //screenshot( gl );
+                //dilloTex.createBufferImage( gl ).saveTo( "PNG", new File( "output.png" ) );
+                //framebuffer.getTexture().createBufferImage( gl ).saveTo( "PNG", new File( "output.png" ) );
+            }
+            framebuffer.unbind( gl );
+            /*
+            framebuffer.bind( gl, FramebufferType.ReadOnly );
+            GL11.glReadBuffer( GL30.GL_COLOR_ATTACHMENT0 );
+            framebuffer.unbind( gl, FramebufferType.DrawOnly );
+            GL20.glDrawBuffers( GL11.GL_BACK_LEFT );
+            */
+
+            gl.glClearColor( backgroundColor );
+            gl.glClear( ClearBufferMask.ColorBufferBit, ClearBufferMask.DepthBufferBit );
+            ball.setTexture( framebuffer.getTexture() );
+            mainMeshBatch.render( gl );
+            noiseMeshBatch.render( gl );
+            //GL30.glBlitFramebuffer( 0, 0, 400, 400, 0, 0, 400, 400, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_LINEAR );
+        }
+    }
+
+    int i;
+
+    // TODO implement a proper export filter here
+    private BufferImage screenshot ( OpenGLUE gl ) {
+        boolean depth = false;
+        BufferImage bi = new BufferImage( initialSettings.windowSize, /* depth ? 1 : */ 4, depth );
+
+        gl.glReadBuffer( OpenGLUE.Constants.GL_FRONT );
+
+        gl.glReadPixels( 0, 0, bi.width, bi.height,
+                depth ? OpenGLUE.Constants.GL_DEPTH_COMPONENT : OpenGLUE.Constants.GL_RGBA,
+                depth ? OpenGLUE.Constants.GL_FLOAT : OpenGLUE.Constants.GL_UNSIGNED_BYTE, bi.buffer );
+        return bi;
     }
 
     @Override
-    public void reshape ( OpenGLUE gl, int x, int y, int width, int height ) {
+    public void resize ( OpenGLUE gl, int x, int y, int width, int height ) {
         if ( debug ) {
             debugGLUE.setGlue( gl );
             gl = debugGLUE;
         }
-        viewportSize.set( width, height );
         // TODO if aspect changed & persp. used: recalc persp. matrix
+        // also note: does LWJGL/JOGL automagically change glViewport on resize?
+        viewportSize.set( width, height );
     }
 
     @Override

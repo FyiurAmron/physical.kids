@@ -22,30 +22,31 @@ public enum ErrorCode implements OpenGlConstantWrapper {
     UnknownError( -1 ), //
     ;
 
-    private final int value;
-    private static final HashMap<Integer, ErrorCode> valueMap = new HashMap<>();
+    private final int glConstant;
+
+    private static final HashMap<Integer, ErrorCode> constantToEnumMap = new HashMap<>();
 
     static {
         for( ErrorCode ec : ErrorCode.values() ) {
-            valueMap.put( ec.value, ec );
+            constantToEnumMap.put( ec.glConstant, ec );
         }
     }
 
-    public static ErrorCode forValue ( int value ) {
-        ErrorCode ec = valueMap.get( value );
+    public static ErrorCode valueOf ( int glConstant ) {
+        ErrorCode ec = constantToEnumMap.get( glConstant );
         return ( ec == null ) ? UnknownError : ec;
     }
 
     private ErrorCode ( int value ) {
-        this.value = value;
+        this.glConstant = value;
     }
 
     @Override
-    public int getValue () {
-        return value;
+    public int getGlConstant () {
+        return glConstant;
     }
 
-    public boolean isError() {
+    public boolean isError () {
         return this != NoError;
     }
 }

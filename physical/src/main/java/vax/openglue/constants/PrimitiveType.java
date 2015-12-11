@@ -17,14 +17,14 @@ public enum PrimitiveType implements OpenGlConstantWrapper {
     // Quads, QuadStrip & Polygons unsupported since 3.0/ES 2.0
     ;
 
-    private final int value;
+    private final int glConstant;
 
-    private PrimitiveType ( int value ) {
-        this.value = value;
+    private PrimitiveType ( int glConstant ) {
+        this.glConstant = glConstant;
     }
 
     @Override
-    public int getValue () {
-        return value;
+    public int getGlConstant () {
+        return glConstant;
     }
 }

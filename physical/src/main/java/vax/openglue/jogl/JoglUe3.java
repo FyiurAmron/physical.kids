@@ -44,6 +44,66 @@ public class JoglUe3 extends AbstractGLUE {
     }
 
     @Override
+    public void glReadBuffer ( int srcEnum ) {
+        gl.glReadBuffer( srcEnum );
+    }
+
+    @Override
+    public void glReadPixels ( int x, int y, int width, int height, int format, int type, ByteBuffer pixels ) {
+        gl.glReadPixels( x, y, width, height, format, type, pixels );
+    }
+
+    @Override
+    public void glReadPixels ( int x, int y, int width, int height, int format, int type, ShortBuffer pixels ) {
+        gl.glReadPixels( x, y, width, height, format, type, pixels );
+    }
+
+    @Override
+    public void glReadPixels ( int x, int y, int width, int height, int format, int type, IntBuffer pixels ) {
+        gl.glReadPixels( x, y, width, height, format, type, pixels );
+    }
+
+    @Override
+    public void glReadPixels ( int x, int y, int width, int height, int format, int type, FloatBuffer pixels ) {
+        gl.glReadPixels( x, y, width, height, format, type, pixels );
+    }
+
+    @Override
+    public void glReadPixels ( int x, int y, int width, int height, int format, int type, Buffer pixels ) {
+        gl.glReadPixels( x, y, width, height, format, type, pixels );
+    }
+
+    @Override
+    public void glGetTexImage ( int tex, int level, int format, int type, ByteBuffer pixels ) {
+        gl.glGetTexImage( tex, level, format, type, pixels );
+    }
+
+    @Override
+    public void glGetTexImage ( int tex, int level, int format, int type, ShortBuffer pixels ) {
+        gl.glGetTexImage( tex, level, format, type, pixels );
+    }
+
+    @Override
+    public void glGetTexImage ( int tex, int level, int format, int type, IntBuffer pixels ) {
+        gl.glGetTexImage( tex, level, format, type, pixels );
+    }
+
+    @Override
+    public void glGetTexImage ( int tex, int level, int format, int type, FloatBuffer pixels ) {
+        gl.glGetTexImage( tex, level, format, type, pixels );
+    }
+
+    @Override
+    public void glGetTexImage ( int tex, int level, int format, int type, DoubleBuffer pixels ) {
+        gl.glGetTexImage( tex, level, format, type, pixels );
+    }
+
+    @Override
+    public void glGetTexImage ( int tex, int level, int format, int type, Buffer pixels ) {
+        gl.glGetTexImage( tex, level, format, type, pixels );
+    }
+
+    @Override
     public int glGetUniformLocation ( int shaderProgramHandle, String name ) {
         return gl.glGetUniformLocation( shaderProgramHandle, name );
     }
@@ -305,6 +365,11 @@ public class JoglUe3 extends AbstractGLUE {
     }
 
     @Override
+    public void glDrawBuffers ( int count, IntBuffer bufs ) {
+        gl.glDrawBuffers( count, bufs );
+    }
+
+    @Override
     public void glPolygonMode ( int faceEnum, int modeEnum ) {
         gl.glPolygonMode( faceEnum, modeEnum );
     }
@@ -351,6 +416,11 @@ public class JoglUe3 extends AbstractGLUE {
 
     @Override
     public void glBufferData ( int bufferTarget, long size, DoubleBuffer data, int usageEnum ) {
+        gl.glBufferData( bufferTarget, size, data, usageEnum );
+    }
+
+    @Override
+    public void glBufferData ( int bufferTarget, long size, Buffer data, int usageEnum ) {
         gl.glBufferData( bufferTarget, size, data, usageEnum );
     }
 
@@ -442,6 +512,46 @@ public class JoglUe3 extends AbstractGLUE {
     @Override
     public void glDeleteVertexArrays ( int n, IntBuffer arrays ) {
         gl.glDeleteVertexArrays( n, arrays );
+    }
+
+    @Override
+    public void glRenderbufferStorage ( int targetEnum, int internalformat, int width, int height ) {
+        gl.glRenderbufferStorage( targetEnum, internalformat, width, height );
+    }
+
+    @Override
+    public void glRenderbufferStorageMultisample ( int targetEnum, int samples, int internalformat, int width, int height ) {
+        gl.glRenderbufferStorageMultisample( targetEnum, samples, internalformat, width, height );
+    }
+
+    @Override
+    public int glCheckFramebufferStatus ( int targetEnum ) {
+        return gl.glCheckFramebufferStatus( targetEnum );
+    }
+
+    @Override
+    public void glFramebufferTexture1D ( int targetEnum, int attachmentEnum, int textarget, int texture, int level ) {
+        gl.glFramebufferTexture1D( targetEnum, attachmentEnum, textarget, texture, level );
+    }
+
+    @Override
+    public void glFramebufferTexture2D ( int targetEnum, int attachmentEnum, int textarget, int texture, int level ) {
+        gl.glFramebufferTexture2D( targetEnum, attachmentEnum, textarget, texture, level );
+    }
+
+    @Override
+    public void glFramebufferTexture3D ( int targetEnum, int attachmentEnum, int textarget, int texture, int level, int layer ) {
+        gl.glFramebufferTexture3D( targetEnum, attachmentEnum, textarget, texture, level, layer );
+    }
+
+    @Override
+    public void glFramebufferTextureLayer ( int targetEnum, int attachmentEnum, int texture, int level, int layer ) {
+        gl.glFramebufferTextureLayer( targetEnum, attachmentEnum, texture, level, layer );
+    }
+
+    @Override
+    public void glFramebufferRenderbuffer ( int targetEnum, int attachmentEnum, int renderbufferTargetEnum, int renderbufferHandle ) {
+        gl.glFramebufferRenderbuffer( targetEnum, attachmentEnum, renderbufferTargetEnum, renderbufferHandle );
     }
 
     @Override

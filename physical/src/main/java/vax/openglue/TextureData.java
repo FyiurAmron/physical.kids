@@ -1,6 +1,7 @@
 package vax.openglue;
 
 import java.nio.Buffer;
+import java.util.Objects;
 
 /**
 
@@ -22,5 +23,10 @@ public class TextureData<T extends Buffer> {
 
     public T getBuffer () {
         return buffer;
+    }
+
+    @Override
+    public String toString () {
+        return "buffer capacity: " + Objects.toString( buffer ) + " " + Objects.toString( textureDescriptor );
     }
 }

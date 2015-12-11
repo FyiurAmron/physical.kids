@@ -39,6 +39,66 @@ public class DebugGLUE implements OpenGLUE {
     }
 
     @Override
+    public void glReadBuffer ( int srcEnum ) {
+        gl.glReadBuffer( srcEnum );
+        ueCheckError();
+    }
+
+    @Override
+    public void glReadPixels ( int x, int y, int width, int height, int format, int type, ByteBuffer pixels ) {
+        gl.glReadPixels( x, y, width, height, format, type, pixels );
+        ueCheckError();
+    }
+
+    @Override
+    public void glReadPixels ( int x, int y, int width, int height, int format, int type, ShortBuffer pixels ) {
+        gl.glReadPixels( x, y, width, height, format, type, pixels );
+        ueCheckError();
+    }
+
+    @Override
+    public void glReadPixels ( int x, int y, int width, int height, int format, int type, IntBuffer pixels ) {
+        gl.glReadPixels( x, y, width, height, format, type, pixels );
+        ueCheckError();
+    }
+
+    @Override
+    public void glReadPixels ( int x, int y, int width, int height, int format, int type, FloatBuffer pixels ) {
+        gl.glReadPixels( x, y, width, height, format, type, pixels );
+        ueCheckError();
+    }
+
+    @Override
+    public void glGetTexImage ( int tex, int level, int format, int type, ByteBuffer pixels ) {
+        gl.glGetTexImage( tex, level, format, type, pixels );
+        ueCheckError();
+    }
+
+    @Override
+    public void glGetTexImage ( int tex, int level, int format, int type, ShortBuffer pixels ) {
+        gl.glGetTexImage( tex, level, format, type, pixels );
+        ueCheckError();
+    }
+
+    @Override
+    public void glGetTexImage ( int tex, int level, int format, int type, IntBuffer pixels ) {
+        gl.glGetTexImage( tex, level, format, type, pixels );
+        ueCheckError();
+    }
+
+    @Override
+    public void glGetTexImage ( int tex, int level, int format, int type, FloatBuffer pixels ) {
+        gl.glGetTexImage( tex, level, format, type, pixels );
+        ueCheckError();
+    }
+
+    @Override
+    public void glGetTexImage ( int tex, int level, int format, int type, DoubleBuffer pixels ) {
+        gl.glGetTexImage( tex, level, format, type, pixels );
+        ueCheckError();
+    }
+
+    @Override
     public int glGetUniformLocation ( int shaderProgramHandle, String name ) {
         int ret = gl.glGetUniformLocation( shaderProgramHandle, name );
         ueCheckError();
@@ -431,6 +491,55 @@ public class DebugGLUE implements OpenGLUE {
     }
 
     @Override
+    public void glRenderbufferStorage ( int targetEnum, int internalformat, int width, int height ) {
+        gl.glRenderbufferStorage( targetEnum, internalformat, width, height );
+        ueCheckError();
+    }
+
+    @Override
+    public void glRenderbufferStorageMultisample ( int targetEnum, int samples, int internalformat, int width, int height ) {
+        gl.glRenderbufferStorageMultisample( targetEnum, samples, internalformat, width, height );
+        ueCheckError();
+    }
+
+    @Override
+    public int glCheckFramebufferStatus ( int targetEnum ) {
+        int ret = gl.glCheckFramebufferStatus( targetEnum );
+        ueCheckError();
+        return ret;
+    }
+
+    @Override
+    public void glFramebufferTexture1D ( int targetEnum, int attachmentEnum, int textarget, int texture, int level ) {
+        gl.glFramebufferTexture1D( targetEnum, attachmentEnum, textarget, texture, level );
+        ueCheckError();
+    }
+
+    @Override
+    public void glFramebufferTexture2D ( int targetEnum, int attachmentEnum, int textarget, int texture, int level ) {
+        gl.glFramebufferTexture2D( targetEnum, attachmentEnum, textarget, texture, level );
+        ueCheckError();
+    }
+
+    @Override
+    public void glFramebufferTexture3D ( int targetEnum, int attachmentEnum, int textarget, int texture, int level, int layer ) {
+        gl.glFramebufferTexture3D( targetEnum, attachmentEnum, textarget, texture, level, layer );
+        ueCheckError();
+    }
+
+    @Override
+    public void glFramebufferTextureLayer ( int targetEnum, int attachmentEnum, int texture, int level, int layer ) {
+        gl.glFramebufferTextureLayer( targetEnum, attachmentEnum, texture, level, layer );
+        ueCheckError();
+    }
+
+    @Override
+    public void glFramebufferRenderbuffer ( int targetEnum, int attachmentEnum, int renderbufferTargetEnum, int renderbufferHandle ) {
+        gl.glFramebufferRenderbuffer( targetEnum, attachmentEnum, renderbufferTargetEnum, renderbufferHandle );
+        ueCheckError();
+    }
+
+    @Override
     public void glPolygonMode ( int faceEnum, int modeEnum ) {
         gl.glPolygonMode( faceEnum, modeEnum );
         ueCheckError();
@@ -487,6 +596,12 @@ public class DebugGLUE implements OpenGLUE {
     @Override
     public void glBufferData ( int bufferTarget, long size, DoubleBuffer data, int usageEnum ) {
         gl.glBufferData( bufferTarget, size, data, usageEnum );
+        ueCheckError();
+    }
+
+    @Override
+    public void glDrawBuffers ( int count, IntBuffer bufs ) {
+        gl.glDrawBuffers( count, bufs );
         ueCheckError();
     }
 

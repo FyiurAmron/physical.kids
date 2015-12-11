@@ -36,18 +36,46 @@ public class TextureParameters {
     //GL_GENERATE_MIPMAP // use glGenerateMipmap(targetEnum)
     };
 
+    public final static int MAX_ANISOTROPIC_FILTERING = 16;
+
+    public static Param[] //
+            BILINEAR = {
+                new Param( GL_TEXTURE_MIN_FILTER, GL_LINEAR ),
+                new Param( GL_TEXTURE_MAG_FILTER, GL_LINEAR )
+            },
+            TRILINEAR = {
+                new Param( GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR ),
+                new Param( GL_TEXTURE_MAG_FILTER, GL_LINEAR )
+            },
+            CLAMP_TO_EDGE = {
+                new Param( GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE ),
+                new Param( GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE )
+            },
+            REPEAT = {
+                new Param( GL_TEXTURE_WRAP_S, GL_REPEAT ),
+                new Param( GL_TEXTURE_WRAP_T, GL_REPEAT )
+            },
+            MIRRORED_REPEAT = {
+                new Param( GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT ),
+                new Param( GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT )
+            },
+            ANISOTROPIC = {
+                new Param( GL_TEXTURE_MAX_ANISOTROPY_EXT, MAX_ANISOTROPIC_FILTERING )
+            };
+
+    @SuppressWarnings( "StaticNonFinalUsedInInitialization" )
     public static final TextureParameters //
-            BILINEAR = new TextureParameters(
-                    new Param( GL_TEXTURE_MIN_FILTER, GL_LINEAR ),
-                    new Param( GL_TEXTURE_MAG_FILTER, GL_LINEAR ),
-                    new Param( GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE ),
-                    new Param( GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE )
+            BILINEAR_CLAMP = new TextureParameters(
+                    BILINEAR, CLAMP_TO_EDGE
             ),
-            TRILINEAR = new TextureParameters(
-                    new Param( GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR ),
-                    new Param( GL_TEXTURE_MAG_FILTER, GL_LINEAR ),
-                    new Param( GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE ),
-                    new Param( GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE )
+            TRILINEAR_CLAMP = new TextureParameters(
+                    TRILINEAR, CLAMP_TO_EDGE
+            ),
+            BILINEAR_ANISO_CLAMP = new TextureParameters(
+                    BILINEAR, ANISOTROPIC, CLAMP_TO_EDGE
+            ),
+            TRILINEAR_ANISO_CLAMP = new TextureParameters(
+                    TRILINEAR, ANISOTROPIC, CLAMP_TO_EDGE
             );
 
     private final TIntObjectHashMap<ParamValue<?>> params = new TIntObjectHashMap<>( ALLOWED_PARAMS.length );
@@ -55,26 +83,27 @@ public class TextureParameters {
     public TextureParameters () {
     }
 
-    public TextureParameters ( Param param ) {
-        _setParameters( param );
+    public TextureParameters ( Param... params ) {
+        _setParameters( params );
     }
 
-    public TextureParameters ( Param param, Param... params ) {
-        _setParameters( param, params );
+    public TextureParameters ( Param[]... params ) {
+        _setParameters( params );
     }
 
     public TextureParameters ( Collection<Param> params ) {
         _setParameters( params );
     }
 
-    private void _setParameters ( Param param ) {
-        params.put( param.paramEnum, param.paramValue );
+    private void _setParameters ( Param... params ) {
+        for( Param param : params ) {
+            this.params.put( param.paramEnum, param.paramValue );
+        }
     }
 
-    private void _setParameters ( Param param, Param... params ) {
-        _setParameters( param );
-        for( Param param2 : params ) {
-            this.params.put( param2.paramEnum, param2.paramValue );
+    private void _setParameters ( Param[]... params ) {
+        for( Param[] param : params ) {
+            _setParameters( param );
         }
     }
 
@@ -86,10 +115,6 @@ public class TextureParameters {
 
     public void setParameters ( Param param ) {
         _setParameters( param );
-    }
-
-    public void setParameters ( Param param, Param... params ) {
-        _setParameters( param, params );
     }
 
     public void setParameters ( Collection<Param> params ) {

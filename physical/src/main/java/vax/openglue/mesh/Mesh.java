@@ -118,11 +118,14 @@ public class Mesh implements Renderable {
     @Override
     public void render ( OpenGLUE gl ) {
         if ( texture != null ) {
-            gl.glBindTexture( OpenGL.Constants.GL_TEXTURE_2D, texture.getHandle() );
+            texture.bind( gl );
         }
         gl.glBindVertexArray( vaoHandle );
 
-        gl.glDrawElements( primitiveType.getValue(), meshData.getIndices().length, OpenGL.Constants.GL_UNSIGNED_INT, 0 );
+        gl.glDrawElements( primitiveType.getGlConstant(), meshData.getIndices().length, OpenGL.Constants.GL_UNSIGNED_INT, 0 );
+        if ( texture != null ) {
+            texture.unbind( gl );
+        }
     }
 
     /*

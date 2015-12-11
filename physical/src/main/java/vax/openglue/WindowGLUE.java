@@ -52,6 +52,13 @@ public interface WindowGLUE {
             this.mouseConfined = mouseConfined;
         }
 
+        /**
+         @return <code>( (float) windowSize.getX() ) / windowSize.getY()</code>
+         */
+        public float getAspectRatio () {
+            return ( (float) windowSize.getX() ) / windowSize.getY();
+        }
+
     }
 
     void dispose ();

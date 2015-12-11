@@ -49,7 +49,7 @@ public class JoglWindowGLUE implements WindowGLUE {
 
             @Override
             public void reshape ( GLAutoDrawable drawable, int x, int y, int width, int height ) {
-                cvel.reshape( ue.setGl( drawable ), x, y, width, height );
+                cvel.resize( ue.setGl( drawable ), x, y, width, height );
             }
 
             @Override

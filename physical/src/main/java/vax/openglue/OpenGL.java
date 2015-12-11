@@ -1201,6 +1201,26 @@ public interface OpenGL {
 
     void glClearColor ( float r, float g, float b, float a );
 
+    void glReadBuffer ( int srcEnum );
+
+    void glReadPixels ( int x, int y, int width, int height, int format, int type, ByteBuffer pixels );
+
+    void glReadPixels ( int x, int y, int width, int height, int format, int type, ShortBuffer pixels );
+
+    void glReadPixels ( int x, int y, int width, int height, int format, int type, IntBuffer pixels );
+
+    void glReadPixels ( int x, int y, int width, int height, int format, int type, FloatBuffer pixels );
+
+    void glGetTexImage ( int tex, int level, int format, int type, ByteBuffer pixels );
+
+    void glGetTexImage ( int tex, int level, int format, int type, ShortBuffer pixels );
+
+    void glGetTexImage ( int tex, int level, int format, int type, IntBuffer pixels );
+
+    void glGetTexImage ( int tex, int level, int format, int type, FloatBuffer pixels );
+
+    void glGetTexImage ( int tex, int level, int format, int type, DoubleBuffer pixels );
+
     //void glGenTextures ( int count, int[] outBuffer, int offset );
     void glGenTextures ( int count, IntBuffer outBuffer );
 
@@ -1351,6 +1371,23 @@ public interface OpenGL {
     void glVertexAttribPointer ( int attribNr, int size, int typeEnum, boolean normalize, int stride, long pointer );
 
     void glDrawElements ( int primitiveType, int count, int valueType, long offset );
+    // TODO add proper glDrawElements variants (with proper Buffer params) as soon as JOGL fixes its implementation
+
+    void glRenderbufferStorage ( int targetEnum, int internalformat, int width, int height );
+
+    void glRenderbufferStorageMultisample ( int targetEnum, int samples, int internalformat, int width, int height );
+
+    int glCheckFramebufferStatus ( int targetEnum );
+
+    void glFramebufferTexture1D ( int targetEnum, int attachmentEnum, int textarget, int texture, int level );
+
+    void glFramebufferTexture2D ( int targetEnum, int attachmentEnum, int textarget, int texture, int level );
+
+    void glFramebufferTexture3D ( int targetEnum, int attachmentEnum, int textarget, int texture, int level, int layer );
+
+    void glFramebufferTextureLayer ( int targetEnum, int attachmentEnum, int texture, int level, int layer );
+
+    void glFramebufferRenderbuffer ( int targetEnum, int attachmentEnum, int renderbufferTargetEnum, int renderbufferHandle );
 
     /**
      desktop OpenGL only (not in ES)
@@ -1386,6 +1423,8 @@ public interface OpenGL {
     void glBufferData ( int bufferTarget, long size, FloatBuffer data, int usageEnum );
 
     void glBufferData ( int bufferTarget, long size, DoubleBuffer data, int usageEnum );
+
+    void glDrawBuffers ( int count, IntBuffer bufs );
 
     /*
      error handling functions

@@ -27,7 +27,7 @@ public interface OpenGLUE extends OpenGL {
     }
 
     default ErrorCode ueGetError () {
-        return ErrorCode.forValue( glGetError() );
+        return ErrorCode.valueOf( glGetError() );
     }
 
     default String ueGetLogBufferContent () {
@@ -36,7 +36,7 @@ public interface OpenGLUE extends OpenGL {
 
     static void ueCheckError ( int errorEnum ) {
         if ( errorEnum != Constants.GL_NO_ERROR ) {
-            throw new GLException( ErrorCode.forValue( errorEnum ) );
+            throw new GLException( ErrorCode.valueOf( errorEnum ) );
         }
     }
 
@@ -64,15 +64,15 @@ public interface OpenGLUE extends OpenGL {
 
     // legacy/signature-compatible method extenders
     default void glClear ( ClearBufferMask cbm, ClearBufferMask... cbms ) {
-        glClear( OpenGlConstantWrapper.getValue( cbm, cbms ) );
+        glClear( OpenGlConstantWrapper.getGlConstant( cbm, cbms ) );
     }
 
     default int glCreateShader ( ShaderType shaderType ) {
-        return glCreateShader( shaderType.getValue() );
+        return glCreateShader( shaderType.getGlConstant() );
     }
 
     default void glBindBuffer ( BufferTarget bufferTarget, int handle ) {
-        glBindBuffer( bufferTarget.getValue(), handle );
+        glBindBuffer( bufferTarget.getGlConstant(), handle );
     }
 
     default void glUniform1f ( int location, FloatBuffer value ) {
@@ -181,6 +181,14 @@ public interface OpenGLUE extends OpenGL {
         glShaderSource( shaderHandle, 1, ueGetGLUtils().toArray( source ), null );
     }
 
+    default void glDrawBuffer ( int bufferHandle ) {
+        glDrawBuffers( 1, ueGetGLUtils().wrap( bufferHandle ) );
+    }
+
+    default void glDrawBuffers ( IntBuffer bufferHandles ) {
+        glDrawBuffers( bufferHandles.remaining(), bufferHandles );
+    }
+
     default int glGenVertexArray () {
         IntBuffer ib = ueGetGLUtils().getTempIntBuffer( 1 );
         glGenVertexArrays( 1, ib );
@@ -264,6 +272,34 @@ public interface OpenGLUE extends OpenGL {
      This method <b>may</b> use <code>instanceof</code> to determine <code>Buffer</code> type
      (default behaviour if the implementation doesn't allow unknown <code>Buffer</code> calls directly)
 
+     @param x
+     @param y
+     @param width
+     @param height
+     @param format
+     @param type
+     @param pixels
+     */
+    default void glReadPixels ( int x, int y, int width, int height, int format, int type, Buffer pixels ) {
+        if ( pixels == null || pixels instanceof ByteBuffer ) {
+            glReadPixels( x, y, width, height, format, type, (ByteBuffer) pixels );
+        } else if ( pixels instanceof ShortBuffer ) {
+            glReadPixels( x, y, width, height, format, type, (ShortBuffer) pixels );
+        } else if ( pixels instanceof IntBuffer ) {
+            glReadPixels( x, y, width, height, format, type, (IntBuffer) pixels );
+        } else if ( pixels instanceof FloatBuffer ) {
+            glReadPixels( x, y, width, height, format, type, (FloatBuffer) pixels );
+            //} else if ( pixels instanceof DoubleBuffer ) {
+            //    glReadPixels( x, y, width, height, format, type, (DoubleBuffer) pixels );
+        } else {
+            throw new GLException( "unknown buffer type" );
+        }
+    }
+
+    /**
+     This method <b>may</b> use <code>instanceof</code> to determine <code>Buffer</code> type
+     (default behaviour if the implementation doesn't allow unknown <code>Buffer</code> calls directly)
+
      @param targetEnum
      @param level
      @param internalFormat
@@ -276,7 +312,7 @@ public interface OpenGLUE extends OpenGL {
      */
     default void glTexImage2D ( int targetEnum, int level, int internalFormat,
             int width, int height, int border, int format, int type, Buffer data ) {
-        if ( data instanceof ByteBuffer ) {
+        if ( data == null || data instanceof ByteBuffer ) {
             glTexImage2D( targetEnum, level, internalFormat, width, height, border, format, type, (ByteBuffer) data );
         } else if ( data instanceof ShortBuffer ) {
             glTexImage2D( targetEnum, level, internalFormat, width, height, border, format, type, (ShortBuffer) data );
@@ -295,13 +331,39 @@ public interface OpenGLUE extends OpenGL {
      This method <b>may</b> use <code>instanceof</code> to determine <code>Buffer</code> type
      (default behaviour if the implementation doesn't allow unknown <code>Buffer</code> calls directly)
 
+     @param tex
+     @param level
+     @param format
+     @param type
+     @param pixels
+     */
+    default void glGetTexImage ( int tex, int level, int format, int type, Buffer pixels ) {
+        if ( pixels == null || pixels instanceof ByteBuffer ) {
+            glGetTexImage( tex, level, format, type, pixels );
+        } else if ( pixels instanceof ShortBuffer ) {
+            glGetTexImage( tex, level, format, type, pixels );
+        } else if ( pixels instanceof IntBuffer ) {
+            glGetTexImage( tex, level, format, type, pixels );
+        } else if ( pixels instanceof FloatBuffer ) {
+            glGetTexImage( tex, level, format, type, pixels );
+        } else if ( pixels instanceof DoubleBuffer ) {
+            glGetTexImage( tex, level, format, type, pixels );
+        } else {
+            throw new GLException( "unknown buffer type" );
+        }
+    }
+
+    /**
+     This method <b>may</b> use <code>instanceof</code> to determine <code>Buffer</code> type
+     (default behaviour if the implementation doesn't allow unknown <code>Buffer</code> calls directly)
+
      @param bufferTarget
      @param size
      @param data
      @param usageEnum
      */
     default void glBufferData ( int bufferTarget, long size, Buffer data, int usageEnum ) {
-        if ( data instanceof ByteBuffer ) {
+        if ( data == null || data instanceof ByteBuffer ) {
             glBufferData( bufferTarget, size, (ByteBuffer) data, usageEnum );
         } else if ( data instanceof ShortBuffer ) {
             glBufferData( bufferTarget, size, (ShortBuffer) data, usageEnum );

@@ -15,7 +15,7 @@ public class GLException extends RuntimeException {
     }
 
     public GLException ( int errorCodeEnum ) {
-        this( ErrorCode.forValue( errorCodeEnum ) );
+        this( ErrorCode.valueOf( errorCodeEnum ) );
     }
 
     public GLException ( ErrorCode errorCode ) {
