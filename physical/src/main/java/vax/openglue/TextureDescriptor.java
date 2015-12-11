@@ -47,4 +47,10 @@ public class TextureDescriptor {
     public int getType () {
         return type;
     }
+
+    @Override
+    public String toString () {
+        return "'" + name + "' [" + width + "," + height + "] format (pixel, internal, type): "
+                + pixelFormat + " " + internalFormat + " " + type;
+    }
 }

@@ -5,12 +5,12 @@ package vax.openglue.constants;
  @author toor
  */
 public interface OpenGlConstantWrapper {
-    int getValue ();
+    int getGlConstant ();
 
-    static int getValue ( OpenGlConstantWrapper ogcw, OpenGlConstantWrapper... ogcws ) {
-        int ret = ogcw.getValue();
+    static int getGlConstant ( OpenGlConstantWrapper ogcw, OpenGlConstantWrapper... ogcws ) {
+        int ret = ogcw.getGlConstant();
         for( OpenGlConstantWrapper ogcw2 : ogcws ) {
-            ret |= ogcw2.getValue();
+            ret |= ogcw2.getGlConstant();
         }
         return ret;
     }

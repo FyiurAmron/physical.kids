@@ -25,14 +25,14 @@ public enum TextureTarget implements OpenGlConstantWrapper {
      */
     TODO( 0 );
 
-    private final int value;
+    private final int glConstant;
 
-    private TextureTarget ( int value ) {
-        this.value = value;
+    private TextureTarget ( int glConstant ) {
+        this.glConstant = glConstant;
     }
 
     @Override
-    public int getValue () {
-        return value;
+    public int getGlConstant () {
+        return glConstant;
     }
 }

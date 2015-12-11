@@ -1,6 +1,8 @@
 package vax.openglue;
 
 import java.nio.Buffer;
+import java.util.Objects;
+import static vax.openglue.OpenGL.Constants.*;
 import vax.openglue.constants.TextureTarget;
 
 /**
@@ -8,7 +10,7 @@ import vax.openglue.constants.TextureTarget;
 
  @author toor
  */
-public class Texture {
+public class Texture implements LifecycleListenerGL {
     private int targetEnum;
     private TextureData<?> textureData;
     private TextureParameters textureParameters;
@@ -25,18 +27,18 @@ public class Texture {
     }
 
     public Texture ( TextureData<?> textureData, TextureParameters textureParameters, boolean generateMipmaps, TextureTarget textureTarget ) {
-        this( textureData, textureParameters, generateMipmaps, textureTarget.getValue() );
+        this( textureData, textureParameters, generateMipmaps, textureTarget.getGlConstant() );
     }
 
     public Texture ( TextureData<?> textureData, TextureParameters textureParameters, boolean generateMipmaps ) {
-        this( textureData, textureParameters, generateMipmaps, OpenGL.Constants.GL_TEXTURE_2D );
+        this( textureData, textureParameters, generateMipmaps, GL_TEXTURE_2D );
     }
 
     public Texture ( TextureData<?> textureData ) {
-        this( textureData, TextureParameters.BILINEAR, false, OpenGL.Constants.GL_TEXTURE_2D );
+        this( textureData, TextureParameters.BILINEAR_ANISO_CLAMP, false, GL_TEXTURE_2D );
     }
 
-    public int getHandle () {
+    protected int getHandle () {
         return handle;
     }
 
@@ -44,23 +46,51 @@ public class Texture {
         return textureData;
     }
 
+    public TextureDescriptor getTextureDescriptor () {
+        return textureData.getTextureDescriptor();
+    }
+
     public boolean hasMipmaps () {
         return mipmaps;
     }
 
+    @Override
     public void init ( OpenGLUE gl ) {
+        if ( handle != 0 ) {
+            return;
+        }
         handle = gl.glGenTexture();
         bind( gl ); // sets the params
         TextureDescriptor td = textureData.getTextureDescriptor();
 
         Buffer buf = textureData.getBuffer();
-        buf.rewind(); // sanity OP; otherwise we could get nasty native OpenGL driver crashes
+        if ( buf != null ) {
+            buf.rewind(); // sanity OP; otherwise we could get nasty native OpenGL driver crashes on non-rewound Buffers
+        }
 
         gl.glTexImage2D( targetEnum, 0, td.getInternalFormat(),
                 td.getWidth(), td.getHeight(), 0,
                 td.getPixelFormat(), td.getType(), buf );
 
         if ( generateMipmaps ) {
+            gl.glGenerateMipmap( targetEnum ); // don't do this if using legacy param (GL_GENERATE_MIPMAP set to 'true')
+            mipmaps = true;
+        }
+        unbind( gl );
+    }
+
+    //@Override
+    public boolean isInitialized () {
+        return handle != 0;
+    }
+
+    /**
+     Idempotent.
+
+     @param gl
+     */
+    public void generateMipmaps ( OpenGLUE gl ) {
+        if ( !mipmaps ) {
             gl.glGenerateMipmap( targetEnum ); // don't do this if using legacy param (GL_GENERATE_MIPMAP set to 'true')
             mipmaps = true;
         }
@@ -71,6 +101,20 @@ public class Texture {
         if ( updateTexParams ) {
             textureParameters.update( gl, targetEnum );
         }
+    }
+
+    public void getTexImage ( OpenGLUE gl, int formatEnum, int typeEnum, Buffer buffer ) {
+        gl.glGetTexImage( targetEnum, 0, formatEnum, typeEnum, buffer );
+    }
+
+    public BufferImage createBufferImage ( OpenGLUE gl ) {
+        int pixelFormat = textureData.textureDescriptor.getPixelFormat();
+        TextureDescriptor td = textureData.textureDescriptor;
+        BufferImage bufferImage = new BufferImage( td.getWidth(), td.getHeight(), pixelFormat == GL_RGBA ? 4 : 3, false );
+        bind( gl );
+        gl.glGetTexImage( targetEnum, 0, pixelFormat, GL_UNSIGNED_BYTE, bufferImage.buffer );
+        unbind( gl );
+        return bufferImage;
     }
 
     /**
@@ -90,9 +134,15 @@ public class Texture {
         updateTexParams = true;
     }
 
+    @Override
     public void dispose ( OpenGLUE gl ) {
         if ( handle != 0 ) { // else no init() called yet
             gl.glDeleteTexture( handle );
         }
+    }
+
+    @Override
+    public String toString () {
+        return "mipmaps? " + mipmaps + " " + Objects.toString( textureData );
     }
 }

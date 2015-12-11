@@ -12,6 +12,8 @@ public interface LifecycleListenerGL {
      */
     void init ( OpenGLUE gl );
 
+    //boolean isInitialized ();
+
     /**
      Requests the object to release all acquired resources.
 

@@ -19,6 +19,11 @@ public class HeadlessGLUE extends AbstractGLUE {
     }
 
     @Override
+    public int glGetError () {
+        return OpenGLUE.Constants.GL_NO_ERROR;
+    }
+
+    @Override
     public void glViewport ( int x, int y, int width, int height ) {
     }
 
@@ -66,6 +71,7 @@ public class HeadlessGLUE extends AbstractGLUE {
     @Override
     public void glUniform3fv ( int location, int count, FloatBuffer value ) {
     }
+
     @Override
     public void glUniform3i ( int location, int v0, int v1, int v2 ) {
     }
@@ -228,6 +234,7 @@ public class HeadlessGLUE extends AbstractGLUE {
     @Override
     public void glBindBuffer ( int targetEnum, int handle ) {
     }
+
     @Override
     public void glDeleteBuffers ( int count, IntBuffer bufferNames ) {
     }
@@ -293,11 +300,6 @@ public class HeadlessGLUE extends AbstractGLUE {
     }
 
     @Override
-    public int glGetError () {
-        return OpenGLUE.Constants.GL_NO_ERROR;
-    }
-
-    @Override
     public void glDeleteTextures ( int n, IntBuffer textures ) {
     }
 
@@ -327,5 +329,82 @@ public class HeadlessGLUE extends AbstractGLUE {
 
     @Override
     public void glDeleteVertexArrays ( int n, IntBuffer arrays ) {
+    }
+
+    @Override
+    public void glRenderbufferStorage ( int targetEnum, int internalformat, int width, int height ) {
+    }
+
+    @Override
+    public void glRenderbufferStorageMultisample ( int targetEnum, int samples, int internalformat, int width, int height ) {
+    }
+
+    @Override
+    public int glCheckFramebufferStatus ( int targetEnum ) {
+        return OpenGL.Constants.GL_FRAMEBUFFER_COMPLETE;
+    }
+
+    @Override
+    public void glFramebufferTexture1D ( int targetEnum, int attachmentEnum, int textarget, int texture, int level ) {
+    }
+
+    @Override
+    public void glFramebufferTexture2D ( int targetEnum, int attachmentEnum, int textarget, int texture, int level ) {
+    }
+
+    @Override
+    public void glFramebufferTexture3D ( int targetEnum, int attachmentEnum, int textarget, int texture, int level, int layer ) {
+    }
+
+    @Override
+    public void glFramebufferTextureLayer ( int targetEnum, int attachmentEnum, int texture, int level, int layer ) {
+    }
+
+    @Override
+    public void glFramebufferRenderbuffer ( int targetEnum, int attachmentEnum, int renderbufferTargetEnum, int renderbufferHandle ) {
+    }
+
+    @Override
+    public void glDrawBuffers ( int count, IntBuffer bufs ) {
+    }
+
+    @Override
+    public void glReadBuffer ( int srcEnum ) {
+    }
+
+    @Override
+    public void glReadPixels ( int x, int y, int width, int height, int format, int type, ByteBuffer pixels ) {
+    }
+
+    @Override
+    public void glReadPixels ( int x, int y, int width, int height, int format, int type, ShortBuffer pixels ) {
+    }
+
+    @Override
+    public void glReadPixels ( int x, int y, int width, int height, int format, int type, IntBuffer pixels ) {
+    }
+
+    @Override
+    public void glReadPixels ( int x, int y, int width, int height, int format, int type, FloatBuffer pixels ) {
+    }
+
+    @Override
+    public void glGetTexImage ( int tex, int level, int format, int type, ByteBuffer pixels ) {
+    }
+
+    @Override
+    public void glGetTexImage ( int tex, int level, int format, int type, ShortBuffer pixels ) {
+    }
+
+    @Override
+    public void glGetTexImage ( int tex, int level, int format, int type, IntBuffer pixels ) {
+    }
+
+    @Override
+    public void glGetTexImage ( int tex, int level, int format, int type, FloatBuffer pixels ) {
+    }
+
+    @Override
+    public void glGetTexImage ( int tex, int level, int format, int type, DoubleBuffer pixels ) {
     }
 }

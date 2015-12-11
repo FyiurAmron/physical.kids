@@ -32,7 +32,7 @@ public class Shader {
     }
 
     public Shader ( String source, ShaderType shaderType ) {
-        this( source, shaderType.getValue() );
+        this( source, shaderType.getGlConstant() );
     }
 
     public String getSource () {
@@ -48,6 +48,6 @@ public class Shader {
     }
 
     public boolean isType ( ShaderType shaderType ) {
-        return isType( shaderType.getValue() );
+        return isType( shaderType.getGlConstant() );
     }
 }

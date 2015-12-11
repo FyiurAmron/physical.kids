@@ -28,5 +28,5 @@ public interface EventListenerGL extends LifecycleListenerGL {
      @param width viewport width in pixel units
      @param height viewport height in pixel units
      */
-    void reshape ( OpenGLUE gl, int x, int y, int width, int height );
+    void resize ( OpenGLUE gl, int x, int y, int width, int height );
 }

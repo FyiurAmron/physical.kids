@@ -11,14 +11,14 @@ public enum BufferTarget implements OpenGlConstantWrapper {
     ArrayBuffer( GL_ARRAY_BUFFER ),
     ElementArrayBuffer( GL_ELEMENT_ARRAY_BUFFER );
 
-    private final int value;
+    private final int glConstant;
 
-    private BufferTarget ( int value ) {
-        this.value = value;
+    private BufferTarget ( int glConstant ) {
+        this.glConstant = glConstant;
     }
 
     @Override
-    public int getValue () {
-        return value;
+    public int getGlConstant () {
+        return glConstant;
     }
 }

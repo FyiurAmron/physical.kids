@@ -14,14 +14,14 @@ public enum ClearBufferMask implements OpenGlConstantWrapper {
     CoverageBufferBitNv( GL_COVERAGE_BUFFER_BIT_NV ),//
     ;
 
-    private final int value;
+    private final int glConstant;
 
-    private ClearBufferMask ( int value ) {
-        this.value = value;
+    private ClearBufferMask ( int glConstant ) {
+        this.glConstant = glConstant;
     }
 
     @Override
-    public int getValue () {
-        return value;
+    public int getGlConstant () {
+        return glConstant;
     }
 }

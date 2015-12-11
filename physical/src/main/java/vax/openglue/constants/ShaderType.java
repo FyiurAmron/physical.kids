@@ -15,14 +15,14 @@ public enum ShaderType implements OpenGlConstantWrapper {
      ComputerShader(GL_COMPUTE_SHADER),
      */;
 
-    private final int value;
+    private final int glConstant;
 
-    private ShaderType ( int value ) {
-        this.value = value;
+    private ShaderType ( int glConstant ) {
+        this.glConstant = glConstant;
     }
 
     @Override
-    public int getValue () {
-        return value;
+    public int getGlConstant () {
+        return glConstant;
     }
 }

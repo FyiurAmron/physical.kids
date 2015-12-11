@@ -37,7 +37,7 @@ public class PhysicalWindow {
     SceneManager sm;
 
     public PhysicalWindow () {
-        sm = new SceneManager();
+        sm = new SceneManager( settings );
         window = new JoglWindowGLUE( sm, settings );
     }
 
