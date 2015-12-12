@@ -83,13 +83,13 @@ public class BodyManager {
     private void collide ( Collider<?, ?> collider, boolean contact, Body body1, Body body2 /*, int i, int j*/ ) {
         if ( collider.collide( body1, body2 ) ) {
             if ( contact ) {
-                //Console.WriteLine( "contact continued: " + body1 + " [" + i + "] vs " + body2 + " [" + j + "]" );
+				//System.out.println("contact continued: " + body1 + " [" + i + "] vs " + body2 + " [" + j + "]" );
             } else {
-                //Console.WriteLine( "contact started: " + body1 + " [" + i + "] vs " + body2 + " [" + j + "]" );
+                //System.out.println( "contact started: " + body1 + " [" + i + "] vs " + body2 + " [" + j + "]" );
                 addContact( body1, body2 );
             }
         } else if ( contact ) {
-            //Console.WriteLine( "contact ended: " + body1 + " [" + i + "] vs " + body2 + " [" + j + "]" );
+            //System.out.println( "contact ended: " + body1 + " [" + i + "] vs " + body2 + " [" + j + "]" );
             removeContact( body1, body2 );
         }
     }
