@@ -3,12 +3,14 @@ package vax.physics;
 import java.util.*;
 
 import org.junit.Test;
+
 import static org.junit.Assert.*;
+
 import vax.math.Plane3f;
 import vax.math.Vector3f;
 
 /**
- * Created by Kuba on 2015-11-28.
+ Created by Kuba on 2015-11-28.
  */
 public class SpherePlaneColliderTest {
     private static final int COLLISION_ITERATIONS = 1000;

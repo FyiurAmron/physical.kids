@@ -12,10 +12,10 @@ public class CollisionResult {
     private float depth;
 
 
-    public CollisionResult(){
+    public CollisionResult () {
     }
 
-    public CollisionResult(boolean collision, Vector3f normal, float depth){
+    public CollisionResult ( boolean collision, Vector3f normal, float depth ) {
         this.collision = collision;
         this.normal = normal;
         this.depth = depth;

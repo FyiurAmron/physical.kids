@@ -75,7 +75,7 @@ public class Body {
     }
 
     public void timeStep ( float deltaT ) {
-        for ( Action<Body> force : forces ) {
+        for( Action<Body> force : forces ) {
             force.exec( this );
         }
 
@@ -89,7 +89,7 @@ public class Body {
         }
         acceleration.setToZero();
 
-        for ( Action<Body> constraint : constraints ) {
+        for( Action<Body> constraint : constraints ) {
             constraint.exec( this );
         }
     }
