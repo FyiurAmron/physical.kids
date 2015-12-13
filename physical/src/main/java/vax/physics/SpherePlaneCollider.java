@@ -43,11 +43,11 @@ public class SpherePlaneCollider extends Collider<SphereBody, PlaneBody> {
     }
 
 
-	@Override
-	public CollisionResult collideCR ( Body body1, Body body2 ) {
-		throw new UnsupportedOperationException( "Not implemented yet!" );
-		//CollisionResult result = new CollisionResult( false, new Vector3f( 0, 0, 0 ), 0f );
-		//return result;
-	}
+    @Override
+    public CollisionResult collideCR ( Body body1, Body body2 ) {
+        throw new UnsupportedOperationException( "Not implemented yet!" );
+        //CollisionResult result = new CollisionResult( false, new Vector3f( 0, 0, 0 ), 0f );
+        //return result;
+    }
 
 }

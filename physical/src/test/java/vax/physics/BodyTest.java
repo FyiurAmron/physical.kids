@@ -92,12 +92,12 @@ public class BodyTest {
 
     }
 
-    @Test( expected = IllegalArgumentException.class )
+    @Test(expected = IllegalArgumentException.class)
     public void illegalArgumentsTest1 () {
         new Body( -5f );
     }
 
-    @Test( expected = IllegalArgumentException.class )
+    @Test(expected = IllegalArgumentException.class)
     public void illegalArgumentsTest2 () {
         new Body( 0f );
     }

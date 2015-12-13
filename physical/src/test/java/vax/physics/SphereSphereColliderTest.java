@@ -3,7 +3,9 @@ package vax.physics;
 import java.util.*;
 
 import org.junit.Test;
+
 import static org.junit.Assert.*;
+
 import vax.math.Vector3f;
 
 /**
@@ -46,9 +48,9 @@ public class SphereSphereColliderTest {
         Random rand = new Random();
         for( int i = 0; i <= COLLISION_ITERATIONS; i++ ) {
             float[] f = {
-                3 * rand.nextFloat(),
-                3 * rand.nextFloat(),
-                3 * rand.nextFloat() };
+                    3 * rand.nextFloat(),
+                    3 * rand.nextFloat(),
+                    3 * rand.nextFloat() };
             b1 = new SphereBody( 1f, 1f );
             bR = new SphereBody( 1f, 1f );
             bR.getTransform().addTranslation( f );
@@ -63,17 +65,17 @@ public class SphereSphereColliderTest {
 
     }
 
-    @Test( expected = NullPointerException.class )
+    @Test(expected = NullPointerException.class)
     public void testCollideNullValue1 () {
         new SphereSphereCollider().collide( new SphereBody( 1f, 1f ), null );
     }
 
-    @Test( expected = NullPointerException.class )
+    @Test(expected = NullPointerException.class)
     public void testCollideNullValue2 () {
         new SphereSphereCollider().collide( null, new SphereBody( 1f, 1f ) );
     }
 
-    @Test( expected = NullPointerException.class )
+    @Test(expected = NullPointerException.class)
     public void testCollideNullValue3 () {
         new SphereSphereCollider().collide( null, null );
     }
