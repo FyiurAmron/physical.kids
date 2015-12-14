@@ -1,5 +1,6 @@
 package vax.openglue.mesh;
 
+import vax.math.FloatUtils;
 import vax.util.ArrayCompiler;
 
 public class SphereMesh extends Mesh {
@@ -87,7 +88,7 @@ public class SphereMesh extends Mesh {
 
             msTheta = new float[slices + 1];
             cTheta = new float[slices + 1];
-            float theta = 0, dtheta = Mesh.TWO_PI / slices;
+            float theta = 0, dtheta = FloatUtils.TWO_PI / slices;
             for( int j = 0; j <= slices; j++, theta += dtheta ) {
                 msTheta[j] = -(float) Math.sin( theta );
                 cTheta[j] = (float) Math.cos( theta );
@@ -105,7 +106,7 @@ public class SphereMesh extends Mesh {
                 new ArrayCompiler.Floats( ops * Mesh.VT_DIMS )
             };
 
-            float drho = Mesh.PI / stacks, dt = 1.0f / stacks, s, half_ds = ds / 2;
+            float drho = FloatUtils.PI / stacks, dt = 1.0f / stacks, s, half_ds = ds / 2;
             rho = drho * CAP_RATIO;
             t = dt * CAP_RATIO; // this is reversed vs GLU, since we draw top-to-bottom (correct alignment)
 
@@ -140,7 +141,7 @@ public class SphereMesh extends Mesh {
             }
 
             if ( mirrorCap ) {
-                rho = Mesh.PI - drho * CAP_RATIO;
+                rho = FloatUtils.PI - drho * CAP_RATIO;
                 t = 1 - dt * CAP_RATIO;
                 setCache();
                 for( int j = 0; j < slices; j++ ) {

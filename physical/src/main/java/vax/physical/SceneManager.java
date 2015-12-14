@@ -68,7 +68,7 @@ public class SceneManager implements EventListenerGL {
 
         TextureData<?> dilloTD = glue.readTextureData( "angry-armadillo.png", Resource.class );
         TextureData<?> leftInterfaceTD = glue.readTextureData( "interface.png", Resource.class );
-        /* SphereMesh */ ball = new SphereMesh( /*0.1f*/ 0.3f, 12, 12, true );
+        /* SphereMesh */ ball = new SphereMesh( /*0.1f*/ 0.3f, 40, 40, true );
         RectangleMesh leftInterface = new RectangleMesh( -1f, -2f, RectangleMesh.RECT_VT_PROTO_2 );
         leftInterface.getTransform().setTranslationX( -0.5f );
         leftInterface.getTransform().setTranslationY( 1f );
@@ -183,6 +183,8 @@ public class SceneManager implements EventListenerGL {
         //float ftime = (float) ( System.currentTimeMillis() % 1000 ) / 1000;
         //System.out.println( ftime );
         time.setValue( getTime() );
+
+        ball.getTransform().setToRotationZ( time.getValue() );
 
         if ( framebuffer != null ) {
             framebuffer.bind( gl );

@@ -16,7 +16,6 @@ public class Mesh implements Renderable {
             V_DIMS = 3, VN_DIMS = 3, VT_DIMS = 2, // for reference for other implementing classes
             VS_COUNT = 3;
     // v, vn, vt; 3 total.
-    public static final float PI = (float) Math.PI, TWO_PI = 2 * PI;
     protected static final String[][] OBJ_SECTION_NAMES = {
         { "vertices", "v" },
         { "normals", "vn" },
