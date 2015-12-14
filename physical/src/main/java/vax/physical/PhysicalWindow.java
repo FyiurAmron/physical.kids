@@ -222,8 +222,8 @@ public class PhysicalWindow {
      deltaZ = 0;
      }
 
-     float xFactor = (float) Math.Sin( -2 * Math.PI / SIZE_X * currentMouseState.X ),
-     zFactor = (float) Math.Cos( -2 * Math.PI / SIZE_X * currentMouseState.X );
+     float rad = -FloatUtils.TWO_PI / SIZE_X * currentMouseState.X;
+     float xFactor = FloatUtils.sin( rad ), zFactor = FloatUtils.sin( rad );
 
      if ( currentKeyboardState[Key.W] ) {
      basePosition.X -= WORLD_MOVE_FRAME_DELTA * xFactor;

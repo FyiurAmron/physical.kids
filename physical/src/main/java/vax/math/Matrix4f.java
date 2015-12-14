@@ -1,5 +1,10 @@
 package vax.math;
 
+/**
+ OpenGL-compatible column-major 4x4 square matrix.
+
+ @author toor
+ */
 public class Matrix4f extends VectorFloat {
     public final static int SIZE = 4 * 4;
 
@@ -159,7 +164,7 @@ public class Matrix4f extends VectorFloat {
 
     public Matrix4f setToPerspective ( float near, float far, float degFovY, float aspectRatio ) {
         float //
-                f = 1.0f / (float) Math.tan( degFovY * ( Math.PI / 360 ) ),
+                f = FloatUtils.cot( degFovY * FloatUtils.PI / 360 ),
                 nf = 1.0f / ( near - far );
 
         data[0] = f / aspectRatio;
@@ -328,16 +333,94 @@ public class Matrix4f extends VectorFloat {
      data[10] = matrix4.M33;
      }
      */
-    public static Matrix4f setToRotationX ( float rotationAngle ) {
-        throw new UnsupportedOperationException( "Not yet implemented." );
+    public Matrix4f setToRotationX ( float rotationAngleRad ) {
+        float quadrant = ( rotationAngleRad - FloatUtils.HALF_PI ) % FloatUtils.TWO_PI;
+        float sin = FloatUtils.sin( rotationAngleRad ),
+                cos = ( quadrant < FloatUtils.PI )
+                        ? -FloatUtils.sqrt( 1 - sin * sin )
+                        : FloatUtils.sqrt( 1 - sin * sin ); // TODO check actual deviation of this value & calc speed
+
+        data[0] = 1;
+        data[1] = 0;
+        data[2] = 0;
+        data[3] = 0;
+
+        data[4] = 0;
+        data[5] = cos;
+        data[6] = sin;
+        data[7] = 0;
+
+        data[8] = 0;
+        data[9] = -sin;
+        data[10] = cos;
+        data[11] = 0;
+
+        data[12] = 0;
+        data[13] = 0;
+        data[14] = 0;
+        data[15] = 1;
+
+        return this;
     }
 
-    public static Matrix4f setToRotationY ( float rotationAngle ) {
-        throw new UnsupportedOperationException( "Not yet implemented." );
+    public Matrix4f setToRotationY ( float rotationAngleRad ) {
+        float quadrant = ( rotationAngleRad - FloatUtils.HALF_PI ) % FloatUtils.TWO_PI;
+        float sin = FloatUtils.sin( rotationAngleRad ),
+                cos = ( quadrant < FloatUtils.PI )
+                        ? -FloatUtils.sqrt( 1 - sin * sin )
+                        : FloatUtils.sqrt( 1 - sin * sin ); // TODO check actual deviation of this value & calc speed
+
+        data[0] = cos;
+        data[1] = 0;
+        data[2] = -sin;
+        data[3] = 0;
+
+        data[4] = 0;
+        data[5] = 1;
+        data[6] = 0;
+        data[7] = 0;
+
+        data[8] = sin;
+        data[9] = 0;
+        data[10] = cos;
+        data[11] = 0;
+
+        data[12] = 0;
+        data[13] = 0;
+        data[14] = 0;
+        data[15] = 1;
+
+        return this;
     }
 
-    public static Matrix4f setToRotationZ ( float rotationAngle ) {
-        throw new UnsupportedOperationException( "Not yet implemented." );
+    public Matrix4f setToRotationZ ( float rotationAngleRad ) {
+        float quadrant = ( rotationAngleRad - FloatUtils.HALF_PI ) % FloatUtils.TWO_PI;
+        float sin = FloatUtils.sin( rotationAngleRad ),
+                cos = ( quadrant < FloatUtils.PI )
+                        ? -FloatUtils.sqrt( 1 - sin * sin )
+                        : FloatUtils.sqrt( 1 - sin * sin ); // TODO check actual deviation of this value & calc speed
+
+        data[0] = cos;
+        data[1] = sin;
+        data[2] = 0;
+        data[3] = 0;
+
+        data[4] = -sin;
+        data[5] = cos;
+        data[6] = 0;
+        data[7] = 0;
+
+        data[8] = 0;
+        data[9] = 0;
+        data[10] = 1;
+        data[11] = 0;
+
+        data[12] = 0;
+        data[13] = 0;
+        data[14] = 0;
+        data[15] = 1;
+
+        return this;
     }
 
     public static Matrix4f lookAt ( Vector3f pos, Vector3f vector3f, Vector3f vector3f0 ) {
