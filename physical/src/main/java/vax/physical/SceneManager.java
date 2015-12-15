@@ -19,7 +19,7 @@ public class SceneManager implements EventListenerGL {
 
     private final boolean debug = false;
 
-    private MeshBatch mainMeshBatch, noiseMeshBatch;
+    private MeshBatch mainMeshBatch, noiseMeshBatch, overlayMeshBatch;
 
     private final Value1f //
             time = new Value1f(),
@@ -46,6 +46,7 @@ public class SceneManager implements EventListenerGL {
 
     public SceneManager ( WindowGLUE.Settings initialSettings ) {
         this.initialSettings = initialSettings;
+        viewportSize.set( initialSettings.windowSize );
     }
 
     private float getTime () {
@@ -61,16 +62,21 @@ public class SceneManager implements EventListenerGL {
         CameraDistanceSorter cds = new CameraDistanceSorter( modelviewMatrix );
         mainMeshBatch = new MeshBatch( "main", cds );
         noiseMeshBatch = new MeshBatch( "noise", cds );
+        overlayMeshBatch = new MeshBatch( "overlay", cds );
 
         TextureData<?> dilloTD = imageGlue.readTextureData( "angry-armadillo.png", Resource.class );
         TextureData<?> leftInterfaceTD = imageGlue.readTextureData( "interface.png", Resource.class );
 
 
-        /* SphereMesh */ ball = new SphereMesh( /* 0.1f */ 0.3f, 40, 40, true );
-        ///* SphereMesh */ ball = new PrismMesh( new float[]{ 0, 0, 0 }, new float[]{ -0.5f, 0, -0.5f }, new float[]{ 0.5f, 0, -0.5f }, 0.3f );
+        ///* SphereMesh */ ball = new SphereMesh( /* 0.1f */ 0.3f, 40, 40, true );
+        /* SphereMesh */ ball = new PrismMesh( new float[]{ 0, 0, 0 }, new float[]{ -0.5f, 0, -0.5f }, new float[]{ 0.5f, 0, -0.5f }, 0.3f );
         RectangleMesh leftInterface = new RectangleMesh( -1f, -2f, RectangleMesh.RECT_VT_PROTO_2 );
         leftInterface.getTransform().setTranslationX( -0.5f );
         leftInterface.getTransform().setTranslationY( 1f );
+
+        RectangleMesh overlay = new RectangleMesh( -2f, -2f, RectangleMesh.RECT_VT_PROTO_2 );
+        //overlay.getTransform().setTranslationX( -2f );
+        overlay.getTransform().setTranslationY( 1f );
 
 
         //RectangleMesh leftInterface = new RectangleMesh( 2, 2, 2 );
@@ -90,11 +96,10 @@ public class SceneManager implements EventListenerGL {
 
         ball.setUpdateAction( (Mesh target) -> {
             Matrix4f trans = target.getTransform();
-            /*
-             float t = getTime();
-             trans.setTranslationX( (float) Math.sin( t ) );
-             trans.setTranslationZ( -1.5f + (float) Math.cos( t ) );
-             */
+
+            float t = getTime();
+            trans.setTranslationX( (float) Math.sin( t ) );
+            trans.setTranslationZ( -1.5f + (float) Math.cos( t ) );
 
             transformMatrix.set( trans );
         } );
@@ -103,11 +108,17 @@ public class SceneManager implements EventListenerGL {
             transformMatrix.set( target.getTransform() );
         } );
 
+        overlay.setUpdateAction((Mesh target) -> {
+            transformMatrix.set( target.getTransform() );
+        } );
+
         meshes.add( ball );
         meshes.add( leftInterface );
         mainMeshBatch.getNonAlphaBlendedMeshes().add( ball );
+        mainMeshBatch.getAlphaBlendedMeshes().add( leftInterface );
         //mainMeshBatch.getNonAlphaBlendedMeshes().add( leftInterface );
-        noiseMeshBatch.getAlphaBlendedMeshes().add( leftInterface );
+        noiseMeshBatch.getAlphaBlendedMeshes().add( overlay );
+        overlayMeshBatch.getAlphaBlendedMeshes().add( overlay );
 
         float aspectRatio = initialSettings.getAspectRatio();
         //gl.glPolygonMode( OpenGLUE.Constants.GL_FRONT_AND_BACK, OpenGLUE.Constants.GL_LINE ); // DEBUG
@@ -152,21 +163,26 @@ public class SceneManager implements EventListenerGL {
 
         HashSet<Uniform> //
                 mainUniSet = mainMeshBatch.getPerRenderUniforms(),
-                noiseUniSet = noiseMeshBatch.getPerRenderUniforms();
+                noiseUniSet = noiseMeshBatch.getPerRenderUniforms(),
+                overlayUniSet = overlayMeshBatch.getPerRenderUniforms();
         for( Uniform u : perRenderUniforms ) {
             mainUniSet.add( u );
             noiseUniSet.add( u );
+            overlayUniSet.add( u );
         }
 
         mainUniSet = mainMeshBatch.getPerMeshUniforms();
         noiseUniSet = noiseMeshBatch.getPerMeshUniforms();
+        overlayUniSet = overlayMeshBatch.getPerMeshUniforms();
         for( Uniform u : perMeshUniforms ) {
             mainUniSet.add( u );
             noiseUniSet.add( u );
+            overlayUniSet.add( u );
         }
 
         mainMeshBatch.init( gl );
         noiseMeshBatch.init( gl );
+        overlayMeshBatch.init( gl );
 
         /*
          Vector2i windowSize = initialSettings.windowSize;
@@ -195,6 +211,7 @@ public class SceneManager implements EventListenerGL {
 
         //ball.getTransform().setToRotationZ( time.getValue() );
         //ball.getTransform().setToRotationTB( 0, 0, time.getValue() );
+        //ball.getTransform().setToRotationTB( time.getValue(), time.getValue(), time.getValue() );
         if ( framebuffer != null ) {
             framebuffer.bind( gl );
             ball.setTexture( dilloTex );
@@ -205,7 +222,6 @@ public class SceneManager implements EventListenerGL {
         //modelviewMatrix.setTranslationX( (float) Math.sin( ftime ) );
         //modelviewMatrix.setTranslationZ( -1.5f + (float) Math.cos( ftime ) );
         mainMeshBatch.render( gl );
-        noiseMeshBatch.render( gl );
         if ( framebuffer != null ) {
             //i++;
             //if ( i % 60 == 0 ) {
@@ -225,9 +241,14 @@ public class SceneManager implements EventListenerGL {
             gl.glClear( ClearBufferMask.ColorBufferBit, ClearBufferMask.DepthBufferBit );
             ball.setTexture( framebuffer.getTexture() );
             mainMeshBatch.render( gl );
-            noiseMeshBatch.render( gl );
             //GL30.glBlitFramebuffer( 0, 0, 400, 400, 0, 0, 400, 400, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_LINEAR );
         }
+
+        // overlays
+        gl.glClear( ClearBufferMask.DepthBufferBit );
+        noiseMeshBatch.render( gl );
+        gl.glClear( ClearBufferMask.DepthBufferBit );
+        overlayMeshBatch.render( gl );
     }
 
     // TODO implement a proper export filter here

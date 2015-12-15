@@ -45,7 +45,7 @@ public class Mesh implements Renderable {
 
     protected final Matrix4f transform = new Matrix4f( true );
 
-    private Action<Mesh> updateAction;
+    private Action<Mesh> updateAction, prerenderAction;
     private Texture texture;
     protected PrimitiveType primitiveType = PrimitiveType.Triangles;
     protected int //
