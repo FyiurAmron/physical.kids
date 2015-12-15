@@ -72,7 +72,7 @@ public class MeshBatch implements EventListenerGL {
     public void init ( OpenGLUE gl ) {
         shaderProgram.init( gl );
         shaderProgram.use( gl );
-        
+
         uniformManager.addUniforms( perRenderUniforms );
         uniformManager.addUniforms( perMeshUniforms );
         uniformManager.init( gl, shaderProgram );
@@ -95,10 +95,8 @@ public class MeshBatch implements EventListenerGL {
 
         if ( !nonAlphaBlendedMeshes.isEmpty() ) {
             gl.glDisable( OpenGL.Constants.GL_BLEND );
-            for( Mesh m : nonAlphaBlendedMeshes ) {
-                m.update();
-            }
             for( Mesh m : meshSorter.sort( nonAlphaBlendedMeshes ) ) {
+                m.update();
                 for( Uniform u : perMeshUniforms ) {
                     uniformManager.updateGl( gl, u );
                 }
@@ -108,10 +106,8 @@ public class MeshBatch implements EventListenerGL {
 
         if ( !alphaBlendedMeshes.isEmpty() ) {
             gl.glEnable( OpenGL.Constants.GL_BLEND );
-            for( Mesh m : alphaBlendedMeshes ) {
-                m.update();
-            }
             for( Mesh m : meshSorter.sort( alphaBlendedMeshes, false ) ) {
+                m.update();
                 for( Uniform u : perMeshUniforms ) {
                     uniformManager.updateGl( gl, u );
                 }
