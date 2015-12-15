@@ -30,7 +30,7 @@ public class BufferImage {
     }
 
     public BufferImage ( int width, int height, int bpp, boolean isDepth ) {
-        this( BufferUtils.createByteBuffer( width * height * bpp ), width, height, bpp, isDepth );
+        this( CurrentGLUE.createByteBuffer( width * height * bpp ), width, height, bpp, isDepth );
     }
 
     public void saveTo ( String formatName, File file ) {

@@ -7,6 +7,7 @@ import com.jogamp.opengl.*;
 import com.jogamp.opengl.util.Animator;
 
 import vax.openglue.EventListenerGL;
+import vax.openglue.MouseGLUE;
 import vax.openglue.WindowGLUE;
 
 /**
@@ -19,6 +20,7 @@ public class JoglWindowGLUE implements WindowGLUE {
     private final Animator animator;
     private final JoglUe3 ue = new JoglUe3();
     public boolean debug;
+    private JoglMouseGLUE mouseGLUE;
 
     public JoglWindowGLUE ( EventListenerGL cvel, WindowGLUE.Settings settings ) {
         this( cvel, settings, new GLCapabilities( GLProfile.get( GLProfile.GL3 ) ), true );
@@ -74,8 +76,16 @@ public class JoglWindowGLUE implements WindowGLUE {
         // ditto with WindowListener
         // end TO_DO
 
+        mouseGLUE = new JoglMouseGLUE( glWindow );
+
+        glWindow.addMouseListener( mouseGLUE.getJoglMouseListener() );
+
         animator = new Animator( glWindow );
         animator.setUpdateFPSFrames( 100, null );
+    }
+
+    @Override
+    public void start () {
         animator.start();
     }
 
@@ -104,6 +114,11 @@ public class JoglWindowGLUE implements WindowGLUE {
     @Override
     public JoglUe3 getOpenGLUE () {
         return ue;
+    }
+
+    @Override
+    public MouseGLUE getMouseGLUE () {
+        return mouseGLUE;
     }
 
     public boolean isDebug () {

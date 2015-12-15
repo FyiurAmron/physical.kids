@@ -23,8 +23,18 @@ public class DebugGLUE implements OpenGLUE {
         this.gl = gl;
     }
 
-    public OpenGLUE getGlue () {
+    public OpenGLUE getWrappedGLUE () {
         return gl;
+    }
+
+    @Override
+    public BufferGLUE getBufferGLUE () {
+        return gl.getBufferGLUE();
+    }
+
+    @Override
+    public ImageGLUE getImageGLUE () {
+        return gl.getImageGLUE();
     }
 
     @Override

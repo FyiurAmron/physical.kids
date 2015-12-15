@@ -334,11 +334,8 @@ public class Matrix4f extends VectorFloat {
      }
      */
     public Matrix4f setToRotationX ( float rotationAngleRad ) {
-        float quadrant = ( rotationAngleRad - FloatUtils.HALF_PI ) % FloatUtils.TWO_PI;
         float sin = FloatUtils.sin( rotationAngleRad ),
-                cos = ( quadrant < FloatUtils.PI )
-                        ? -FloatUtils.sqrt( 1 - sin * sin )
-                        : FloatUtils.sqrt( 1 - sin * sin ); // TODO check actual deviation of this value & calc speed
+                cos = FloatUtils.cosFromSin( rotationAngleRad, sin );
 
         data[0] = 1;
         data[1] = 0;
@@ -364,11 +361,8 @@ public class Matrix4f extends VectorFloat {
     }
 
     public Matrix4f setToRotationY ( float rotationAngleRad ) {
-        float quadrant = ( rotationAngleRad - FloatUtils.HALF_PI ) % FloatUtils.TWO_PI;
         float sin = FloatUtils.sin( rotationAngleRad ),
-                cos = ( quadrant < FloatUtils.PI )
-                        ? -FloatUtils.sqrt( 1 - sin * sin )
-                        : FloatUtils.sqrt( 1 - sin * sin ); // TODO check actual deviation of this value & calc speed
+                cos = FloatUtils.cosFromSin( rotationAngleRad, sin );
 
         data[0] = cos;
         data[1] = 0;
@@ -394,11 +388,8 @@ public class Matrix4f extends VectorFloat {
     }
 
     public Matrix4f setToRotationZ ( float rotationAngleRad ) {
-        float quadrant = ( rotationAngleRad - FloatUtils.HALF_PI ) % FloatUtils.TWO_PI;
         float sin = FloatUtils.sin( rotationAngleRad ),
-                cos = ( quadrant < FloatUtils.PI )
-                        ? -FloatUtils.sqrt( 1 - sin * sin )
-                        : FloatUtils.sqrt( 1 - sin * sin ); // TODO check actual deviation of this value & calc speed
+                cos = FloatUtils.cosFromSin( rotationAngleRad, sin );
 
         data[0] = cos;
         data[1] = sin;
@@ -413,6 +404,49 @@ public class Matrix4f extends VectorFloat {
         data[8] = 0;
         data[9] = 0;
         data[10] = 1;
+        data[11] = 0;
+
+        data[12] = 0;
+        data[13] = 0;
+        data[14] = 0;
+        data[15] = 1;
+
+        return this;
+    }
+
+    /**
+     Tait-Bryan angles.
+
+     @param roll
+     @param yaw
+     @param pitch
+     @return
+     */
+    public Matrix4f setToRotationTB ( float yaw, float pitch, float roll ) {
+        float sinYaw = FloatUtils.sin( roll ),
+                sinPitch = FloatUtils.sin( yaw ),
+                sinRoll = FloatUtils.sin( pitch );
+        float cosYaw = FloatUtils.cosFromSin( roll, sinYaw ),
+                cosPitch = FloatUtils.cosFromSin( yaw, sinPitch ),
+                cosRoll = FloatUtils.cosFromSin( pitch, sinRoll );
+        float sYcR = sinYaw * cosRoll,
+                sYsR = sinYaw * sinRoll,
+                cYcR = cosYaw * cosRoll,
+                cYsR = cosYaw * sinRoll;
+
+        data[0] = cosPitch * cosYaw;
+        data[1] = cosPitch * sinYaw;
+        data[2] = -sinPitch;
+        data[3] = 0;
+
+        data[4] = cYsR * sinPitch - sYcR;
+        data[5] = sYsR * sinPitch + cYcR;
+        data[6] = cosPitch * sinRoll;
+        data[7] = 0;
+
+        data[8] = cYcR * sinPitch + sYsR;
+        data[9] = sYcR * sinPitch - cYsR;
+        data[10] = cosPitch * cosRoll;
         data[11] = 0;
 
         data[12] = 0;

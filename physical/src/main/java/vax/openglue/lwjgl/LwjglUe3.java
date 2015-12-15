@@ -1,12 +1,13 @@
 package vax.openglue.lwjgl;
 
-import vax.util.NativeLibraryLoader;
 import java.nio.*;
 import org.lwjgl.opengl.*;
 import static org.lwjgl.system.MemoryUtil.memAddress;
+
+import vax.util.NativeLibraryLoader;
 import vax.openglue.AbstractGLUE;
 import vax.openglue.BufferGLUE;
-import vax.openglue.ImageIO;
+import vax.openglue.ImageGLUE;
 
 /**
 
@@ -23,8 +24,8 @@ public class LwjglUe3 extends AbstractGLUE {
     }
 
     @Override
-    public Class<? extends ImageIO.GLUE> getClassImageIO_GLUE () {
-        return LwjglImageIoGLUE.class;
+    public Class<? extends ImageGLUE> getClassImageGLUE () {
+        return ImageGLUE.DefaultLocal.class;
     }
 
     @Override
@@ -397,13 +398,13 @@ public class LwjglUe3 extends AbstractGLUE {
     @Override
     public void glGetShaderInfoLog ( int vertexShaderHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf ) {
         GL20.glGetShaderInfoLog( vertexShaderHandle, lengthBuf, infoLogBuf );
-        throw new UnsupportedOperationException();
+        //throw new UnsupportedOperationException();
     }
 
     @Override
     public void glGetProgramInfoLog ( int shaderProgramHandle, int maxLength, IntBuffer lengthBuf, ByteBuffer infoLogBuf ) {
         GL20.glGetProgramInfoLog( shaderProgramHandle, lengthBuf, infoLogBuf );
-        throw new UnsupportedOperationException();
+        //throw new UnsupportedOperationException();
     }
 
     @Override

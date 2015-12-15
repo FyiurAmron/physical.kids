@@ -1,5 +1,6 @@
 package vax.openglue.headless;
 
+import vax.openglue.MouseGLUE;
 import vax.openglue.OpenGLUE;
 import vax.openglue.WindowGLUE;
 
@@ -9,6 +10,7 @@ import vax.openglue.WindowGLUE;
  */
 public class HeadlessWindowGLUE implements WindowGLUE {
     private final HeadlessGLUE gl = new HeadlessGLUE();
+    private final HeadlessMouseGLUE headlessMouse = new HeadlessMouseGLUE();
 
     @Override
     public OpenGLUE getOpenGLUE () {
@@ -16,6 +18,15 @@ public class HeadlessWindowGLUE implements WindowGLUE {
     }
 
     @Override
+    public void start () {
+    }
+
+    @Override
     public void dispose () {
+    }
+
+    @Override
+    public MouseGLUE getMouseGLUE () {
+        return headlessMouse;
     }
 }

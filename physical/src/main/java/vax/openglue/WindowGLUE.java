@@ -61,6 +61,8 @@ public interface WindowGLUE {
 
     }
 
+    void start ();
+
     void dispose ();
 
     /**
@@ -70,4 +72,6 @@ public interface WindowGLUE {
      @return
      */
     OpenGLUE getOpenGLUE ();
+
+    MouseGLUE getMouseGLUE ();
 }

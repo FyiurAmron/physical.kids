@@ -7,6 +7,7 @@ import org.lwjgl.system.MemoryUtil;
 
 import vax.math.Vector2i;
 import vax.openglue.EventListenerGL;
+import vax.openglue.MouseGLUE;
 import vax.openglue.WindowGLUE;
 
 /**
@@ -23,7 +24,8 @@ public class LwjglWindowGLUE implements WindowGLUE {
     private GLFWErrorCallback errorCallback;
     private GLFWKeyCallback keyCallback;
 
-    private long windowHandle;
+    private long glfwHandle;
+    private LwjglMouseGLUE mouseGLUE;
 
     public LwjglWindowGLUE ( EventListenerGL cvel, WindowGLUE.Settings settings ) {
         this( cvel, settings, true );
@@ -32,18 +34,26 @@ public class LwjglWindowGLUE implements WindowGLUE {
     public LwjglWindowGLUE ( EventListenerGL cvel, WindowGLUE.Settings settings, boolean debug ) {
         this.cvel = cvel;
         this.initialSettings = settings;
+    }
 
+    @Override
+    public void start () {
         try {
             init();
             loop();
 
-            GLFW.glfwDestroyWindow( windowHandle );
+            GLFW.glfwDestroyWindow( glfwHandle );
             keyCallback.release();
         } finally {
             GLFW.glfwTerminate();
             errorCallback.release();
             cvel.dispose( ue );
         }
+    }
+
+    @Override
+    public MouseGLUE getMouseGLUE () {
+        return mouseGLUE;
     }
 
     private void init () {
@@ -71,8 +81,8 @@ public class LwjglWindowGLUE implements WindowGLUE {
             monitor = MemoryUtil.NULL;
         }
 
-        windowHandle = GLFW.glfwCreateWindow( width, height, initialSettings.title, monitor, MemoryUtil.NULL );
-        if ( windowHandle == MemoryUtil.NULL ) {
+        glfwHandle = GLFW.glfwCreateWindow( width, height, initialSettings.title, monitor, MemoryUtil.NULL );
+        if ( glfwHandle == MemoryUtil.NULL ) {
             throw new RuntimeException( "Failed to create the GLFW window" );
         }
 
@@ -86,11 +96,13 @@ public class LwjglWindowGLUE implements WindowGLUE {
                 }
             }
         };
-        GLFW.glfwSetKeyCallback( windowHandle, keyCallback );
+        GLFW.glfwSetKeyCallback( glfwHandle, keyCallback );
 
-        GLFW.glfwMakeContextCurrent( windowHandle ); // make the OpenGL context current
+        mouseGLUE = new LwjglMouseGLUE( ue.getBufferGLUE(), glfwHandle );
+
+        GLFW.glfwMakeContextCurrent( glfwHandle ); // make the OpenGL context current
         GLFW.glfwSwapInterval( 1 ); // enable v-sync
-        GLFW.glfwShowWindow( windowHandle ); // make the windowHandle visible
+        GLFW.glfwShowWindow( glfwHandle ); // make the windowHandle visible
 
         GL.createCapabilities();
 
@@ -100,9 +112,9 @@ public class LwjglWindowGLUE implements WindowGLUE {
     private void loop () {
         GL.createCapabilities();
 
-        while( GLFW.glfwWindowShouldClose( windowHandle ) == GLFW.GLFW_FALSE ) {
+        while( GLFW.glfwWindowShouldClose( glfwHandle ) == GLFW.GLFW_FALSE ) {
             cvel.render( ue );
-            GLFW.glfwSwapBuffers( windowHandle ); // with GLFW.glfwSwapInterval(1) this call blocks until VSYNC
+            GLFW.glfwSwapBuffers( glfwHandle ); // with GLFW.glfwSwapInterval(1) this call blocks until VSYNC
             GLFW.glfwPollEvents(); // key callback will only be invoked during this call
         }
     }
@@ -117,14 +129,14 @@ public class LwjglWindowGLUE implements WindowGLUE {
         if ( settings.mouseConfined && settings.mouseVisible ) {
             throw new UnsupportedOperationException( "confined & visible hardware cursor unsupported by LWJGL" );
         }
-        GLFW.glfwSetInputMode( windowHandle, GLFW.GLFW_CURSOR,
+        GLFW.glfwSetInputMode( glfwHandle, GLFW.GLFW_CURSOR,
                 settings.mouseConfined ? GLFW.GLFW_CURSOR_DISABLED
                         : ( settings.mouseVisible ? GLFW.GLFW_CURSOR_NORMAL : GLFW.GLFW_CURSOR_HIDDEN ) );
         Vector2i dim = settings.windowPosition;
-        GLFW.glfwSetWindowPos( windowHandle, dim.getX(), dim.getY() );
+        GLFW.glfwSetWindowPos( glfwHandle, dim.getX(), dim.getY() );
         dim = settings.windowSize;
-        GLFW.glfwSetWindowSize( windowHandle, dim.getX(), dim.getY() );
-        GLFW.glfwSetWindowTitle( windowHandle, settings.title );
+        GLFW.glfwSetWindowSize( glfwHandle, dim.getX(), dim.getY() );
+        GLFW.glfwSetWindowTitle( glfwHandle, settings.title );
 
         /*
          glWindow.setFullscreen( settings.fullscreen );

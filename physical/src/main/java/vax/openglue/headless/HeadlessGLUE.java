@@ -14,8 +14,8 @@ public class HeadlessGLUE extends AbstractGLUE {
     }
 
     @Override
-    public Class<? extends ImageIO.GLUE> getClassImageIO_GLUE () {
-        return HeadlessImageIO.class;
+    public Class<? extends ImageGLUE> getClassImageGLUE () {
+        return ImageGLUE.DefaultLocal.class;
     }
 
     @Override

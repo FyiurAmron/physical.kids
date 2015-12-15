@@ -9,6 +9,8 @@ import vax.openglue.*;
 public class Main {
     public static final String APP_NAME = "physical.kids";
 
+    public static WindowGLUE wg;
+
     /**
      @param args the command line arguments
      */
@@ -20,7 +22,8 @@ public class Main {
 
         SceneManager sm = new vax.physical.SceneManager(settings);
 
-        // WindowGLUE wg = new vax.openglue.jogl.JoglWindowGLUE( sm, settings );
-        WindowGLUE wg = new vax.openglue.lwjgl.LwjglWindowGLUE( sm, settings );
+        //wg = new vax.openglue.jogl.JoglWindowGLUE( sm, settings );
+        wg = new vax.openglue.lwjgl.LwjglWindowGLUE( sm, settings );
+        wg.start();
     }
 }

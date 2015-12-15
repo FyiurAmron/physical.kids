@@ -18,6 +18,10 @@ public interface OpenGLUE extends OpenGL {
     // new/signature-incompatible methods
     GLUtils ueGetGLUtils ();
 
+    BufferGLUE getBufferGLUE ();
+
+    ImageGLUE getImageGLUE ();
+
     default void ueSetParam ( int glParam, boolean state ) {
         if ( state ) {
             glEnable( glParam );
@@ -31,7 +35,7 @@ public interface OpenGLUE extends OpenGL {
     }
 
     default String ueGetLogBufferContent () {
-        return BufferUtils.toString( ueGetGLUtils().getLogBuffer() );
+        return BufferGLUE.toString( ueGetGLUtils().getLogBuffer() );
     }
 
     static void ueCheckError ( int errorEnum ) {
@@ -47,18 +51,18 @@ public interface OpenGLUE extends OpenGL {
     default String ueGetProgramInfoLog ( int shaderProgramHandle ) {
         GLUtils glu = ueGetGLUtils();
         ByteBuffer bb = glu.getLogBuffer();
-        IntBuffer lbsb = glu.getTempIntBuffer();
+        IntBuffer lbsb = glu.getTempIntBuffer( 1 );
         glGetProgramInfoLog( shaderProgramHandle, bb.capacity(), lbsb, bb );
-        lbsb.flip();
+        bb.limit( lbsb.get( 0 ) );
         return ueGetLogBufferContent();
     }
 
     default String ueGetShaderInfoLog ( int shaderHandle ) {
         GLUtils glu = ueGetGLUtils();
         ByteBuffer bb = glu.getLogBuffer();
-        IntBuffer lbsb = glu.getTempIntBuffer();
+        IntBuffer lbsb = glu.getTempIntBuffer( 1 );
         glGetShaderInfoLog( shaderHandle, bb.capacity(), lbsb, bb );
-        lbsb.flip();
+        bb.limit( lbsb.get( 0 ) );
         return ueGetLogBufferContent();
     }
 
