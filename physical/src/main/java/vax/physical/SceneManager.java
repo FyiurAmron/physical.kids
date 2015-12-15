@@ -3,13 +3,9 @@ package vax.physical;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
 import vax.math.*;
 import vax.openglue.*;
 import vax.openglue.constants.ClearBufferMask;
-import vax.openglue.constants.FramebufferType;
 import vax.openglue.mesh.*;
 import vax.physical.resource.Resource;
 
@@ -38,7 +34,7 @@ public class SceneManager implements EventListenerGL {
             projectionMatrix = new Matrix4f(),
             modelviewMatrix = new Matrix4f(),
             transformMatrix = new Matrix4f( true );
-    private final Vector2i viewportSize = new Vector2i();
+    private final Vector2i viewportSize = new Vector2i(), mousePos = new Vector2i();
 
     private final DebugGLUE debugGLUE = new DebugGLUE();
 
@@ -60,15 +56,18 @@ public class SceneManager implements EventListenerGL {
     public void init ( OpenGLUE gl ) {
         debugGLUE.setGlue( gl );
         gl = debugGLUE;
-        ImageIO.GLUE glue = ImageIO.getGLUE();
+        ImageGLUE imageGlue = gl.getImageGLUE();
 
         CameraDistanceSorter cds = new CameraDistanceSorter( modelviewMatrix );
         mainMeshBatch = new MeshBatch( "main", cds );
         noiseMeshBatch = new MeshBatch( "noise", cds );
 
-        TextureData<?> dilloTD = glue.readTextureData( "angry-armadillo.png", Resource.class );
-        TextureData<?> leftInterfaceTD = glue.readTextureData( "interface.png", Resource.class );
-        /* SphereMesh */ ball = new SphereMesh( /*0.1f*/ 0.3f, 40, 40, true );
+        TextureData<?> dilloTD = imageGlue.readTextureData( "angry-armadillo.png", Resource.class );
+        TextureData<?> leftInterfaceTD = imageGlue.readTextureData( "interface.png", Resource.class );
+
+
+        /* SphereMesh */ ball = new SphereMesh( /* 0.1f */ 0.3f, 40, 40, true );
+        ///* SphereMesh */ ball = new PrismMesh( new float[]{ 0, 0, 0 }, new float[]{ -0.5f, 0, -0.5f }, new float[]{ 0.5f, 0, -0.5f }, 0.3f );
         RectangleMesh leftInterface = new RectangleMesh( -1f, -2f, RectangleMesh.RECT_VT_PROTO_2 );
         leftInterface.getTransform().setTranslationX( -0.5f );
         leftInterface.getTransform().setTranslationY( 1f );
@@ -91,10 +90,11 @@ public class SceneManager implements EventListenerGL {
 
         ball.setUpdateAction( (Mesh target) -> {
             Matrix4f trans = target.getTransform();
-
-            float t = getTime();
-            trans.setTranslationX( (float) Math.sin( t ) );
-            trans.setTranslationZ( -1.5f + (float) Math.cos( t ) );
+            /*
+             float t = getTime();
+             trans.setTranslationX( (float) Math.sin( t ) );
+             trans.setTranslationZ( -1.5f + (float) Math.cos( t ) );
+             */
 
             transformMatrix.set( trans );
         } );
@@ -142,7 +142,8 @@ public class SceneManager implements EventListenerGL {
             Uniform.from( "time", time ),
             Uniform.from( "random", random ),
             Uniform.from( "textureSamples", textureSampler ),
-            Uniform.from( "viewportSize", viewportSize )
+            Uniform.from( "viewportSize", viewportSize ),
+            Uniform.from( "mousePos", mousePos )
         };
 
         Uniform[] perMeshUniforms = {
@@ -167,9 +168,11 @@ public class SceneManager implements EventListenerGL {
         mainMeshBatch.init( gl );
         noiseMeshBatch.init( gl );
 
-        Vector2i windowSize = initialSettings.windowSize;
-        framebuffer = new Framebuffer( windowSize.getX(), windowSize.getY() );
-        framebuffer.init( gl );
+        /*
+         Vector2i windowSize = initialSettings.windowSize;
+         framebuffer = new Framebuffer( windowSize.getX(), windowSize.getY() );
+         framebuffer.init( gl );
+         */
     }
 
     @Override
@@ -179,13 +182,19 @@ public class SceneManager implements EventListenerGL {
             gl = debugGLUE;
         }
 
+        MouseGLUE mg = Main.wg.getMouseGLUE();
+        int mouseX = mg.getX(), mouseY = mg.getY();
+        mousePos.set( mouseX, mouseY );
+        lightDirUnit.setX( mg.getRatioX() * 2 - 1 );
+        lightDirUnit.setY( -( mg.getRatioY() * 2 - 1 ) );
+
         random.setValue( MathUtils.nextFloat() );
         //float ftime = (float) ( System.currentTimeMillis() % 1000 ) / 1000;
         //System.out.println( ftime );
         time.setValue( getTime() );
 
-        ball.getTransform().setToRotationZ( time.getValue() );
-
+        //ball.getTransform().setToRotationZ( time.getValue() );
+        //ball.getTransform().setToRotationTB( 0, 0, time.getValue() );
         if ( framebuffer != null ) {
             framebuffer.bind( gl );
             ball.setTexture( dilloTex );
@@ -198,19 +207,19 @@ public class SceneManager implements EventListenerGL {
         mainMeshBatch.render( gl );
         noiseMeshBatch.render( gl );
         if ( framebuffer != null ) {
-            i++;
-            if ( i % 60 == 0 ) {
-                //screenshot( gl );
-                //dilloTex.createBufferImage( gl ).saveTo( "PNG", new File( "output.png" ) );
-                //framebuffer.getTexture().createBufferImage( gl ).saveTo( "PNG", new File( "output.png" ) );
-            }
+            //i++;
+            //if ( i % 60 == 0 ) {
+            //screenshot( gl );
+            //dilloTex.createBufferImage( gl ).saveTo( "PNG", new File( "output.png" ) );
+            //framebuffer.getTexture().createBufferImage( gl ).saveTo( "PNG", new File( "output.png" ) );
+            //}
             framebuffer.unbind( gl );
             /*
-            framebuffer.bind( gl, FramebufferType.ReadOnly );
-            GL11.glReadBuffer( GL30.GL_COLOR_ATTACHMENT0 );
-            framebuffer.unbind( gl, FramebufferType.DrawOnly );
-            GL20.glDrawBuffers( GL11.GL_BACK_LEFT );
-            */
+             framebuffer.bind( gl, FramebufferType.ReadOnly );
+             GL11.glReadBuffer( GL30.GL_COLOR_ATTACHMENT0 );
+             framebuffer.unbind( gl, FramebufferType.DrawOnly );
+             GL20.glDrawBuffers( GL11.GL_BACK_LEFT );
+             */
 
             gl.glClearColor( backgroundColor );
             gl.glClear( ClearBufferMask.ColorBufferBit, ClearBufferMask.DepthBufferBit );
@@ -220,8 +229,6 @@ public class SceneManager implements EventListenerGL {
             //GL30.glBlitFramebuffer( 0, 0, 400, 400, 0, 0, 400, 400, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_LINEAR );
         }
     }
-
-    int i;
 
     // TODO implement a proper export filter here
     private BufferImage screenshot ( OpenGLUE gl ) {

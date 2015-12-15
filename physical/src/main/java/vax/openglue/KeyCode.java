@@ -1,4 +1,4 @@
-package vax.input;
+package vax.openglue;
 
 import java.awt.event.KeyEvent;
 

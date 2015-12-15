@@ -7,54 +7,57 @@ package vax.openglue;
 public abstract class AbstractGLUE implements OpenGLUE {
     public static final int DEFAULT_LOG_BUFFER_SIZE = 4096;
 
-    private GLUtils glUtil;
+    private GLUtils glUtils;
+    private BufferGLUE bufferGLUE;
+    private ImageGLUE imageGLUE;
 
+    /**
+     Note: the default behaviour is to set this OpenGLUE implementation as current GLUE in CurrentGLUE for static utility methods.
+     */
+    @SuppressWarnings( "OverridableMethodCallInConstructor" )
     public AbstractGLUE () {
-        this( new GLUtils() );
+        init();
+
+        CurrentGLUE.setCurrentGLUE( this );
     }
 
-    @SuppressWarnings( "OverridableMethodCallInConstructor" )
-    public AbstractGLUE ( GLUtils glUtil ) {
-        this.glUtil = glUtil;
-        BufferGLUE bg = BufferUtils.getBufferGLUE();
-        Class<? extends BufferGLUE> cbg = getClassBufferGLUE();
-        if ( bg == BufferGLUE.GLUE_NOT_SET ) {
-            try {
-                bg = cbg.newInstance();
-                BufferUtils.setBufferGLUE( bg );
-            } catch (InstantiationException | IllegalAccessException ex) {
-                throw new RuntimeException( ex );
-            }
-        } else if ( cbg.isInstance( bg ) ) {
-            // already set, idemp.
-        } else {
-            throw new IllegalStateException( "GLUE already set to incompatible one" );
-        }
-        glUtil.setLogBuffer( bg.createByteBuffer( DEFAULT_LOG_BUFFER_SIZE ) );
-        glUtil.setTempIntBuffer( bg.createIntBuffer( 4 * 4 ) );
-        glUtil.setTempFloatBuffer( bg.createFloatBuffer( 4 * 4 ) );
+    public AbstractGLUE ( boolean setAsCurrentGLUE ) {
+        init();
 
-        ImageIO.GLUE iiog = ImageIO.getGLUE();
-        Class<? extends ImageIO.GLUE> ciig = getClassImageIO_GLUE();
-        if ( iiog == ImageIO.GLUE.GLUE_NOT_SET ) {
-            try {
-                ImageIO.setGLUE( ciig.newInstance() );
-            } catch (InstantiationException | IllegalAccessException ex) {
-                throw new RuntimeException( ex );
-            }
-        } else if ( ciig.isInstance( iiog ) ) {
-            // already set, idemp.
-        } else {
-            throw new IllegalStateException( "GLUE already set to incompatible one" );
+        if ( setAsCurrentGLUE ) {
+            CurrentGLUE.setCurrentGLUE( this );
         }
+    }
+
+    private void init () {
+        glUtils = new GLUtils();
+        try {
+            bufferGLUE = getClassBufferGLUE().newInstance();
+            imageGLUE = getClassImageGLUE().newInstance();
+        } catch (InstantiationException | IllegalAccessException ex) {
+            throw new RuntimeException( ex );
+        }
+        glUtils.setLogBuffer( bufferGLUE.createByteBuffer( DEFAULT_LOG_BUFFER_SIZE ) );
+        glUtils.setTempIntBuffer( bufferGLUE.createIntBuffer( 4 * 4 ) );
+        glUtils.setTempFloatBuffer( bufferGLUE.createFloatBuffer( 4 * 4 ) );
     }
 
     @Override
     public GLUtils ueGetGLUtils () {
-        return glUtil;
+        return glUtils;
     }
 
-    public abstract Class<? extends BufferGLUE> getClassBufferGLUE ();
+    @Override
+    public ImageGLUE getImageGLUE () {
+        return imageGLUE;
+    }
 
-    public abstract Class<? extends ImageIO.GLUE> getClassImageIO_GLUE ();
+    @Override
+    public BufferGLUE getBufferGLUE () {
+        return bufferGLUE;
+    }
+
+    protected abstract Class<? extends BufferGLUE> getClassBufferGLUE ();
+
+    protected abstract Class<? extends ImageGLUE> getClassImageGLUE ();
 }

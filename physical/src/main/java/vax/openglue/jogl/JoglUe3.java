@@ -6,7 +6,7 @@ import com.jogamp.opengl.*;
 
 import vax.openglue.AbstractGLUE;
 import vax.openglue.BufferGLUE;
-import vax.openglue.ImageIO;
+import vax.openglue.ImageGLUE;
 
 /**
 
@@ -39,8 +39,8 @@ public class JoglUe3 extends AbstractGLUE {
     }
 
     @Override
-    public Class<? extends ImageIO.GLUE> getClassImageIO_GLUE () {
-        return JoglImageIoGLUE.class;
+    public Class<? extends ImageGLUE> getClassImageGLUE () {
+        return JoglImageGLUE.class;
     }
 
     @Override

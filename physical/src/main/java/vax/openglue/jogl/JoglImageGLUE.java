@@ -12,7 +12,7 @@ import vax.openglue.*;
 
  @author toor
  */
-public class JoglImageIoGLUE implements ImageIO.GLUE {
+public class JoglImageGLUE implements ImageGLUE {
     @Override
     public TextureData<?> readTextureDataImpl ( String name, InputStream inputStream ) {
         com.jogamp.opengl.util.texture.TextureData td;
