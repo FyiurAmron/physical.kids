@@ -9,11 +9,6 @@ import vax.openglue.*;
  */
 public class HeadlessGLUE extends AbstractGLUE {
     @Override
-    public Class<? extends BufferGLUE> getClassBufferGLUE () {
-        return HeadlessBufferGLUE.class;
-    }
-
-    @Override
     public Class<? extends ImageGLUE> getClassImageGLUE () {
         return ImageGLUE.DefaultLocal.class;
     }

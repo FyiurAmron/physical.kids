@@ -133,7 +133,7 @@ public class Mesh implements Renderable {
     public int genBuffer ( OpenGLUE gl, int bufferTarget, float[] data ) {
         int handle = gl.glGenBuffer();
         gl.glBindBuffer( bufferTarget, handle );
-        FloatBuffer fb = CurrentGLUE.createFloatBuffer( data );
+        FloatBuffer fb = BufferUtils.createFloatBuffer( data );
         gl.glBufferData( bufferTarget, data.length * Float.BYTES, fb, OpenGL.Constants.GL_STATIC_DRAW );
         return handle;
     }
@@ -141,7 +141,7 @@ public class Mesh implements Renderable {
     public int genBuffer ( OpenGLUE gl, int bufferTarget, int[] data ) {
         int handle = gl.glGenBuffer();
         gl.glBindBuffer( bufferTarget, handle );
-        IntBuffer ib = CurrentGLUE.createIntBuffer( data );
+        IntBuffer ib = BufferUtils.createIntBuffer( data );
         gl.glBufferData( bufferTarget, data.length * Integer.BYTES, ib, OpenGL.Constants.GL_STATIC_DRAW );
         return handle;
     }

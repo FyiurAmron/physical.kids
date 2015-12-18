@@ -98,7 +98,7 @@ public class LwjglWindowGLUE implements WindowGLUE {
         };
         GLFW.glfwSetKeyCallback( glfwHandle, keyCallback );
 
-        mouseGLUE = new LwjglMouseGLUE( ue.getBufferGLUE(), glfwHandle );
+        mouseGLUE = new LwjglMouseGLUE( glfwHandle );
 
         GLFW.glfwMakeContextCurrent( glfwHandle ); // make the OpenGL context current
         GLFW.glfwSwapInterval( 1 ); // enable v-sync

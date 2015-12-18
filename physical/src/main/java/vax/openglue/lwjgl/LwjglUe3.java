@@ -6,7 +6,7 @@ import static org.lwjgl.system.MemoryUtil.memAddress;
 
 import vax.util.NativeLibraryLoader;
 import vax.openglue.AbstractGLUE;
-import vax.openglue.BufferGLUE;
+import vax.openglue.BufferUtils;
 import vax.openglue.ImageGLUE;
 
 /**
@@ -16,11 +16,7 @@ import vax.openglue.ImageGLUE;
 public class LwjglUe3 extends AbstractGLUE {
     public LwjglUe3 () {
         NativeLibraryLoader.load();
-    }
-
-    @Override
-    public Class<? extends BufferGLUE> getClassBufferGLUE () {
-        return LwjglBufferGLUE.class;
+        BufferUtils.setBufferFactory( new LwjglBufferFactory() );
     }
 
     @Override

@@ -18,8 +18,6 @@ public interface OpenGLUE extends OpenGL {
     // new/signature-incompatible methods
     GLUtils ueGetGLUtils ();
 
-    BufferGLUE getBufferGLUE ();
-
     ImageGLUE getImageGLUE ();
 
     default void ueSetParam ( int glParam, boolean state ) {
@@ -35,7 +33,7 @@ public interface OpenGLUE extends OpenGL {
     }
 
     default String ueGetLogBufferContent () {
-        return BufferGLUE.toString( ueGetGLUtils().getLogBuffer() );
+        return BufferUtils.toString( ueGetGLUtils().getLogBuffer() );
     }
 
     static void ueCheckError ( int errorEnum ) {

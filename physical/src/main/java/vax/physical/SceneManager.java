@@ -108,7 +108,7 @@ public class SceneManager implements EventListenerGL {
             transformMatrix.set( target.getTransform() );
         } );
 
-        overlay.setUpdateAction((Mesh target) -> {
+        overlay.setUpdateAction( (Mesh target) -> {
             transformMatrix.set( target.getTransform() );
         } );
 
@@ -253,14 +253,18 @@ public class SceneManager implements EventListenerGL {
 
     // TODO implement a proper export filter here
     private BufferImage screenshot ( OpenGLUE gl ) {
-        boolean depth = false;
-        BufferImage bi = new BufferImage( initialSettings.windowSize, /* depth ? 1 : */ 4, depth );
+        //boolean depth = false;
+        BufferImage bi = new BufferImage( initialSettings.windowSize, /* depth ? 1 : */ 4/* , depth */ );
 
         gl.glReadBuffer( OpenGLUE.Constants.GL_FRONT );
 
-        gl.glReadPixels( 0, 0, bi.width, bi.height,
-                depth ? OpenGLUE.Constants.GL_DEPTH_COMPONENT : OpenGLUE.Constants.GL_RGBA,
-                depth ? OpenGLUE.Constants.GL_FLOAT : OpenGLUE.Constants.GL_UNSIGNED_BYTE, bi.buffer );
+        /*
+         gl.glReadPixels( 0, 0, bi.width, bi.height,
+         depth ? OpenGLUE.Constants.GL_DEPTH_COMPONENT : OpenGLUE.Constants.GL_RGBA,
+         depth ? OpenGLUE.Constants.GL_FLOAT : OpenGLUE.Constants.GL_UNSIGNED_BYTE, bi.buffer );
+         */
+        gl.glReadPixels( 0, 0, bi.width, bi.height, OpenGLUE.Constants.GL_RGBA, OpenGLUE.Constants.GL_UNSIGNED_BYTE, bi.buffer );
+
         return bi;
     }
 
