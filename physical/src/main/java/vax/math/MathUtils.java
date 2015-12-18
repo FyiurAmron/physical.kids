@@ -9,19 +9,37 @@ public class MathUtils {
         throw new IllegalStateException();
     }
 
-    static public float nextFloat () {
+    public static byte[] nextBytes ( byte[] bytes ) {
+        RNG.nextBytes( bytes );
+        return bytes;
+    }
+
+    public static float nextFloat () {
         return RNG.nextFloat();
     }
 
-    static public float nextFloat ( float min, float max ) {
+    public static float nextFloat ( float min, float max ) {
         return RNG.nextFloat() * ( max - min ) + min;
     }
 
-    static public int nextInt () {
+    public static int nextInt () {
         return RNG.nextInt();
     }
 
-    static public int nextInt ( int min, int max ) {
+    /**
+     @param max
+     @return int in range [0,max)
+     */
+    public static int nextInt ( int max ) {
+        return RNG.nextInt( max );
+    }
+
+    /**
+     @param min
+     @param max
+     @return int in range [min,max)
+     */
+    public static int nextInt ( int min, int max ) {
         return RNG.nextInt( max - min ) + min;
     }
 

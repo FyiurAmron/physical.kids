@@ -8,7 +8,6 @@ public abstract class AbstractGLUE implements OpenGLUE {
     public static final int DEFAULT_LOG_BUFFER_SIZE = 4096;
 
     private GLUtils glUtils;
-    private BufferGLUE bufferGLUE;
     private ImageGLUE imageGLUE;
 
     /**
@@ -32,14 +31,13 @@ public abstract class AbstractGLUE implements OpenGLUE {
     private void init () {
         glUtils = new GLUtils();
         try {
-            bufferGLUE = getClassBufferGLUE().newInstance();
             imageGLUE = getClassImageGLUE().newInstance();
         } catch (InstantiationException | IllegalAccessException ex) {
             throw new RuntimeException( ex );
         }
-        glUtils.setLogBuffer( bufferGLUE.createByteBuffer( DEFAULT_LOG_BUFFER_SIZE ) );
-        glUtils.setTempIntBuffer( bufferGLUE.createIntBuffer( 4 * 4 ) );
-        glUtils.setTempFloatBuffer( bufferGLUE.createFloatBuffer( 4 * 4 ) );
+        glUtils.setLogBuffer( BufferUtils.createByteBuffer( DEFAULT_LOG_BUFFER_SIZE ) );
+        glUtils.setTempIntBuffer( BufferUtils.createIntBuffer( 4 * 4 ) );
+        glUtils.setTempFloatBuffer( BufferUtils.createFloatBuffer( 4 * 4 ) );
     }
 
     @Override
@@ -51,13 +49,6 @@ public abstract class AbstractGLUE implements OpenGLUE {
     public ImageGLUE getImageGLUE () {
         return imageGLUE;
     }
-
-    @Override
-    public BufferGLUE getBufferGLUE () {
-        return bufferGLUE;
-    }
-
-    protected abstract Class<? extends BufferGLUE> getClassBufferGLUE ();
 
     protected abstract Class<? extends ImageGLUE> getClassImageGLUE ();
 }

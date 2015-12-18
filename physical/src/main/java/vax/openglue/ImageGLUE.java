@@ -87,7 +87,7 @@ public interface ImageGLUE {
                         height = pngDecoder.getHeight(),
                         width = pngDecoder.getWidth(),
                         lineLen = width * bytesPP;
-                ByteBuffer bb = CurrentGLUE.createByteBuffer( height * lineLen );
+                ByteBuffer bb = BufferUtils.createByteBuffer( height * lineLen );
                 pngDecoder.decode( bb, lineLen, hasAlpha ? PNGDecoder.Format.RGBA : PNGDecoder.Format.RGB );
                 bb.rewind(); // a good practice IMO
                 // note: although BGRA is faster to upload to GPU, it would have to be CPU-swizzled first from PNG, so we stick with RGB(A) here

@@ -110,7 +110,7 @@ public class Texture implements LifecycleListenerGL {
     public BufferImage createBufferImage ( OpenGLUE gl ) {
         int pixelFormat = textureData.textureDescriptor.getPixelFormat();
         TextureDescriptor td = textureData.textureDescriptor;
-        BufferImage bufferImage = new BufferImage( td.getWidth(), td.getHeight(), pixelFormat == GL_RGBA ? 4 : 3, false );
+        BufferImage bufferImage = new BufferImage( td.getWidth(), td.getHeight(), pixelFormat == GL_RGBA ? 4 : 3 );
         bind( gl );
         gl.glGetTexImage( targetEnum, 0, pixelFormat, GL_UNSIGNED_BYTE, bufferImage.buffer );
         unbind( gl );

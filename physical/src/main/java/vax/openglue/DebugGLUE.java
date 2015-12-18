@@ -28,11 +28,6 @@ public class DebugGLUE implements OpenGLUE {
     }
 
     @Override
-    public BufferGLUE getBufferGLUE () {
-        return gl.getBufferGLUE();
-    }
-
-    @Override
     public ImageGLUE getImageGLUE () {
         return gl.getImageGLUE();
     }

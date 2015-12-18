@@ -1,8 +1,11 @@
 package vax.openglue;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
+
+import de.matthiasmann.twl.utils.PNGEncoder;
+
 import vax.math.Vector2i;
 
 /**
@@ -11,53 +14,48 @@ import vax.math.Vector2i;
  @author toor
  */
 public class BufferImage {
-    public ByteBuffer buffer;
-    //public Vector2i imageSize;
     public int width, height;
-    public int bpp;
-    public boolean isDepth;
+    public int componentCount, bitDepth;
+    public ByteBuffer buffer;
 
-    public BufferImage ( ByteBuffer buffer, int width, int height, int bpp, boolean isDepth ) {
-        this.buffer = buffer;
+    public BufferImage ( int width, int height, int componentCount, int bitDepth ) {
         this.width = width;
         this.height = height;
-        this.bpp = bpp;
-        this.isDepth = isDepth;
+        this.componentCount = componentCount;
+        this.bitDepth = bitDepth;
     }
 
-    public BufferImage ( Vector2i imageSize, int bpp, boolean isDepth ) {
-        this( imageSize.getX(), imageSize.getY(), bpp, isDepth );
+    public BufferImage ( int width, int height, int componentCount, int bitDepth, ByteBuffer buffer ) {
+        this( width, height, componentCount, bitDepth );
+        this.buffer = buffer;
     }
 
-    public BufferImage ( int width, int height, int bpp, boolean isDepth ) {
-        this( CurrentGLUE.createByteBuffer( width * height * bpp ), width, height, bpp, isDepth );
+    public BufferImage ( int width, int height, int componentCount, int bitDepth, boolean allocateDirect ) {
+        this(width, height, componentCount, bitDepth );
+        buffer = allocateDirect ? BufferUtils.createByteBuffer( _calcNeededBufferSize() )
+                : ByteBuffer.wrap( new byte[_calcNeededBufferSize()] );
     }
 
-    public void saveTo ( String formatName, File file ) {
-        BufferedImage image = new BufferedImage( width, height, BufferedImage.TYPE_INT_RGB );
+    public BufferImage ( int width, int height, int componentCount ) {
+        this( width, height, componentCount, Byte.SIZE, true );
+    }
 
-        for( int x = 0; x < width; x++ ) {
-            for( int y = 0; y < height; y++ ) {
-                int i = ( x + ( width * y ) );
-                int r, g, b;
-                if ( isDepth ) {
-                    int val = (int) ( 255 * buffer.asFloatBuffer().get( i ) );
-                    r = g = b = val;
-                } else {
-                    i *= bpp;
-                    r = buffer.get( i ) & 0xFF;
-                    g = buffer.get( i + 1 ) & 0xFF;
-                    b = buffer.get( i + 2 ) & 0xFF;
-                }
-                image.setRGB( x, height - ( y + 1 ), ( 0xFF << 24 ) | ( r << 16 ) | ( g << 8 ) | b );
-            }
+    public BufferImage ( Vector2i imageSize, int componentCount ) {
+        this( imageSize.getX(), imageSize.getY(), componentCount );
+    }
+
+    public int calcNeededBufferSize () {
+        return _calcNeededBufferSize();
+    }
+
+    private int _calcNeededBufferSize () {
+        if ( bitDepth != Byte.SIZE ) {
+            throw new UnsupportedOperationException();
         }
-
-        try {
-            javax.imageio.ImageIO.write( image, formatName, file );
-        } catch (Exception ex) {
-            throw new RuntimeException( ex );
-        }
+        return width * height * componentCount;
     }
 
+    public void saveTo ( String formatName, File file ) throws IOException {
+        PNGEncoder.write( this, file );
+    }
 }

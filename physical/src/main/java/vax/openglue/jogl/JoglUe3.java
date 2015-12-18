@@ -5,7 +5,6 @@ import java.nio.*;
 import com.jogamp.opengl.*;
 
 import vax.openglue.AbstractGLUE;
-import vax.openglue.BufferGLUE;
 import vax.openglue.ImageGLUE;
 
 /**
@@ -32,12 +31,7 @@ public class JoglUe3 extends AbstractGLUE {
         this.gl = drawable.getGL().getGL2GL3();
         return this;
     }
-
-    @Override
-    public Class<? extends BufferGLUE> getClassBufferGLUE () {
-        return JoglBufferGLUE.class;
-    }
-
+    
     @Override
     public Class<? extends ImageGLUE> getClassImageGLUE () {
         return JoglImageGLUE.class;
