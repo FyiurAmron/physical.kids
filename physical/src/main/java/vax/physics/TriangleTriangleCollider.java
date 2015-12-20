@@ -106,17 +106,33 @@ public class TriangleTriangleCollider extends Collider<TriangleBody, TriangleBod
             return resultFalse;
         }
 
-        // three '!betweens' satisfies false result
+        // pre-check (to be deleted), three '!betweens' satisfies false result
         if ( !isBetween( point1A, point2A, point2B )
                 && !isBetween( point1B, point2A, point2B )
                 && !isBetween( point2A, point1A, point1B ) ) {
             return resultFalse;
         }
 
-        // TODO collision result, direction, depth, handling the results
-        CollisionResult result = new CollisionResult( true, null, 0f );
-        throw new UnsupportedOperationException( "Not implemented yet!" );
-        //return result;
+        Vector3f collisionNormal = null;
+        float depth = 0f;
+        if ( isBetween( point1A, point2A, point2B ) && isBetween( point1B, point2A, point2B ) ) {
+            //tb1 vertex - tb2 plane collision,
+            collisionNormal = tb2.getPlane( new Plane3f() ).getNormal();
+            depth = getCollisionDepth( tb2, collisionNormal, point1A );
+        } else if ( isBetween( point2A, point1A, point1B ) && isBetween( point2B, point1A, point1B ) ) {
+            //tb1 plane - tb2 vertex collision,
+            collisionNormal = tb1.getPlane( new Plane3f() ).getNormal();
+            depth = getCollisionDepth( tb2, collisionNormal, point1A );
+        } else if ( false ) {
+            // TODO Edge - Edge collision
+        }
+
+        if ( depth != 0f && collisionNormal != null ) {
+            return new CollisionResult( true, collisionNormal, depth );
+        } else {
+            return resultFalse;
+        }
+
     }
 
     // outputs either two Vectors (line intersects triangle) or two null values (no intersection)
@@ -168,6 +184,41 @@ public class TriangleTriangleCollider extends Collider<TriangleBody, TriangleBod
     private boolean isBetween ( Vector3f point, Vector3f point1, Vector3f point2 ) {
         return ( point.getX() <= point1.getX() && point.getX() >= point2.getX() )
                 || ( point.getX() <= point2.getX() && point.getX() >= point1.getX() );
+    }
+
+    /**
+     checks which one from 3 triangle vertices should be chosen to calculate depth based on triangle velocity,
+     then calculates collision depth from intersectionPoint(point on intersection line) to chosen triangle vertex
+
+     @param tb
+     @param collisionNormal
+     @param intersectionPoint
+     @return collisionDepth
+     */
+    private float getCollisionDepth ( TriangleBody tb, Vector3f collisionNormal, Vector3f intersectionPoint ) {
+
+        //if velocity == 0 returns max distance from intersectionPoint to triangleVertex
+        if ( tb.velocity == null || tb.velocity.calcLengthSq() == 0 ) {
+            return Math.max( Math.max(
+                            new Vector3f( tb.point1 ).subtract( intersectionPoint ).dot( collisionNormal ),
+                            new Vector3f( tb.point2 ).subtract( intersectionPoint ).dot( collisionNormal ) ),
+                    new Vector3f( tb.point3 ).subtract( intersectionPoint ).dot( collisionNormal ) );
+        }
+
+        // assume point1
+        Vector3f point = tb.point1;
+
+        // check point2 depth
+        if ( tb.point2.dot( tb.velocity ) >= point.dot( tb.velocity ) ) {
+            point = tb.point2;
+        }
+
+        // check point3 depth
+        if ( tb.point3.dot( tb.velocity ) >= point.dot( tb.velocity ) ) {
+            point = tb.point3;
+        }
+
+        return new Vector3f( point ).subtract( intersectionPoint ).dot( collisionNormal );
     }
 
     private void getMin ( Vector3f v1, Vector3f v2, Vector3f v3, Vector3f out ) {
