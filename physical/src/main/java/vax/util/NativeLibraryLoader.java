@@ -49,6 +49,8 @@ public class NativeLibraryLoader {
     // JDK 8 only.
     static public String abi;
 
+    private static final String PATH_PREFIX = "vax_";
+
     static {
         String osArch = System.getProperty( "os.arch" );
 
@@ -136,16 +138,19 @@ public class NativeLibraryLoader {
         try {
             if ( NativeLibraryLoader.isWindows ) {
                 nativesDir = loader.extractFile( NativeLibraryLoader.is64Bit ? "lwjgl.dll" : "lwjgl32.dll", null ).getParentFile();
+                loader.extractFile( NativeLibraryLoader.is64Bit ? "glfw.dll" : "glfw32.dll", nativesDir.getName() );
                 if ( !disableOpenAL ) {
                     loader.extractFile( NativeLibraryLoader.is64Bit ? "OpenAL.dll" : "OpenAL32.dll", nativesDir.getName() );
                 }
             } else if ( NativeLibraryLoader.isMac ) {
                 nativesDir = loader.extractFile( "liblwjgl.dylib", null ).getParentFile();
+                loader.extractFile( "libglfw.dylib", nativesDir.getName() );
                 if ( !disableOpenAL ) {
                     loader.extractFile( "libopenal.dylib", nativesDir.getName() );
                 }
             } else if ( NativeLibraryLoader.isLinux ) {
                 nativesDir = loader.extractFile( NativeLibraryLoader.is64Bit ? "liblwjgl.so" : "liblwjgl32.so", null ).getParentFile();
+                loader.extractFile( NativeLibraryLoader.is64Bit ? "libglfw.so" : "libglfw32.so", nativesDir.getName() );
                 if ( !disableOpenAL ) {
                     loader.extractFile( NativeLibraryLoader.is64Bit ? "libopenal.so" : "libopenal32.so", nativesDir.getName() );
                 }
@@ -317,7 +322,7 @@ public class NativeLibraryLoader {
      */
     private File getExtractedFile ( String dirName, String fileName ) {
         // Temp directory with username in path.
-        File idealFile = new File( System.getProperty( "java.io.tmpdir" ) + "/libgdx" + System.getProperty( "user.name" ) + "/"
+        File idealFile = new File( System.getProperty( "java.io.tmpdir" ) + "/" + PATH_PREFIX + System.getProperty( "user.name" ) + "/"
                 + dirName, fileName );
         if ( canWrite( idealFile ) ) {
             return idealFile;
@@ -336,7 +341,7 @@ public class NativeLibraryLoader {
         }
 
         // User home.
-        File file = new File( System.getProperty( "user.home" ) + "/.libgdx/" + dirName, fileName );
+        File file = new File( System.getProperty( "user.home" ) + "/." + PATH_PREFIX + "/" + dirName, fileName );
         if ( canWrite( file ) ) {
             return file;
         }
@@ -439,7 +444,7 @@ public class NativeLibraryLoader {
         String fileName = new File( sourcePath ).getName();
 
         // Temp directory with username in path.
-        File file = new File( System.getProperty( "java.io.tmpdir" ) + "/libgdx" + System.getProperty( "user.name" ) + "/" + sourceCrc,
+        File file = new File( System.getProperty( "java.io.tmpdir" ) + "/" + PATH_PREFIX + System.getProperty( "user.name" ) + "/" + sourceCrc,
                 fileName );
         if ( loadFile( sourcePath, sourceCrc, file ) ) {
             return;
@@ -455,7 +460,7 @@ public class NativeLibraryLoader {
         }
 
         // User home.
-        file = new File( System.getProperty( "user.home" ) + "/.libgdx/" + sourceCrc, fileName );
+        file = new File( System.getProperty( "user.home" ) + "/." + PATH_PREFIX + "/" + sourceCrc, fileName );
         if ( loadFile( sourcePath, sourceCrc, file ) ) {
             return;
         }
