@@ -27,11 +27,12 @@ package de.matthiasmann.twl.utils;
 import java.nio.ByteBuffer;
 import java.io.*;
 import java.util.zip.*;
+
 import vax.gfx.ColorType;
 import vax.openglue.BufferImage;
 
 /**
- A small PNG writer to save RGB data.
+ Simple PNG writer with the ability to save buffered pixmap data.
 
  @author Matthias Mann
  @author vaxquis
