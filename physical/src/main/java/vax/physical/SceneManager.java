@@ -22,6 +22,7 @@ public class SceneManager implements EventListenerGL {
     private MeshBatch mainMeshBatch, noiseMeshBatch, overlayMeshBatch;
 
     private final Value1f //
+            shininess = new Value1f(),
             time = new Value1f(),
             random = new Value1f(),
             textureSampler = new Value1f( 0 );
@@ -40,8 +41,10 @@ public class SceneManager implements EventListenerGL {
 
     // misc junk
     private Texture dilloTex;
+    private Material dilloMaterial;
     private Mesh ball;
     private Framebuffer framebuffer;
+    private Material framebufferMaterial;
     private final WindowGLUE.Settings initialSettings;
 
     public SceneManager ( WindowGLUE.Settings initialSettings ) {
@@ -84,8 +87,9 @@ public class SceneManager implements EventListenerGL {
         /* Texture */ dilloTex = new Texture( dilloTD, TextureParameters.TRILINEAR_ANISO_CLAMP, true );
         Texture //
                 interfaceLeftTex = new Texture( leftInterfaceTD, TextureParameters.TRILINEAR_ANISO_CLAMP, true );
-        ball.setTexture( dilloTex );
-        leftInterface.setTexture( interfaceLeftTex );
+        dilloMaterial = new Material(dilloTex);
+        ball.setMaterial( dilloMaterial );
+        leftInterface.setMaterial( new Material(interfaceLeftTex) );
 
         textures.add( dilloTex );
         textures.add( interfaceLeftTex );
@@ -152,13 +156,14 @@ public class SceneManager implements EventListenerGL {
             Uniform.from( "lightDirUnit", lightDirUnit ),
             Uniform.from( "time", time ),
             Uniform.from( "random", random ),
-            Uniform.from( "textureSamples", textureSampler ),
+            Uniform.from( "textureSampler", textureSampler ),
             Uniform.from( "viewportSize", viewportSize ),
             Uniform.from( "mousePos", mousePos )
         };
 
         Uniform[] perMeshUniforms = {
-            Uniform.from( "transform", transformMatrix )
+            Uniform.from( "transform", transformMatrix ),
+            Uniform.from( "shininess", shininess )
         };
 
         HashSet<Uniform> //
@@ -188,6 +193,7 @@ public class SceneManager implements EventListenerGL {
          Vector2i windowSize = initialSettings.windowSize;
          framebuffer = new Framebuffer( windowSize.getX(), windowSize.getY() );
          framebuffer.init( gl );
+        framebufferMaterial = new Material(framebuffer.getTexture() );
          */
     }
 
@@ -214,7 +220,7 @@ public class SceneManager implements EventListenerGL {
         //ball.getTransform().setToRotationTB( time.getValue(), time.getValue(), time.getValue() );
         if ( framebuffer != null ) {
             framebuffer.bind( gl );
-            ball.setTexture( dilloTex );
+            ball.setMaterial( dilloMaterial );
         }
         gl.glClearColor( backgroundColor );
         gl.glClear( ClearBufferMask.ColorBufferBit, ClearBufferMask.DepthBufferBit );
@@ -239,7 +245,7 @@ public class SceneManager implements EventListenerGL {
 
             gl.glClearColor( backgroundColor );
             gl.glClear( ClearBufferMask.ColorBufferBit, ClearBufferMask.DepthBufferBit );
-            ball.setTexture( framebuffer.getTexture() );
+            ball.setMaterial( framebufferMaterial );
             mainMeshBatch.render( gl );
             //GL30.glBlitFramebuffer( 0, 0, 400, 400, 0, 0, 400, 400, GL11.GL_COLOR_BUFFER_BIT, GL11.GL_LINEAR );
         }
