@@ -15,6 +15,10 @@ public interface Uniform {
 
     String toShaderString ();
 
+    static U1i from ( String name, Value1i value ) {
+        return new U1i( name, value );
+    }
+
     static U2i from ( String name, Vector2i value ) {
         return new U2i( name, value );
     }
@@ -67,6 +71,22 @@ public interface Uniform {
         @Override
         public String toShaderString () {
             return "uniform " + getPrefix() + " " + getName() + ";\n";
+        }
+    }
+
+    class U1i extends AbstractUniform<Value1i> {
+        public U1i ( String name, Value1i value ) {
+            super( name, value );
+        }
+
+        @Override
+        public void updateGL ( OpenGLUE gl, int uniformLocation ) {
+            gl.glUniform1i( uniformLocation, value.getValue() );
+        }
+
+        @Override
+        public String getPrefix () {
+            return "int";
         }
     }
 
@@ -165,5 +185,4 @@ public interface Uniform {
             return "mat4";
         }
     }
-
 }
