@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.ByteBuffer;
-import de.matthiasmann.twl.utils.PNGDecoder;
+import vax.gfx.png.PNG;
 import static vax.openglue.OpenGL.Constants.*;
 
 /**
@@ -78,7 +78,7 @@ public interface ImageGLUE {
         @Override
         public TextureData<?> readTextureDataImpl ( String name, InputStream inputStream ) {
             try {
-                PNGDecoder pngDecoder = new PNGDecoder( inputStream );
+                PNG.Decoder pngDecoder = new PNG.Decoder( inputStream );
                 if ( !pngDecoder.isRGB() ) {
                     throw new IOException( "not a RGB/RGBA PNG" );
                 }
@@ -88,7 +88,7 @@ public interface ImageGLUE {
                         width = pngDecoder.getWidth(),
                         lineLen = width * bytesPP;
                 ByteBuffer bb = BufferUtils.createByteBuffer( height * lineLen );
-                pngDecoder.decode( bb, lineLen, hasAlpha ? PNGDecoder.Format.RGBA : PNGDecoder.Format.RGB );
+                pngDecoder.decode( bb, lineLen, hasAlpha ? PNG.Format.RGBA : PNG.Format.RGB );
                 bb.rewind(); // a good practice IMO
                 // note: although BGRA is faster to upload to GPU, it would have to be CPU-swizzled first from PNG, so we stick with RGB(A) here
                 TextureDescriptor td = new TextureDescriptor( name, width, height,
