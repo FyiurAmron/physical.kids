@@ -6,6 +6,7 @@ package vax.openglue;
  */
 public class Material {
     public Texture texture;
+    public int shininess = 10;
 
     public Material ( Texture texture ) {
         this.texture = texture;
