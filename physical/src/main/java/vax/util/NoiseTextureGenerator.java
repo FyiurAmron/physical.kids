@@ -2,7 +2,7 @@ package vax.util;
 
 import java.io.File;
 import java.io.IOException;
-import de.matthiasmann.twl.utils.PNGEncoder;
+import vax.gfx.png.PNG;
 import vax.math.MathUtils;
 import vax.openglue.BufferImage;
 
@@ -32,7 +32,7 @@ public class NoiseTextureGenerator {
         BufferImage bi = new BufferImage( width, height, componentCount, bitDepth, false );
         MathUtils.nextBytes( bi.buffer.array() );
         try {
-            PNGEncoder.write( bi, file );
+            PNG.Encoder.write( bi, file );
         } catch (IOException ex) {
             throw new RuntimeException( ex );
         }

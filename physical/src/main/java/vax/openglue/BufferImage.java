@@ -4,8 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import de.matthiasmann.twl.utils.PNGEncoder;
-
+import vax.gfx.png.PNG;
 import vax.math.Vector2i;
 
 /**
@@ -56,6 +55,6 @@ public class BufferImage {
     }
 
     public void saveTo ( String formatName, File file ) throws IOException {
-        PNGEncoder.write( this, file );
+        PNG.Encoder.write( this, file );
     }
 }
