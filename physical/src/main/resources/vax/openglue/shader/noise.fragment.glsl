@@ -26,7 +26,7 @@ highp float noise(float x, float y) {
 const float alphaRatio = 16;
 
 void main() {
-    float noiseLevel = noise( gl_FragCoord.x/viewportSize.x * time, gl_FragCoord.y/viewportSize.y);
+    float noiseLevel = noise( gl_FragCoord.x/viewportSize.x * time, gl_FragCoord.y/viewportSize.y );
     float alpha = alphaRatio * (random*4+1) * ( noise( gl_FragCoord.x/viewportSize.x , gl_FragCoord.y/viewportSize.y* time) - 1 ) + 1;
     //out_fragColor = vec4( noiseLevel, noiseLevel, noiseLevel, alpha);
     out_fragColor = vec4( noiseLevel * random, noiseLevel, noiseLevel * random, alpha);

@@ -24,8 +24,9 @@ public class SceneManager implements EventListenerGL {
     private final Value1f //
             shininess = new Value1f(),
             time = new Value1f(),
-            random = new Value1f(),
-            textureSampler = new Value1f( 0 );
+            random = new Value1f();
+    private final Value1i
+            textureSampler = new Value1i( 0 );
     private final Vector4f //
             ambientColor = new Vector4f(),
             lightColor = new Vector4f(),
@@ -33,8 +34,8 @@ public class SceneManager implements EventListenerGL {
     private final Vector3f lightDirUnit = new Vector3f();
     private final Matrix4f //
             projectionMatrix = new Matrix4f(),
-            modelviewMatrix = new Matrix4f(),
-            transformMatrix = new Matrix4f( true );
+            viewMatrix = new Matrix4f(),
+            modelMatrix = new Matrix4f( true );
     private final Vector2i viewportSize = new Vector2i(), mousePos = new Vector2i();
 
     private final DebugGLUE debugGLUE = new DebugGLUE();
@@ -62,7 +63,7 @@ public class SceneManager implements EventListenerGL {
         gl = debugGLUE;
         ImageGLUE imageGlue = gl.getImageGLUE();
 
-        CameraDistanceSorter cds = new CameraDistanceSorter( modelviewMatrix );
+        CameraDistanceSorter cds = new CameraDistanceSorter( viewMatrix );
         mainMeshBatch = new MeshBatch( "main", cds );
         noiseMeshBatch = new MeshBatch( "noise", cds );
         overlayMeshBatch = new MeshBatch( "overlay", cds );
@@ -71,8 +72,8 @@ public class SceneManager implements EventListenerGL {
         TextureData<?> leftInterfaceTD = imageGlue.readTextureData( "interface.png", Resource.class );
 
 
-        ///* SphereMesh */ ball = new SphereMesh( /* 0.1f */ 0.3f, 40, 40, true );
-        /* SphereMesh */ ball = new PrismMesh( new float[]{ 0, 0, 0 }, new float[]{ -0.5f, 0, -0.5f }, new float[]{ 0.5f, 0, -0.5f }, 0.3f );
+        /* SphereMesh */ ball = new SphereMesh( /* 0.1f */ 0.3f, 40, 40, true );
+        ///* SphereMesh */ ball = new PrismMesh( new float[]{ 0, 0, 0 }, new float[]{ -0.5f, 0, -0.5f }, new float[]{ 0.5f, 0, -0.5f }, 0.3f );
         RectangleMesh leftInterface = new RectangleMesh( -1f, -2f, RectangleMesh.RECT_VT_PROTO_2 );
         leftInterface.getTransform().setTranslationX( -0.5f );
         leftInterface.getTransform().setTranslationY( 1f );
@@ -87,9 +88,9 @@ public class SceneManager implements EventListenerGL {
         /* Texture */ dilloTex = new Texture( dilloTD, TextureParameters.TRILINEAR_ANISO_CLAMP, true );
         Texture //
                 interfaceLeftTex = new Texture( leftInterfaceTD, TextureParameters.TRILINEAR_ANISO_CLAMP, true );
-        dilloMaterial = new Material(dilloTex);
+        dilloMaterial = new Material( dilloTex );
         ball.setMaterial( dilloMaterial );
-        leftInterface.setMaterial( new Material(interfaceLeftTex) );
+        leftInterface.setMaterial( new Material( interfaceLeftTex ) );
 
         textures.add( dilloTex );
         textures.add( interfaceLeftTex );
@@ -100,20 +101,33 @@ public class SceneManager implements EventListenerGL {
 
         ball.setUpdateAction( (Mesh target) -> {
             Matrix4f trans = target.getTransform();
-
+/*
             float t = getTime();
             trans.setTranslationX( (float) Math.sin( t ) );
             trans.setTranslationZ( -1.5f + (float) Math.cos( t ) );
+                */
 
-            transformMatrix.set( trans );
+            Material mat = target.getMaterial();
+            if ( mat != null ) {
+                shininess.setValue( mat.shininess );
+            }
+            modelMatrix.set( trans );
         } );
 
         leftInterface.setUpdateAction( (Mesh target) -> {
-            transformMatrix.set( target.getTransform() );
+            Material mat = target.getMaterial();
+            if ( mat != null ) {
+                shininess.setValue( mat.shininess );
+            }
+            modelMatrix.set( target.getTransform() );
         } );
 
         overlay.setUpdateAction( (Mesh target) -> {
-            transformMatrix.set( target.getTransform() );
+            Material mat = target.getMaterial();
+            if ( mat != null ) {
+                shininess.setValue( mat.shininess );
+            }
+            modelMatrix.set( target.getTransform() );
         } );
 
         meshes.add( ball );
@@ -135,10 +149,10 @@ public class SceneManager implements EventListenerGL {
         float halfSizeX = 1f, halfSizeY = 1f, sizeX = 2 * halfSizeX, sizeY = 2 * halfSizeY;
         projectionMatrix.setToOrthoWindow( -halfSizeX, -halfSizeY, sizeX, sizeY, -10, 10 );
         //projectionMatrix.setToIdentity();
-        modelviewMatrix.setToIdentity();
+        viewMatrix.setToIdentity();
         //modelviewMatrix.scaleZ( -1f );
         //modelviewMatrix.scaleY( -1f );
-        modelviewMatrix.setTranslationZ( 3f );
+        viewMatrix.setTranslationZ( 3f );
 
         //backgroundColor.set( 0.01f, 0.01f, 0.01f, 0.01f );
         backgroundColor.set( 0.1f, 0.1f, 0.1f, 0.1f );
@@ -150,7 +164,7 @@ public class SceneManager implements EventListenerGL {
 
         Uniform[] perRenderUniforms = {
             Uniform.from( "projectionMatrix", projectionMatrix ),
-            Uniform.from( "modelviewMatrix", modelviewMatrix ),
+            Uniform.from( "viewMatrix", viewMatrix ),
             Uniform.from( "ambientColor", ambientColor ),
             Uniform.from( "lightColor", lightColor ),
             Uniform.from( "lightDirUnit", lightDirUnit ),
@@ -162,7 +176,7 @@ public class SceneManager implements EventListenerGL {
         };
 
         Uniform[] perMeshUniforms = {
-            Uniform.from( "transform", transformMatrix ),
+            Uniform.from( "modelMatrix", modelMatrix ),
             Uniform.from( "shininess", shininess )
         };
 
@@ -193,7 +207,7 @@ public class SceneManager implements EventListenerGL {
          Vector2i windowSize = initialSettings.windowSize;
          framebuffer = new Framebuffer( windowSize.getX(), windowSize.getY() );
          framebuffer.init( gl );
-        framebufferMaterial = new Material(framebuffer.getTexture() );
+         framebufferMaterial = new Material(framebuffer.getTexture() );
          */
     }
 
