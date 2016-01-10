@@ -77,7 +77,7 @@ public class PhysicalWindow {
 
         // TODO covert the above to proper TextureData loading from resources & Texture initalization
         squirrelMesh = new SphereMesh( BALL_RADIUS, 20, 20, true );
-        squirrelMesh.setTexture( angrySquirrelTextureData );
+        squirrelMesh.setMaterial( new Material( angrySquirrelTextureData ) );
         /*
          squirrelMesh.UpdateAction = ( Mesh model ) -> {
          Matrix4f transform = model.Transform;
@@ -91,7 +91,7 @@ public class PhysicalWindow {
         //sm.addMesh( squirrelMesh ); // TODO implement in some way
 
         turtleMesh = new SphereMesh( BALL_RADIUS * 5, 10, 10, true );
-        turtleMesh.setTexture( angryTurtleTextureData );
+        turtleMesh.setMaterial( new Material( angryTurtleTextureData ) );
         /*
          turtleMesh.UpdateAction = ( Mesh model ) -> {
          Matrix4f transform = model.Transform;
@@ -102,7 +102,7 @@ public class PhysicalWindow {
         //sm.addMesh( turtleMesh ); // TODO implement in some way
 
         dilloMesh = new SphereMesh( BALL_RADIUS * 2, 20, 20, true );
-        dilloMesh.setTexture( angryDilloTextureData );
+        dilloMesh.setMaterial( new Material( angryDilloTextureData ) );
         /*
          dilloMesh.UpdateAction = ( Mesh model ) -> {
          Matrix4f transform = model.Transform;
@@ -123,7 +123,7 @@ public class PhysicalWindow {
         };
         for( int i = worldMeshes.length - 1; i >= 0; i-- ) {
             Mesh m = worldMeshes[i];
-            m.setTexture( worldTextureDatas[i] );
+            m.setMaterial( new Material( worldTextureDatas[i] ) );
             //sm.addMesh( m ); // TODO implement in some way
         }
         Matrix4f trans;

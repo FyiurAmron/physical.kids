@@ -46,7 +46,7 @@ public class Mesh implements Renderable {
     protected final Matrix4f transform = new Matrix4f( true );
 
     private Action<Mesh> updateAction, prerenderAction;
-    private Texture texture;
+    private Material material;
     protected PrimitiveType primitiveType = PrimitiveType.Triangles;
     protected int //
             vaoHandle,
@@ -92,12 +92,12 @@ public class Mesh implements Renderable {
         return transform;
     }
 
-    public Texture getTexture () {
-        return texture;
+    public Material getMaterial () {
+        return material;
     }
 
-    public void setTexture ( Texture Texture ) {
-        this.texture = Texture;
+    public void setMaterial ( Material material ) {
+        this.material = material;
     }
 
     public MeshData getModelData () {
@@ -116,14 +116,14 @@ public class Mesh implements Renderable {
 
     @Override
     public void render ( OpenGLUE gl ) {
-        if ( texture != null ) {
-            texture.bind( gl );
+        if ( material != null ) {
+            material.bind( gl );
         }
         gl.glBindVertexArray( vaoHandle );
 
         gl.glDrawElements( primitiveType.getGlConstant(), meshData.getIndices().length, OpenGL.Constants.GL_UNSIGNED_INT, 0 );
-        if ( texture != null ) {
-            texture.unbind( gl );
+        if ( material != null ) {
+            material.unbind( gl );
         }
     }
 
