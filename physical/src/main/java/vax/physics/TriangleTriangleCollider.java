@@ -43,6 +43,7 @@ public class TriangleTriangleCollider extends Collider<TriangleBody, TriangleBod
         return checkTriangle( line, points );
     }
 
+    @Deprecated
     private boolean checkTriangle ( Line3f line, Vector3f[] points ) {
         Vector3f cross = new Vector3f();
         Vector3f crossPrev = new Vector3f();
@@ -115,21 +116,72 @@ public class TriangleTriangleCollider extends Collider<TriangleBody, TriangleBod
 
         Vector3f collisionNormal = null;
         float depth = 0f;
+
         if ( isBetween( point1A, point2A, point2B ) && isBetween( point1B, point2A, point2B ) ) {
-            //tb1 vertex - tb2 plane collision,
+            // tb1 vertex - tb2 plane collision,
             collisionNormal = tb2.getPlane( new Plane3f() ).getNormal();
             depth = getCollisionDepth( tb2, collisionNormal, point1A );
         } else if ( isBetween( point2A, point1A, point1B ) && isBetween( point2B, point1A, point1B ) ) {
-            //tb1 plane - tb2 vertex collision,
+            // tb1 plane - tb2 vertex collision,
             collisionNormal = tb1.getPlane( new Plane3f() ).getNormal();
             depth = getCollisionDepth( tb2, collisionNormal, point1A );
-        } else if ( false ) {
-            // TODO Edge - Edge collision
+        } else {
+            // edge - edge collision
+            Vector3f insidePoint1;
+            Vector3f insidePoint2;
+
+            if ( isBetween( point1A, point1B, point2A ) && isBetween( point2A, point2B, point1A ) ) {
+                insidePoint1 = point1A;
+                insidePoint2 = point2A;
+            } else if ( isBetween( point1A, point1B, point2B ) && isBetween( point2A, point2B, point1A ) ) {
+                insidePoint1 = point1A;
+                insidePoint2 = point2B;
+            } else if ( isBetween( point1A, point1B, point2A ) && isBetween( point2A, point2B, point1B ) ) {
+                insidePoint1 = point1B;
+                insidePoint2 = point2A;
+            } else if ( isBetween( point1A, point1B, point2B ) && isBetween( point2A, point2B, point1B ) ) {
+                insidePoint1 = point1B;
+                insidePoint2 = point2B;
+            } else {
+                // line segments 1A-1B, 2A-2B does not intersects
+                return resultFalse;
+            }
+
+            // describing triangle edge as ( insidepoint - colinearPoint )
+            Vector3f edge1 = new Vector3f( insidePoint1 );
+            Vector3f edge2 = new Vector3f( insidePoint2 );
+
+            if ( areColinear( insidePoint1, tb1.point1, tb1.point2 ) ) {
+                edge1.subtract( tb1.point1 );
+            } else if ( areColinear( insidePoint1, tb1.point2, tb1.point3 ) ) {
+                edge1.subtract( tb1.point2 );
+            } else if ( areColinear( insidePoint1, tb1.point3, tb1.point1 ) ) {
+                edge1.subtract( tb1.point3 );
+            }
+
+            if ( areColinear( insidePoint2, tb2.point1, tb2.point2 ) ) {
+                edge2.subtract( tb2.point1 );
+            } else if ( areColinear( insidePoint2, tb2.point2, tb2.point3 ) ) {
+                edge2.subtract( tb2.point2 );
+            } else if ( areColinear( insidePoint2, tb2.point3, tb2.point1 ) ) {
+                edge2.subtract( tb2.point3 );
+            }
+
+            depth = new Vector3f( insidePoint1 ).subtract( insidePoint2 ).calcLength();
+            collisionNormal = edge1.createCross( edge2 );
+
+            return new CollisionResult( true, collisionNormal, depth );
+
         }
 
-        if ( depth != 0f && collisionNormal != null ) {
+
+        if ( depth != 0f && collisionNormal != null )
+
+        {
             return new CollisionResult( true, collisionNormal, depth );
-        } else {
+        } else
+
+        {
             return resultFalse;
         }
 
@@ -219,6 +271,26 @@ public class TriangleTriangleCollider extends Collider<TriangleBody, TriangleBod
         }
 
         return new Vector3f( point ).subtract( intersectionPoint ).dot( collisionNormal );
+    }
+
+    /**
+     checks if 2 vectors (p2->p1, p3->p2) are colinear
+
+     @param p1
+     @param p2
+     @param p3
+     @return
+     */
+    private boolean areColinear ( Vector3f p1, Vector3f p2, Vector3f p3 ) {
+        Vector3f v1 = new Vector3f( p1 );
+        v1.subtract( p2 );
+        Vector3f v2 = new Vector3f( p2 );
+        v2.subtract( p3 );
+        if ( ( v1.getX() / v2.getX() ) == ( v1.getY() / v2.getY() ) && ( v1.getY() / v2.getY() == v1.getZ() / v2.getZ() ) ) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void getMin ( Vector3f v1, Vector3f v2, Vector3f v3, Vector3f out ) {
