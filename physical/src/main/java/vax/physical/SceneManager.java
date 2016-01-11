@@ -25,8 +25,7 @@ public class SceneManager implements EventListenerGL {
             shininess = new Value1f(),
             time = new Value1f(),
             random = new Value1f();
-    private final Value1i
-            textureSampler = new Value1i( 0 );
+    private final Value1i textureSampler = new Value1i( 0 );
     private final Vector4f //
             ambientColor = new Vector4f(),
             lightColor = new Vector4f(),
@@ -101,11 +100,11 @@ public class SceneManager implements EventListenerGL {
 
         ball.setUpdateAction( (Mesh target) -> {
             Matrix4f trans = target.getTransform();
-/*
-            float t = getTime();
-            trans.setTranslationX( (float) Math.sin( t ) );
-            trans.setTranslationZ( -1.5f + (float) Math.cos( t ) );
-                */
+            /*
+             float t = getTime();
+             trans.setTranslationX( (float) Math.sin( t ) );
+             trans.setTranslationZ( -1.5f + (float) Math.cos( t ) );
+             */
 
             Material mat = target.getMaterial();
             if ( mat != null ) {
@@ -306,8 +305,12 @@ public class SceneManager implements EventListenerGL {
             gl = debugGLUE;
         }
 
-        mainMeshBatch.dispose( gl );
-        noiseMeshBatch.dispose( gl );
+        if ( mainMeshBatch != null ) {
+            mainMeshBatch.dispose( gl );
+        }
+        if ( noiseMeshBatch != null ) {
+            noiseMeshBatch.dispose( gl );
+        }
 
         for( Mesh mesh : meshes ) {
             mesh.dispose( gl );
