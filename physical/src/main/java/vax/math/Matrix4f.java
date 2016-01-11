@@ -460,4 +460,53 @@ public class Matrix4f extends VectorFloat {
     public static Matrix4f lookAt ( Vector3f pos, Vector3f vector3f, Vector3f vector3f0 ) {
         throw new UnsupportedOperationException( "Not yet implemented." );
     }
+    
+    public float determinant () {
+        float f = data[M11]
+                * ((data[M22] * data[M33] * data[M44] + data[M23] * data[M34] * data[M42] + data[M24] * data[M32] * data[M43])
+                - data[M24] * data[M33] * data[M42]
+                - data[M22] * data[M34] * data[M43]
+                - data[M23] * data[M32] * data[M44]);
+        f -= data[M12]
+                * ((data[M21] * data[M33] * data[M44] + data[M23] * data[M34] * data[M41] + data[M24] * data[M31] * data[M43])
+                - data[M24] * data[M33] * data[M41]
+                - data[M21] * data[M34] * data[M43]
+                - data[M23] * data[M31] * data[M44]);
+        f += data[M13]
+                * ((data[M21] * data[M32] * data[M44] + data[M22] * data[M34] * data[M41] + data[M24] * data[M31] * data[M42])
+                - data[M24] * data[M32] * data[M41]
+                - data[M21] * data[M34] * data[M42]
+                - data[M22] * data[M31] * data[M44]);
+        f -= data[M14]
+                * ((data[M21] * data[M32] * data[M43] + data[M22] * data[M33] * data[M41] + data[M23] * data[M31] * data[M42])
+                - data[M23] * data[M32] * data[M41]
+                - data[M21] * data[M33] * data[M42]
+                - data[M22] * data[M31] * data[M43]);
+        return f;
+    }
+
+    public Matrix4f transpose () {
+        return transpose( this );
+    }
+
+    public Matrix4f transpose ( Matrix4f source ) {
+
+        this.data[M12] = source.data[M21];
+        this.data[M13] = source.data[M31];
+        this.data[M14] = source.data[M41];
+
+        this.data[M21] = source.data[M12];
+        this.data[M23] = source.data[M32];
+        this.data[M24] = source.data[M42];
+
+        this.data[M31] = source.data[M13];
+        this.data[M32] = source.data[M23];
+        this.data[M34] = source.data[M43];
+
+        this.data[M41] = source.data[M14];
+        this.data[M42] = source.data[M24];
+        this.data[M43] = source.data[M34];
+
+        return this;
+    }
 }

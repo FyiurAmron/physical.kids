@@ -83,11 +83,15 @@ public class Plane3f {
     }
 
     public Line3f intersect ( Plane3f plane ) {
-        Vector3f direction = new Vector3f( normal, plane.normal );
-        Vector3f point = new Vector3f();
-        //point = intersection( this, plane, new Plane3f( direction, 0 ) ); // ??
-        throw new UnsupportedOperationException( "not yet implemented" ); // TODO implement
-        //return new Line3f( point, direction );
+        Vector3f direction = normal.cross( plane.normal );
+        float det = direction.calcLengthSq();
+        if ( det == 0.0 ) {
+            return null;
+        }
+        Vector3f point = (Vector3f) direction.cross( plane.normal ).scale( distanceToOrigin );
+        point.add( plane.normal.cross( direction ).scale( plane.getDistanceToOrigin() ) );
+        point.scale( 1 / det );
+        return new Line3f( point, direction );
     }
 
     /*
