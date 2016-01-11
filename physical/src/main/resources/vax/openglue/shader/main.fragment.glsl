@@ -30,8 +30,9 @@ void main() {
     //vec4 diffuseColor = vec4(0.8,0.6,0,1); // Gold Shader :P
     vec4 textureColor = texture(textureSampler, uv);
     float nl = dot( lightDirUnit, normal );
-    mat4 viewInv = inverse( viewMatrix );
-    vec3 viewDir = normalize(vec3(viewInv * vec4(0.0, 0.0, 0.0, 1.0) - modelMatrix * raw_Position));
+    //mat4 viewInv = inverse( viewMatrix );
+    //vec3 viewDir = normalize(vec3(viewInv[3] - modelMatrix * raw_Position));
+    vec3 viewDir = normalize(vec3(-viewMatrix[3] - modelMatrix * raw_Position));
     //vec4 diffuseColor = texture(textureSampler, uv) * vec4(uv,0,1) * abs(sin(time*2)); // Groovy Disco TM
     vec4 diffuseColor, specularColor;
     if ( nl > 0 ) {
