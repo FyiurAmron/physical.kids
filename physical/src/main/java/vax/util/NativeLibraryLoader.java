@@ -83,8 +83,8 @@ public class NativeLibraryLoader {
                 isIos = false;
             } else if ( osName.contains( "Mac" ) ) {
                 isWindows = false;
-                isLinux = true;
-                isMac = false;
+                isLinux = false;
+                isMac = true;
                 isIos = false;
             } else {
                 isWindows = false;
