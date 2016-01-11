@@ -9,7 +9,7 @@ import org.junit.Test;
  @author toor
  */
 public class VectorFloatTest {
-    public static final float DELTA = 1E-6f;
+    public static final float DELTA = 1E-4f;
     
     public static void assertEquals( VectorFloat v1, VectorFloat v2 ) {
         if ( !v1.equals( v2, DELTA ))
