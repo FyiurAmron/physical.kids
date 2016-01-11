@@ -50,4 +50,11 @@ public class Shader {
     public boolean isType ( ShaderType shaderType ) {
         return isType( shaderType.getGlConstant() );
     }
+
+    @Override
+    public String toString () {
+        return ShaderType.valueOf( getType() ).toString();
+    }
+    
+    
 }

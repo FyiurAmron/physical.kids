@@ -70,7 +70,7 @@ public class ShaderProgram implements LifecycleListenerGL {
             gl.glShaderSource( shaderHandle, s.getSource() );
             gl.glCompileShader( shaderHandle );
             if ( gl.glGetShaderi( shaderHandle, OpenGL.Constants.GL_COMPILE_STATUS ) == OpenGL.Constants.GL_FALSE ) {
-                throw new GLException( gl.ueGetShaderInfoLog( shaderHandle ) );
+                throw new GLException( s + ": " + gl.ueGetShaderInfoLog( shaderHandle ) );
             }
             gl.glAttachShader( shaderProgramHandle, shaderHandle );
         }
@@ -80,9 +80,7 @@ public class ShaderProgram implements LifecycleListenerGL {
         }
 
         gl.glLinkProgram( shaderProgramHandle );
-
-        boolean compileError = false;
-        if ( compileError ) {
+        if ( gl.glGetProgrami( shaderProgramHandle, OpenGL.Constants.GL_LINK_STATUS ) == OpenGL.Constants.GL_FALSE ) {
             throw new GLException( gl.ueGetProgramInfoLog( shaderProgramHandle ) );
         }
     }

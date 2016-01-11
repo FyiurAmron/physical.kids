@@ -20,6 +20,18 @@ public enum ShaderType implements OpenGlConstantWrapper {
     private ShaderType ( int glConstant ) {
         this.glConstant = glConstant;
     }
+    
+    public static ShaderType valueOf( int shaderTypeEnum ) {
+        //TEMP TODO use static map
+        switch( shaderTypeEnum) {
+            case GL_VERTEX_SHADER:
+                return VertexShader;
+            case GL_FRAGMENT_SHADER:
+                return FragmentShader;
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
 
     @Override
     public int getGlConstant () {
