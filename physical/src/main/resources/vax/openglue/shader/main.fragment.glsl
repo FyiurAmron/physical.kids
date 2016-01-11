@@ -22,7 +22,7 @@ uniform sampler2D textureSampler;
 in vec3 normal;
 in vec2 uv;
 in vec4 outPosition;
-in vec4 raw_Position;
+in vec3 raw_Position;
 
 out vec4 out_fragColor;
 
@@ -32,10 +32,11 @@ void main() {
     float nl = dot( lightDirUnit, normal );
     //mat4 viewInv = inverse( viewMatrix );
     //vec3 viewDir = normalize(vec3(viewInv[3] - modelMatrix * raw_Position));
-    vec3 viewDir = normalize(vec3(-viewMatrix[3] - modelMatrix * raw_Position));
+
     //vec4 diffuseColor = texture(textureSampler, uv) * vec4(uv,0,1) * abs(sin(time*2)); // Groovy Disco TM
     vec4 diffuseColor, specularColor;
     if ( nl > 0 ) {
+    vec3 viewDir = normalize(vec3(-viewMatrix[3] - modelMatrix * vec4(raw_Position,1)));
         diffuseColor = vec4( lightColor * clamp( nl, 0.0, 1.0 ) );
         specularColor = 0.5 * clamp( vec4(pow(max(0.0, dot(reflect(lightDirUnit, normal), viewDir)), shininess)), 0.0, 1.0 );
     } else {
