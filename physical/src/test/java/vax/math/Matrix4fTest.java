@@ -11,8 +11,8 @@ import org.junit.Test;
 public class Matrix4fTest {
 
     public static final float DELTA = 1E-4f;
-    
-    private void assertEquals ( float tested, float expected) {
+
+    private void assertEquals ( float tested, float expected ) {
         if ( Math.abs( tested - expected ) >= DELTA ) {
             throw new ComparisonFailure( "", Float.toString( tested ), Float.toString( expected ) );
         }
@@ -53,11 +53,44 @@ public class Matrix4fTest {
 
     @Test
     public void transposeTest () {
-        Matrix4f identity = new Matrix4f();
-        identity.setToIdentity();
+        float[] matrixVals = {
+            2.1723f, 5, 3, 5,
+            4, 6f, 6.7736f, 3,
+            11, 3, 2.99999f, -2.5523f,
+            4, -7.0001f, 9, 3
+        };
+        float[] matrixTransposedVals = {
+            2.1723f, 4, 11, 4,
+            5, 6f, 3, -7.0001f,
+            3, 6.7736f, 2.99991f, 9,
+            5, 3, -2.5523f, 3
+        };
+        Matrix4f matrix1 = new Matrix4f( matrixVals );
+        Matrix4f matrix2 = new Matrix4f( matrixTransposedVals );
+        Matrix4f matrix3 = new Matrix4f( matrix2 );
+
+        matrix2.transpose();
+        assertEquals( matrix2, matrix1 );
+
+        matrix2.transpose();
+        assertEquals( matrix2, matrix3 );
+
+        matrix2.transpose();
+        assertEquals( matrix2, matrix1 );
+
+        // transpose called on identity matrix should give identity matrix
+        Matrix4f identity = new Matrix4f( true );
         Matrix4f transposedIdentity = new Matrix4f( identity );
-        transposedIdentity.transpose().transpose();
-        assertEquals( identity, transposedIdentity );
+
+        transposedIdentity.transpose();
+        assertEquals( transposedIdentity, identity );
+
+        Matrix4f matrix4 = new Matrix4f( matrixVals );
+        Matrix4f matrix5 = new Matrix4f( matrix4 ).transpose();
+        Matrix4f matrix6 = new Matrix4f();
+
+        matrix6.transpose( matrix4 );
+        assertEquals( matrix6, matrix5 );
     }
 
 }
