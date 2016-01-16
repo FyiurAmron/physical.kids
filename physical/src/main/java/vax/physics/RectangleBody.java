@@ -4,19 +4,20 @@ import vax.math.Plane3f;
 import vax.math.Vector3f;
 
 /**
- Created by Kuba on 2015-12-02.
+ Created by Kuba on 2015-01-15.
  */
-public class TriangleBody extends Body {
+public class RectangleBody extends Body {
     protected final Vector3f //
             point1 = new Vector3f(),
             point2 = new Vector3f(),
-            point3 = new Vector3f();
+            point3 = new Vector3f(),
+            point4 = new Vector3f();
     protected Plane3f plane = new Plane3f();
 
     /**
      No-arg for serialization/subclassing.
      */
-    public TriangleBody () {
+    public RectangleBody () {
     }
 
     /**
@@ -26,7 +27,7 @@ public class TriangleBody extends Body {
      @param v2
      @param v3
      */
-    public TriangleBody ( Vector3f v1, Vector3f v2, Vector3f v3 ) {
+    public RectangleBody ( Vector3f v1, Vector3f v2, Vector3f v3 ) {
         _setPoints( v1, v2, v3 );
     }
 
@@ -44,6 +45,21 @@ public class TriangleBody extends Body {
     }
 
     /**
+     Sets the outputs to values contained in this TriangleBody's corner points.
+
+     @param output1
+     @param output2
+     @param output3
+     @param output4
+     */
+    public void getPoints ( Vector3f output1, Vector3f output2, Vector3f output3, Vector3f output4 ) {
+        output1.set( point1 );
+        output2.set( point2 );
+        output3.set( point3 );
+        output4.set( point4 );
+    }
+
+    /**
      Copies the values from source vectors into local data.
 
      @param v1
@@ -55,10 +71,19 @@ public class TriangleBody extends Body {
     }
 
     private void _setPoints ( Vector3f v1, Vector3f v2, Vector3f v3 ) {
+        if ( v1 == null || v2 == null || v3 == null ) {
+            throw new IllegalArgumentException();
+        }
         point1.set( v1 );
         point2.set( v2 );
         point3.set( v3 );
         plane.set( point1, point2, point3 );
+        designatePoint4();
+    }
+
+    // TODO
+    private void designatePoint4 () {
+        throw new UnsupportedOperationException( "Not yet implemented" );
     }
 
     /**
@@ -76,30 +101,9 @@ public class TriangleBody extends Body {
         return new Vector3f[]{
                 new Vector3f( point1 ),
                 new Vector3f( point2 ),
-                new Vector3f( point3 )
+                new Vector3f( point3 ),
+                new Vector3f( point4 )
         };
     }
 
-
-    @Override
-    public boolean equals ( Object o ) {
-        if ( this == o ) return true;
-        if ( o == null || getClass() != o.getClass() ) return false;
-
-        TriangleBody that = (TriangleBody) o;
-
-        if ( !point1.equals( that.point1 ) ) return false;
-        if ( !point2.equals( that.point2 ) ) return false;
-        if ( !point3.equals( that.point3 ) ) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode () {
-        int result = point1.hashCode();
-        result = 31 * result + point2.hashCode();
-        result = 31 * result + point3.hashCode();
-        return result;
-    }
 }
