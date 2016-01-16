@@ -516,25 +516,9 @@ public class Matrix4f extends VectorFloat {
     }
 
     public Matrix4f transpose ( Matrix4f source ) {
-        if ( source == this )
-            return transpose();
-        data[M12] = source.data[M21];
-        data[M13] = source.data[M31];
-        data[M14] = source.data[M41];
-
-        data[M21] = source.data[M12];
-        data[M23] = source.data[M32];
-        data[M24] = source.data[M42];
-
-        data[M31] = source.data[M13];
-        data[M32] = source.data[M23];
-        data[M34] = source.data[M43];
-
-        data[M41] = source.data[M14];
-        data[M42] = source.data[M24];
-        data[M43] = source.data[M34];
-
-        return this;
+        if ( !this.equals( source ) )
+            this.set( source );
+        return transpose();
     }
    
 }
