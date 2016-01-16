@@ -248,7 +248,7 @@ public class TriangleTriangleCollider extends Collider<TriangleBody, TriangleBod
      @return collisionDepth
      */
     private float getCollisionDepth ( TriangleBody tb, Vector3f collisionNormal, Vector3f intersectionPoint ) {
-
+ // FIXME avoid non-explicit allocations!
         //if velocity == 0 returns max distance from intersectionPoint to triangleVertex
         if ( tb.velocity == null || tb.velocity.calcLengthSq() == 0 ) {
             return Math.max( Math.max(
@@ -281,16 +281,13 @@ public class TriangleTriangleCollider extends Collider<TriangleBody, TriangleBod
      @param p3
      @return
      */
-    private boolean areColinear ( Vector3f p1, Vector3f p2, Vector3f p3 ) {
+    private boolean areColinear ( Vector3f p1, Vector3f p2, Vector3f p3 ) { // FIXME avoid non-explicit allocations!
         Vector3f v1 = new Vector3f( p1 );
         v1.subtract( p2 );
         Vector3f v2 = new Vector3f( p2 );
         v2.subtract( p3 );
-        if ( ( v1.getX() / v2.getX() ) == ( v1.getY() / v2.getY() ) && ( v1.getY() / v2.getY() == v1.getZ() / v2.getZ() ) ) {
-            return true;
-        } else {
-            return false;
-        }
+        return v1.getX() / v2.getX() == v1.getY() / v2.getY()
+                && v1.getY() / v2.getY() == v1.getZ() / v2.getZ();
     }
 
     private void getMin ( Vector3f v1, Vector3f v2, Vector3f v3, Vector3f out ) {

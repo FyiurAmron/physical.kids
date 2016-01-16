@@ -72,6 +72,7 @@ public class TriangleBody extends Body {
         return output;
     }
 
+    /*
     public Vector3f[] getPointsArray () {
         return new Vector3f[]{
                 new Vector3f( point1 ),
@@ -79,20 +80,20 @@ public class TriangleBody extends Body {
                 new Vector3f( point3 )
         };
     }
-
+*/
 
     @Override
     public boolean equals ( Object o ) {
-        if ( this == o ) return true;
-        if ( o == null || getClass() != o.getClass() ) return false;
+        if ( o == null )
+            return false;
+        if ( o == this )
+            return true;
+        if ( !(o instanceof TriangleBody) )
+            return false;
 
-        TriangleBody that = (TriangleBody) o;
+        TriangleBody tb = (TriangleBody) o;
 
-        if ( !point1.equals( that.point1 ) ) return false;
-        if ( !point2.equals( that.point2 ) ) return false;
-        if ( !point3.equals( that.point3 ) ) return false;
-
-        return true;
+        return point1.equals( tb.point1 ) && point2.equals( tb.point2 ) && point3.equals( tb.point3 );
     }
 
     @Override
