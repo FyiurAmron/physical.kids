@@ -486,27 +486,55 @@ public class Matrix4f extends VectorFloat {
     }
 
     public Matrix4f transpose () {
-        return transpose( this );
-    }
+        float tmp;
+        
+        tmp = data[M12];
+        data[M12] = data[M21];
+        data[M21] = tmp;
+        
+        tmp = data[M13];
+        data[M13] = data[M31];
+        data[M31] = tmp;
+        
+        tmp = data[M14];
+        data[M14] = data[M41];
+        data[M41] = tmp;
 
-    public Matrix4f transpose ( Matrix4f source ) {
+        tmp = data[M23];
+        data[M23] = data[M32];
+        data[M32] = tmp;
+        
+        tmp = data[M24];
+        data[M24] = data[M42];
+        data[M42] = tmp;
 
-        this.data[M12] = source.data[M21];
-        this.data[M13] = source.data[M31];
-        this.data[M14] = source.data[M41];
-
-        this.data[M21] = source.data[M12];
-        this.data[M23] = source.data[M32];
-        this.data[M24] = source.data[M42];
-
-        this.data[M31] = source.data[M13];
-        this.data[M32] = source.data[M23];
-        this.data[M34] = source.data[M43];
-
-        this.data[M41] = source.data[M14];
-        this.data[M42] = source.data[M24];
-        this.data[M43] = source.data[M34];
+        tmp = data[M34];
+        data[M34] = data[M43];
+        data[M43] = tmp;
 
         return this;
     }
+
+    public Matrix4f transpose ( Matrix4f source ) {
+        if ( source == this )
+            return transpose();
+        data[M12] = source.data[M21];
+        data[M13] = source.data[M31];
+        data[M14] = source.data[M41];
+
+        data[M21] = source.data[M12];
+        data[M23] = source.data[M32];
+        data[M24] = source.data[M42];
+
+        data[M31] = source.data[M13];
+        data[M32] = source.data[M23];
+        data[M34] = source.data[M43];
+
+        data[M41] = source.data[M14];
+        data[M42] = source.data[M24];
+        data[M43] = source.data[M34];
+
+        return this;
+    }
+   
 }
