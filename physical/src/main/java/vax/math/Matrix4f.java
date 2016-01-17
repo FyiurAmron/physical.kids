@@ -8,6 +8,8 @@ package vax.math;
 public class Matrix4f extends VectorFloat {
     public final static int SIZE = 4 * 4;
 
+    public static final double DELTA = 1E-4f;
+
     public static final int // column-row
             M11 = 0, M12 = 1, M13 = 2, M14 = 3, // column 1
             M21 = 4, M22 = 5, M23 = 6, M24 = 7, // column 2
@@ -33,7 +35,8 @@ public class Matrix4f extends VectorFloat {
     }
 
     /**
-     Note: if <code>data</code> is an explicit array, this constructor doesn't copy the values provided, but wraps the array instead.
+     Note: if <code>data</code> is an explicit array, this constructor doesn't
+     copy the values provided, but wraps the array instead.
 
      @param data
      */
@@ -165,7 +168,7 @@ public class Matrix4f extends VectorFloat {
     public Matrix4f setToPerspective ( float near, float far, float degFovY, float aspectRatio ) {
         float //
                 f = FloatUtils.cot( degFovY * FloatUtils.PI / 360 ),
-                nf = 1.0f / ( near - far );
+                nf = 1.0f / (near - far);
 
         data[0] = f / aspectRatio;
         data[1] = 0;
@@ -179,7 +182,7 @@ public class Matrix4f extends VectorFloat {
 
         data[8] = 0;
         data[9] = 0;
-        data[10] = ( far + near ) * nf;
+        data[10] = (far + near) * nf;
         data[11] = -1;
 
         data[12] = 0;
@@ -233,9 +236,9 @@ public class Matrix4f extends VectorFloat {
      */
     public Matrix4f setToFrustum ( float left, float right, float bottom, float top, float near, float far ) {
         float //
-                rl = 1.0f / ( right - left ),
-                tb = 1.0f / ( top - bottom ),
-                nf = 1.0f / ( near - far ); // == -fn
+                rl = 1.0f / (right - left),
+                tb = 1.0f / (top - bottom),
+                nf = 1.0f / (near - far); // == -fn
 
         data[0] = 2.0f * near * rl;
         data[1] = 0;
@@ -247,9 +250,9 @@ public class Matrix4f extends VectorFloat {
         data[6] = 0;
         data[7] = 0;
 
-        data[8] = ( right + left ) * rl;
-        data[9] = ( top + bottom ) * tb;
-        data[10] = ( far + near ) * nf;
+        data[8] = (right + left) * rl;
+        data[9] = (top + bottom) * tb;
+        data[10] = (far + near) * nf;
         data[11] = -1;
 
         data[12] = 0;
@@ -290,9 +293,9 @@ public class Matrix4f extends VectorFloat {
 
     public Matrix4f setToOrtho ( float left, float right, float bottom, float top, float near, float far ) {
         float //
-                rl = 1.0f / ( right - left ),
-                tb = 1.0f / ( top - bottom ),
-                fn = 1.0f / ( far - near );
+                rl = 1.0f / (right - left),
+                tb = 1.0f / (top - bottom),
+                fn = 1.0f / (far - near);
 
         data[0] = 2 * rl;
         data[1] = 0;
@@ -309,9 +312,9 @@ public class Matrix4f extends VectorFloat {
         data[10] = -2 * fn;
         data[11] = 0;
 
-        data[12] = ( right + left ) * -rl;
-        data[13] = ( top + bottom ) * -tb;
-        data[14] = ( far + near ) * -fn;
+        data[12] = (right + left) * -rl;
+        data[13] = (top + bottom) * -tb;
+        data[14] = (far + near) * -fn;
         data[15] = 1;
 
         return this;
@@ -573,41 +576,85 @@ public class Matrix4f extends VectorFloat {
         return det;
     }
 
+    
     public Matrix4f transpose () {
+        return transpose( this );
+    }
+
+    public Matrix4f transpose ( Matrix4f destination ) {
         float tmp;
+        
+        destination.data[M11] = data[M11];
+        destination.data[M22] = data[M22];
+        destination.data[M33] = data[M33];
+        destination.data[M44] = data[M44];
 
         tmp = data[M12];
-        data[M12] = data[M21];
-        data[M21] = tmp;
+        destination.data[M12] = data[M21];
+        destination.data[M21] = tmp;
 
         tmp = data[M13];
-        data[M13] = data[M31];
-        data[M31] = tmp;
+        destination.data[M13] = data[M31];
+        destination.data[M31] = tmp;
 
         tmp = data[M14];
-        data[M14] = data[M41];
-        data[M41] = tmp;
+        destination.data[M14] = data[M41];
+        destination.data[M41] = tmp;
 
         tmp = data[M23];
-        data[M23] = data[M32];
-        data[M32] = tmp;
+        destination.data[M23] = data[M32];
+        destination.data[M32] = tmp;
 
         tmp = data[M24];
-        data[M24] = data[M42];
-        data[M42] = tmp;
+        destination.data[M24] = data[M42];
+        destination.data[M42] = tmp;
 
         tmp = data[M34];
-        data[M34] = data[M43];
-        data[M43] = tmp;
+        destination.data[M34] = data[M43];
+        destination.data[M43] = tmp;
 
-        return this;
+        return destination;
+    }
+    
+    public Matrix4f invert () {
+        return invert( this );
     }
 
-    public Matrix4f transpose ( Matrix4f source ) {
-        if ( !this.equals( source ) ) {
-            this.set( source );
-        }
-        return transpose();
+    public Matrix4f invert ( Matrix4f destination ) {
+        float a = data[M11] * data[M22] - data[M12] * data[M21];
+        float b = data[M11] * data[M23] - data[M13] * data[M21];
+        float c = data[M11] * data[M24] - data[M14] * data[M21];
+        float d = data[M12] * data[M23] - data[M13] * data[M22];
+        float e = data[M12] * data[M24] - data[M14] * data[M22];
+        float f = data[M13] * data[M24] - data[M14] * data[M23];
+        float g = data[M31] * data[M42] - data[M32] * data[M41];
+        float h = data[M31] * data[M43] - data[M33] * data[M41];
+        float i = data[M31] * data[M44] - data[M34] * data[M41];
+        float j = data[M32] * data[M43] - data[M33] * data[M42];
+        float k = data[M32] * data[M44] - data[M34] * data[M42];
+        float l = data[M33] * data[M44] - data[M34] * data[M43];
+        float det = a * l - b * k + c * j + d * i - e * h + f * g;
+        det = 1.0f / det;
+        destination.set(
+                 (  data[M22] * l - data[M23] * k + data[M24] * j ) * det,
+                 ( -data[M12] * l + data[M13] * k - data[M14] * j ) * det,
+                 (  data[M42] * f - data[M43] * e + data[M44] * d ) * det,
+                 ( -data[M32] * f + data[M33] * e - data[M34] * d ) * det,
+                 ( -data[M21] * l + data[M23] * i - data[M24] * h ) * det,
+                 (  data[M11] * l - data[M13] * i + data[M14] * h ) * det,
+                 ( -data[M41] * f + data[M43] * c - data[M44] * b ) * det,
+                 (  data[M31] * f - data[M33] * c + data[M34] * b ) * det,
+                 (  data[M21] * k - data[M22] * i + data[M24] * g ) * det,
+                 ( -data[M11] * k + data[M12] * i - data[M14] * g ) * det,
+                 (  data[M41] * e - data[M42] * c + data[M44] * a ) * det,
+                 ( -data[M31] * e + data[M32] * c - data[M34] * a ) * det,
+                 ( -data[M21] * j + data[M22] * h - data[M23] * g ) * det,
+                 (  data[M11] * j - data[M12] * h + data[M13] * g ) * det,
+                 ( -data[M41] * d + data[M42] * b - data[M43] * a ) * det,
+                 (  data[M31] * d - data[M32] * b + data[M33] * a ) * det);
+        return destination;
     }
+    
+    
 
 }
