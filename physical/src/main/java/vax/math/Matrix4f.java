@@ -490,91 +490,91 @@ public class Matrix4f extends VectorFloat {
 
     public float det () {
         /* actual, unoptimized det() :
-        float
-            ab = data[M32] * data[M43] - data[M33] * data[M42];
-            cd = data[M33] * data[M41] - data[M31] * data[M43];
-            ef = data[M31] * data[M42] - data[M32] * data[M41];
-            g = data[M11] * data[M22],
-            h = data[M11] * data[M23],
-            i = data[M12] * data[M23],
-            j = data[M12] * data[M21],
-            k = data[M13] * data[M21],
-            l = data[M13] * data[M22],
-            hk = h - k;
+         float
+         ab = data[M33] * data[M42] - data[M32] * data[M43],
+         cd = data[M31] * data[M43] - data[M33] * data[M41],
+         ef = data[M32] * data[M41] - data[M31] * data[M42],
+         hg = data[M13] * data[M21] - data[M11] * data[M23],
+         ij = data[M13] * data[M22] - data[M12] * data[M23],
+         kl = data[M12] * data[M21] - data[M11] * data[M22];
 
-        float det = data[M14]
-                    * ( data[M21] * ab
-                    + data[M22] * cd
-                    + data[M23] * ef )
-                    + data[M24]
-                    * ( data[M11] * ab
-                    + data[M12] * cd
-                    + data[M13] * ef );
-                    + data[M34]
-                    * ( data[M41] * ( i + l ) + data[M42] * hk - data[M43] * ( j + g ) );
-                    + data[M44]
-                    * ( data[M31] * ( i - l ) - data[M32] * hk + data[M33] * ( g - j ) );
-        */
-        float ab, cd, ef, det;
+         det =
+           data[M14] *
+         ( data[M21] * ab
+         + data[M22] * cd
+         + data[M23] * ef )
+         - data[M24] *
+         ( data[M11] * ab
+         + data[M12] * cd
+         + data[M13] * ef )
+         + data[M34] *
+         ( data[M41] * ij
+         - data[M42] * hg
+         + data[M43] * kl )
+         -= data[M44] *
+         ( data[M31] * ij
+         - data[M32] * hg
+         + data[M33] * kl )
+        ;
+         */
+        float ab, cd, ef, hg, ij, kl, det;
         if ( data[M14] == 0 ) {
             if ( data[M24] == 0 ) {
                 if ( data[M34] == 0 && data[M44] == 1 ) {
-                    return det3x3();
+                    return det3x3(); // main branch
                 }
                 det = 0;
             } else {
-                ab = data[M32] * data[M43] - data[M33] * data[M42];
-                cd = data[M33] * data[M41] - data[M31] * data[M43];
-                ef = data[M31] * data[M42] - data[M32] * data[M41];
-                det = data[M24] * ( data[M11] * ab
+                ab = data[M33] * data[M42] - data[M32] * data[M43];
+                cd = data[M31] * data[M43] - data[M33] * data[M41];
+                ef = data[M32] * data[M41] - data[M31] * data[M42];
+                det = -data[M24] * ( data[M11] * ab
                         + data[M12] * cd
                         + data[M13] * ef );
             }
         } else {
-            ab = data[M32] * data[M43] - data[M33] * data[M42];
-            cd = data[M33] * data[M41] - data[M31] * data[M43];
-            ef = data[M31] * data[M42] - data[M32] * data[M41];
+            ab = data[M33] * data[M42] - data[M32] * data[M43];
+            cd = data[M31] * data[M43] - data[M33] * data[M41];
+            ef = data[M32] * data[M41] - data[M31] * data[M42];
             det = data[M14]
                     * ( data[M21] * ab
                     + data[M22] * cd
-                    + data[M23] * ef )
-                    + data[M24]
-                    * ( data[M11] * ab
-                    + data[M12] * cd
-                    + data[M13] * ef );
+                    + data[M23] * ef );
+            if ( data[M24] != 0 ) { // 2nd most common branch
+                det -= data[M24]
+                        * ( data[M11] * ab
+                        + data[M12] * cd
+                        + data[M13] * ef );
+            }
         }
         if ( data[M34] != 0 ) {
-            float //
-                    g = data[M11] * data[M22],
-                    h = data[M11] * data[M23],
-                    i = data[M12] * data[M23],
-                    j = data[M12] * data[M21],
-                    k = data[M13] * data[M21],
-                    l = data[M13] * data[M22],
-                    hk = h - k;
+            hg = data[M13] * data[M21] - data[M11] * data[M23];
+            ij = data[M13] * data[M22] - data[M12] * data[M23];
+            kl = data[M12] * data[M21] - data[M11] * data[M22];
             det += data[M34]
-                    * ( data[M41] * ( i + l ) + data[M42] * hk - data[M43] * ( j + g ) );
-            if ( data[M44] != 0 ) {
-                det += data[M44]
-                        * ( data[M31] * ( i - l ) - data[M32] * hk + data[M33] * ( g - j ) );
+                    * ( data[M41] * ij
+                    - data[M42] * hg
+                    + data[M43] * kl );
+            if ( data[M44] != 0 ) { // 2nd most common branch cont.
+                det -= data[M44]
+                        * ( data[M31] * ij
+                        - data[M32] * hg
+                        + data[M33] * kl );
             }
         } else if ( data[M44] != 0 ) {
-            float //
-                    g = data[M11] * data[M22],
-                    h = data[M11] * data[M23],
-                    i = data[M12] * data[M23],
-                    j = data[M12] * data[M21],
-                    k = data[M13] * data[M21],
-                    l = data[M13] * data[M22],
-                    hk = h - k;
-            det += data[M44]
-                    * ( data[M31] * ( i - l ) - data[M32] * hk + data[M33] * ( g - j ) );
+            hg = data[M13] * data[M21] - data[M11] * data[M23];
+            ij = data[M13] * data[M22] - data[M12] * data[M23];
+            kl = data[M12] * data[M21] - data[M11] * data[M22];
+            det -= data[M44]
+                    * ( data[M31] * ij
+                    - data[M32] * hg
+                    + data[M33] * kl );
         } // else nada; both == 0
         return det;
     }
 
     public float det ( float delta ) {
-        float ab, cd, ef, det;
+        float ab, cd, ef, hg, ij, kl, det;
         if ( Math.abs( data[M14] ) < delta ) {
             if ( Math.abs( data[M24] ) < delta ) {
                 if ( Math.abs( data[M34] ) < delta && Math.abs( data[M44] - 1 ) < delta ) {
@@ -582,52 +582,51 @@ public class Matrix4f extends VectorFloat {
                 }
                 det = 0;
             } else {
-                ab = data[M32] * data[M43] - data[M33] * data[M42];
-                cd = data[M33] * data[M41] - data[M31] * data[M43];
-                ef = data[M31] * data[M42] - data[M32] * data[M41];
-                det = data[M24] * ( data[M11] * ab
+                ab = data[M33] * data[M42] - data[M32] * data[M43];
+                cd = data[M31] * data[M43] - data[M33] * data[M41];
+                ef = data[M32] * data[M41] - data[M31] * data[M42];
+                det = -data[M24]
+                        * ( data[M11] * ab
                         + data[M12] * cd
                         + data[M13] * ef );
             }
         } else {
-            ab = data[M32] * data[M43] - data[M33] * data[M42];
-            cd = data[M33] * data[M41] - data[M31] * data[M43];
-            ef = data[M31] * data[M42] - data[M32] * data[M41];
+            ab = data[M33] * data[M42] - data[M32] * data[M43];
+            cd = data[M31] * data[M43] - data[M33] * data[M41];
+            ef = data[M32] * data[M41] - data[M31] * data[M42];
             det = data[M14]
                     * ( data[M21] * ab
                     + data[M22] * cd
-                    + data[M23] * ef )
-                    + data[M24]
-                    * ( data[M11] * ab
-                    + data[M12] * cd
-                    + data[M13] * ef );
-        }
-        if ( Math.abs( data[M34] ) < delta ) {
-            float //
-                    g = data[M11] * data[M22],
-                    h = data[M11] * data[M23],
-                    i = data[M12] * data[M23],
-                    j = data[M12] * data[M21],
-                    k = data[M13] * data[M21],
-                    l = data[M13] * data[M22],
-                    hk = h - k;
-            det += data[M34]
-                    * ( data[M41] * ( i + l ) + data[M42] * hk - data[M43] * ( j + g ) );
-            if ( data[M44] != 0 ) {
-                det += data[M44]
-                        * ( data[M31] * ( i - l ) - data[M32] * hk + data[M33] * ( g - j ) );
+                    + data[M23] * ef );
+            if ( Math.abs( data[M24] ) >= delta ) {
+                det -= data[M24]
+                        * ( data[M11] * ab
+                        + data[M12] * cd
+                        + data[M13] * ef );
             }
-        } else if ( Math.abs( data[M44] ) < delta ) {
-            float //
-                    g = data[M11] * data[M22],
-                    h = data[M11] * data[M23],
-                    i = data[M12] * data[M23],
-                    j = data[M12] * data[M21],
-                    k = data[M13] * data[M21],
-                    l = data[M13] * data[M22],
-                    hk = h - k;
-            det += data[M44]
-                    * ( data[M31] * ( i - l ) - data[M32] * hk + data[M33] * ( g - j ) );
+        }
+        if ( Math.abs( data[M34] ) >= delta ) {
+            hg = data[M13] * data[M21] - data[M11] * data[M23];
+            ij = data[M13] * data[M22] - data[M12] * data[M23];
+            kl = data[M12] * data[M21] - data[M11] * data[M22];
+            det += data[M34]
+                    * ( data[M41] * ij
+                    - data[M42] * hg
+                    + data[M43] * kl );
+            if ( data[M44] != 0 ) {
+                det -= data[M44]
+                        * ( data[M31] * ij
+                        - data[M32] * hg
+                        + data[M33] * kl );
+            }
+        } else if ( Math.abs( data[M44] ) >= delta ) {
+            hg = data[M13] * data[M21] - data[M11] * data[M23];
+            ij = data[M13] * data[M22] - data[M12] * data[M23];
+            kl = data[M12] * data[M21] - data[M11] * data[M22];
+            det -= data[M44]
+                    * ( data[M31] * ij
+                    - data[M32] * hg
+                    + data[M33] * kl );
         } // else nada; both == 0
         return det;
     }
