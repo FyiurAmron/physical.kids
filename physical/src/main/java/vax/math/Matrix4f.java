@@ -489,6 +489,32 @@ public class Matrix4f extends VectorFloat {
     }
 
     public float det () {
+        /* actual, unoptimized det() :
+        float
+            ab = data[M32] * data[M43] - data[M33] * data[M42];
+            cd = data[M33] * data[M41] - data[M31] * data[M43];
+            ef = data[M31] * data[M42] - data[M32] * data[M41];
+            g = data[M11] * data[M22],
+            h = data[M11] * data[M23],
+            i = data[M12] * data[M23],
+            j = data[M12] * data[M21],
+            k = data[M13] * data[M21],
+            l = data[M13] * data[M22],
+            hk = h - k;
+
+        float det = data[M14]
+                    * ( data[M21] * ab
+                    + data[M22] * cd
+                    + data[M23] * ef )
+                    + data[M24]
+                    * ( data[M11] * ab
+                    + data[M12] * cd
+                    + data[M13] * ef );
+                    + data[M34]
+                    * ( data[M41] * ( i + l ) + data[M42] * hk - data[M43] * ( j + g ) );
+                    + data[M44]
+                    * ( data[M31] * ( i - l ) - data[M32] * hk + data[M33] * ( g - j ) );
+        */
         float ab, cd, ef, det;
         if ( data[M14] == 0 ) {
             if ( data[M24] == 0 ) {
