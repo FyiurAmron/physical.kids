@@ -461,13 +461,13 @@ public class Matrix4f extends VectorFloat {
         throw new UnsupportedOperationException( "Not yet implemented." );
     }
 
-    public float det3x4 () {
+    public float det3 () {
         return data[M11] * ( data[M22] * data[M33] - data[M23] * data[M32] )
                 + data[M12] * ( data[M23] * data[M31] - data[M21] * data[M33] )
                 + data[M13] * ( data[M21] * data[M32] - data[M22] * data[M31] );
     }
 
-    public float det3x4 ( float delta ) {
+    public float det3 ( float delta ) {
         float f = 0;
         if ( Math.abs( data[M11] ) > delta ) {
             f += data[M11] * ( data[M22] * data[M33] - data[M23] * data[M32] );
