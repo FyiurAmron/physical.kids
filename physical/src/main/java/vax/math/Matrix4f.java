@@ -460,42 +460,62 @@ public class Matrix4f extends VectorFloat {
     public static Matrix4f lookAt ( Vector3f pos, Vector3f vector3f, Vector3f vector3f0 ) {
         throw new UnsupportedOperationException( "Not yet implemented." );
     }
-    
+
+    public float det3x4 () {
+        return data[M11] * ( data[M22] * data[M33] - data[M23] * data[M32] )
+                + data[M12] * ( data[M23] * data[M31] - data[M21] * data[M33] )
+                + data[M13] * ( data[M21] * data[M32] - data[M22] * data[M31] );
+    }
+
+    public float det3x4 ( float delta ) {
+        float f = 0;
+        if ( Math.abs( data[M11] ) > delta ) {
+            f += data[M11] * ( data[M22] * data[M33] - data[M23] * data[M32] );
+        }
+        if ( Math.abs( data[M12] ) > delta ) {
+            f += data[M12] * ( data[M23] * data[M31] - data[M21] * data[M33] );
+        }
+        if ( Math.abs( data[M12] ) > delta ) {
+            f += data[M13] * ( data[M21] * data[M32] - data[M22] * data[M31] );
+        }
+        return f;
+    }
+
     public float determinant () {
         float f = data[M11]
-                * ((data[M22] * data[M33] * data[M44] + data[M23] * data[M34] * data[M42] + data[M24] * data[M32] * data[M43])
+                * ( ( data[M22] * data[M33] * data[M44] + data[M23] * data[M34] * data[M42] + data[M24] * data[M32] * data[M43] )
                 - data[M24] * data[M33] * data[M42]
                 - data[M22] * data[M34] * data[M43]
-                - data[M23] * data[M32] * data[M44]);
+                - data[M23] * data[M32] * data[M44] );
         f -= data[M12]
-                * ((data[M21] * data[M33] * data[M44] + data[M23] * data[M34] * data[M41] + data[M24] * data[M31] * data[M43])
+                * ( ( data[M21] * data[M33] * data[M44] + data[M23] * data[M34] * data[M41] + data[M24] * data[M31] * data[M43] )
                 - data[M24] * data[M33] * data[M41]
                 - data[M21] * data[M34] * data[M43]
-                - data[M23] * data[M31] * data[M44]);
+                - data[M23] * data[M31] * data[M44] );
         f += data[M13]
-                * ((data[M21] * data[M32] * data[M44] + data[M22] * data[M34] * data[M41] + data[M24] * data[M31] * data[M42])
+                * ( ( data[M21] * data[M32] * data[M44] + data[M22] * data[M34] * data[M41] + data[M24] * data[M31] * data[M42] )
                 - data[M24] * data[M32] * data[M41]
                 - data[M21] * data[M34] * data[M42]
-                - data[M22] * data[M31] * data[M44]);
+                - data[M22] * data[M31] * data[M44] );
         f -= data[M14]
-                * ((data[M21] * data[M32] * data[M43] + data[M22] * data[M33] * data[M41] + data[M23] * data[M31] * data[M42])
+                * ( ( data[M21] * data[M32] * data[M43] + data[M22] * data[M33] * data[M41] + data[M23] * data[M31] * data[M42] )
                 - data[M23] * data[M32] * data[M41]
                 - data[M21] * data[M33] * data[M42]
-                - data[M22] * data[M31] * data[M43]);
+                - data[M22] * data[M31] * data[M43] );
         return f;
     }
 
     public Matrix4f transpose () {
         float tmp;
-        
+
         tmp = data[M12];
         data[M12] = data[M21];
         data[M21] = tmp;
-        
+
         tmp = data[M13];
         data[M13] = data[M31];
         data[M31] = tmp;
-        
+
         tmp = data[M14];
         data[M14] = data[M41];
         data[M41] = tmp;
@@ -503,7 +523,7 @@ public class Matrix4f extends VectorFloat {
         tmp = data[M23];
         data[M23] = data[M32];
         data[M32] = tmp;
-        
+
         tmp = data[M24];
         data[M24] = data[M42];
         data[M42] = tmp;
@@ -516,9 +536,10 @@ public class Matrix4f extends VectorFloat {
     }
 
     public Matrix4f transpose ( Matrix4f source ) {
-        if ( !this.equals( source ) )
+        if ( !this.equals( source ) ) {
             this.set( source );
+        }
         return transpose();
     }
-   
+
 }
