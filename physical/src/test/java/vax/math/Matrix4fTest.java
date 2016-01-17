@@ -22,12 +22,16 @@ public class Matrix4fTest {
         if ( !m1.equals( m2, DELTA ) )
             throw new ComparisonFailure( "", m1.toString(), m2.toString() );
     }
+    
+    public static void assertEquals ( Matrix4f m1, Matrix4f m2, float epsilon ) {
+        if ( !m1.equals( m2, epsilon ) )
+            throw new ComparisonFailure( "", m1.toString(), m2.toString() );
+    }
 
     @Test
-    public void determinantTest () {
-        Matrix4f matrix1 = new Matrix4f();
-        matrix1.setToIdentity();
-        float det1 = matrix1.determinant();
+    public void detTest () {
+        Matrix4f matrix1 = new Matrix4f( true );
+        float det1 = matrix1.det();
         assertEquals( det1, 1.0f );
 
         float[] matrix2Vals = {
@@ -37,7 +41,7 @@ public class Matrix4fTest {
             4, -7, 9, 3
         };
         Matrix4f matrix2 = new Matrix4f( matrix2Vals );
-        float det2 = matrix2.determinant();
+        float det2 = matrix2.det();
         assertEquals( det2, 2960 );
 
         float[] matrix3Vals = {
@@ -47,7 +51,7 @@ public class Matrix4fTest {
             0, 2.3f, 0, 1
         };
         Matrix4f matrix3 = new Matrix4f( matrix3Vals );
-        float det3 = matrix3.determinant();
+        float det3 = matrix3.det();
         assertEquals( det3, 264.539964f );
     }
 
@@ -89,8 +93,33 @@ public class Matrix4fTest {
         Matrix4f matrix5 = new Matrix4f( matrix4 ).transpose();
         Matrix4f matrix6 = new Matrix4f();
 
-        matrix6.transpose( matrix4 );
+        matrix4.transpose( matrix6 );
         assertEquals( matrix6, matrix5 );
+    }
+
+    @Test
+    public void invertTest () {
+        Matrix4f identity = new Matrix4f( true );
+        Matrix4f invertedIdentity = new Matrix4f( true ).invert();
+        assertEquals( identity, invertedIdentity );
+
+        float[] matrixVals = {
+            4, 6, 0.874f, 0,
+            0, 42.223f, 0, -0.1f,
+            -34.4f, 0, 41, 2,
+            976.3345f, 1, 88.98f, 10
+        };
+        float[] matrixInvertedVals = {
+            0.100548f, -0.0146469f, -0.00322558f, 0.000498648f,
+            -0.0452761f, 0.0308433f, 0.000522623f, 0.000203908f,
+            0.994809f, -0.144705f, 0.0111746f, -0.00368197f,
+            -18.6642f, 2.71453f, 0.215441f, 0.0840571f
+        };
+        Matrix4f matrix1 = new Matrix4f( matrixVals );
+        Matrix4f matrix2 = new Matrix4f( matrixInvertedVals );
+        matrix1.invert();
+        assertEquals( matrix1, matrix2, 0.125f );
+
     }
 
 }
