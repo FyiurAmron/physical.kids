@@ -462,6 +462,11 @@ public class Matrix4f extends VectorFloat {
     }
 
     /**
+     Calculates the determinant of the upper 3x3 matrix.
+     <p>
+     Can be used to calculate det for rot-scale-trans matrices (e.g. OpenGL model/view matrices),
+     since their 4th (W) row is [0,0,0,1] by definition.
+
      @return the determinant of the upper 3x3 matrix.
      */
     public float det3x3 () {
@@ -471,52 +476,49 @@ public class Matrix4f extends VectorFloat {
     }
 
     /**
-     @param delta floating point delta for truncation of too small values
-     @return the determinant of the upper 3x3 matrix.
+     Forces the calculation of the full matrix without checking for any simplifying conditions.
+    <p>
+     Should be used if the matrix is guaranteed <b>not</b> to have any zeros in W row.
+
+     @return the determinant of this matrix
      */
-    public float det3x3 ( float delta ) {
-        float f = 0;
-        if ( Math.abs( data[M11] ) > delta ) {
-            f += data[M11] * ( data[M22] * data[M33] - data[M23] * data[M32] );
-        }
-        if ( Math.abs( data[M12] ) > delta ) {
-            f += data[M12] * ( data[M23] * data[M31] - data[M21] * data[M33] );
-        }
-        if ( Math.abs( data[M12] ) > delta ) {
-            f += data[M13] * ( data[M21] * data[M32] - data[M22] * data[M31] );
-        }
-        return f;
+    public float det4x4 () {
+        float //
+                ab = data[M33] * data[M42] - data[M32] * data[M43],
+                cd = data[M31] * data[M43] - data[M33] * data[M41],
+                ef = data[M32] * data[M41] - data[M31] * data[M42],
+                hg = data[M13] * data[M21] - data[M11] * data[M23],
+                ij = data[M13] * data[M22] - data[M12] * data[M23],
+                kl = data[M12] * data[M21] - data[M11] * data[M22];
+
+        return data[M14]
+                * ( data[M21] * ab
+                + data[M22] * cd
+                + data[M23] * ef )
+                - data[M24]
+                * ( data[M11] * ab
+                + data[M12] * cd
+                + data[M13] * ef )
+                + data[M34]
+                * ( data[M41] * ij
+                - data[M42] * hg
+                + data[M43] * kl )
+                - data[M44]
+                * ( data[M31] * ij
+                - data[M32] * hg
+                + data[M33] * kl );
     }
 
-    public float det () {
-        /* actual, unoptimized det() :
-         float
-         ab = data[M33] * data[M42] - data[M32] * data[M43],
-         cd = data[M31] * data[M43] - data[M33] * data[M41],
-         ef = data[M32] * data[M41] - data[M31] * data[M42],
-         hg = data[M13] * data[M21] - data[M11] * data[M23],
-         ij = data[M13] * data[M22] - data[M12] * data[M23],
-         kl = data[M12] * data[M21] - data[M11] * data[M22];
+    /**
+     Calculates the determinant using simplifying conditions for 0s in W row;
+     speeds up the calculations for e.g. perspective matrix, and other similar matrices.
+     <p>
+     Note: if this matrix is known to have a [0,0,0,1] in W row (e.g. model/view matrix), it's slightly better performance-wise
+     to simply call det3x3().
 
-         det =
-           data[M14] *
-         ( data[M21] * ab
-         + data[M22] * cd
-         + data[M23] * ef )
-         - data[M24] *
-         ( data[M11] * ab
-         + data[M12] * cd
-         + data[M13] * ef )
-         + data[M34] *
-         ( data[M41] * ij
-         - data[M42] * hg
-         + data[M43] * kl )
-         -= data[M44] *
-         ( data[M31] * ij
-         - data[M32] * hg
-         + data[M33] * kl )
-        ;
-         */
+     @return the determinant of this matrix
+     */
+    public float det () {
         float ab, cd, ef, hg, ij, kl, det;
         if ( data[M14] == 0 ) {
             if ( data[M24] == 0 ) {
@@ -539,13 +541,11 @@ public class Matrix4f extends VectorFloat {
             det = data[M14]
                     * ( data[M21] * ab
                     + data[M22] * cd
-                    + data[M23] * ef );
-            if ( data[M24] != 0 ) { // 2nd most common branch
-                det -= data[M24]
-                        * ( data[M11] * ab
-                        + data[M12] * cd
-                        + data[M13] * ef );
-            }
+                    + data[M23] * ef )
+                    - data[M24]
+                    * ( data[M11] * ab
+                    + data[M12] * cd
+                    + data[M13] * ef );
         }
         if ( data[M34] != 0 ) {
             hg = data[M13] * data[M21] - data[M11] * data[M23];
@@ -562,64 +562,6 @@ public class Matrix4f extends VectorFloat {
                         + data[M33] * kl );
             }
         } else if ( data[M44] != 0 ) {
-            hg = data[M13] * data[M21] - data[M11] * data[M23];
-            ij = data[M13] * data[M22] - data[M12] * data[M23];
-            kl = data[M12] * data[M21] - data[M11] * data[M22];
-            det -= data[M44]
-                    * ( data[M31] * ij
-                    - data[M32] * hg
-                    + data[M33] * kl );
-        } // else nada; both == 0
-        return det;
-    }
-
-    public float det ( float delta ) {
-        float ab, cd, ef, hg, ij, kl, det;
-        if ( Math.abs( data[M14] ) < delta ) {
-            if ( Math.abs( data[M24] ) < delta ) {
-                if ( Math.abs( data[M34] ) < delta && Math.abs( data[M44] - 1 ) < delta ) {
-                    return det3x3();
-                }
-                det = 0;
-            } else {
-                ab = data[M33] * data[M42] - data[M32] * data[M43];
-                cd = data[M31] * data[M43] - data[M33] * data[M41];
-                ef = data[M32] * data[M41] - data[M31] * data[M42];
-                det = -data[M24]
-                        * ( data[M11] * ab
-                        + data[M12] * cd
-                        + data[M13] * ef );
-            }
-        } else {
-            ab = data[M33] * data[M42] - data[M32] * data[M43];
-            cd = data[M31] * data[M43] - data[M33] * data[M41];
-            ef = data[M32] * data[M41] - data[M31] * data[M42];
-            det = data[M14]
-                    * ( data[M21] * ab
-                    + data[M22] * cd
-                    + data[M23] * ef );
-            if ( Math.abs( data[M24] ) >= delta ) {
-                det -= data[M24]
-                        * ( data[M11] * ab
-                        + data[M12] * cd
-                        + data[M13] * ef );
-            }
-        }
-        if ( Math.abs( data[M34] ) >= delta ) {
-            hg = data[M13] * data[M21] - data[M11] * data[M23];
-            ij = data[M13] * data[M22] - data[M12] * data[M23];
-            kl = data[M12] * data[M21] - data[M11] * data[M22];
-            det += data[M34]
-                    * ( data[M41] * ij
-                    - data[M42] * hg
-                    + data[M43] * kl );
-            if ( data[M44] != 0 ) {
-                det -= data[M44]
-                        * ( data[M31] * ij
-                        - data[M32] * hg
-                        + data[M33] * kl );
-            }
-        } else if ( Math.abs( data[M44] ) >= delta ) {
             hg = data[M13] * data[M21] - data[M11] * data[M23];
             ij = data[M13] * data[M22] - data[M12] * data[M23];
             kl = data[M12] * data[M21] - data[M11] * data[M22];
