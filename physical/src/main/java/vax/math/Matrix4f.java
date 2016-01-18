@@ -467,21 +467,23 @@ public class Matrix4f extends VectorFloat {
     /**
      Calculates the determinant of the upper 3x3 matrix.
      <p>
-     Can be used to calculate det for rot-scale-trans matrices (e.g. OpenGL model/view matrices),
-     since their 4th (W) row is [0,0,0,1] by definition.
+     Can be used to calculate det for rot-scale-trans matrices (e.g. OpenGL
+     model/view matrices), since their 4th (W) row is [0,0,0,1] by definition.
 
      @return the determinant of the upper 3x3 matrix.
      */
     public float det3x3 () {
-        return data[M11] * ( data[M22] * data[M33] - data[M23] * data[M32] )
-                + data[M12] * ( data[M23] * data[M31] - data[M21] * data[M33] )
-                + data[M13] * ( data[M21] * data[M32] - data[M22] * data[M31] );
+        return data[M11] * (data[M22] * data[M33] - data[M23] * data[M32])
+                + data[M12] * (data[M23] * data[M31] - data[M21] * data[M33])
+                + data[M13] * (data[M21] * data[M32] - data[M22] * data[M31]);
     }
 
     /**
-     Forces the calculation of the full matrix without checking for any simplifying conditions.
-    <p>
-     Should be used if the matrix is guaranteed <b>not</b> to have any zeros in W row.
+     Forces the calculation of the full matrix without checking for any
+     simplifying conditions.
+     <p>
+     Should be used if the matrix is guaranteed <b>not</b> to have any zeros in
+     W row.
 
      @return the determinant of this matrix
      */
@@ -495,29 +497,30 @@ public class Matrix4f extends VectorFloat {
                 kl = data[M12] * data[M21] - data[M11] * data[M22];
 
         return data[M14]
-                * ( data[M21] * ab
+                * (data[M21] * ab
                 + data[M22] * cd
-                + data[M23] * ef )
+                + data[M23] * ef)
                 - data[M24]
-                * ( data[M11] * ab
+                * (data[M11] * ab
                 + data[M12] * cd
-                + data[M13] * ef )
+                + data[M13] * ef)
                 + data[M34]
-                * ( data[M41] * ij
+                * (data[M41] * ij
                 - data[M42] * hg
-                + data[M43] * kl )
+                + data[M43] * kl)
                 - data[M44]
-                * ( data[M31] * ij
+                * (data[M31] * ij
                 - data[M32] * hg
-                + data[M33] * kl );
+                + data[M33] * kl);
     }
 
     /**
      Calculates the determinant using simplifying conditions for 0s in W row;
-     speeds up the calculations for e.g. perspective matrix, and other similar matrices.
+     speeds up the calculations for e.g. perspective matrix, and other similar
+     matrices.
      <p>
-     Note: if this matrix is known to have a [0,0,0,1] in W row (e.g. model/view matrix), it's slightly better performance-wise
-     to simply call det3x3().
+     Note: if this matrix is known to have a [0,0,0,1] in W row (e.g. model/view
+     matrix), it's slightly better performance-wise to simply call det3x3().
 
      @return the determinant of this matrix
      */
@@ -533,57 +536,56 @@ public class Matrix4f extends VectorFloat {
                 ab = data[M33] * data[M42] - data[M32] * data[M43];
                 cd = data[M31] * data[M43] - data[M33] * data[M41];
                 ef = data[M32] * data[M41] - data[M31] * data[M42];
-                det = -data[M24] * ( data[M11] * ab
+                det = -data[M24] * (data[M11] * ab
                         + data[M12] * cd
-                        + data[M13] * ef );
+                        + data[M13] * ef);
             }
         } else {
             ab = data[M33] * data[M42] - data[M32] * data[M43];
             cd = data[M31] * data[M43] - data[M33] * data[M41];
             ef = data[M32] * data[M41] - data[M31] * data[M42];
             det = data[M14]
-                    * ( data[M21] * ab
+                    * (data[M21] * ab
                     + data[M22] * cd
-                    + data[M23] * ef )
+                    + data[M23] * ef)
                     - data[M24]
-                    * ( data[M11] * ab
+                    * (data[M11] * ab
                     + data[M12] * cd
-                    + data[M13] * ef );
+                    + data[M13] * ef);
         }
         if ( data[M34] != 0 ) {
             hg = data[M13] * data[M21] - data[M11] * data[M23];
             ij = data[M13] * data[M22] - data[M12] * data[M23];
             kl = data[M12] * data[M21] - data[M11] * data[M22];
             det += data[M34]
-                    * ( data[M41] * ij
+                    * (data[M41] * ij
                     - data[M42] * hg
-                    + data[M43] * kl );
+                    + data[M43] * kl);
             if ( data[M44] != 0 ) { // 2nd most common branch cont.
                 det -= data[M44]
-                        * ( data[M31] * ij
+                        * (data[M31] * ij
                         - data[M32] * hg
-                        + data[M33] * kl );
+                        + data[M33] * kl);
             }
         } else if ( data[M44] != 0 ) {
             hg = data[M13] * data[M21] - data[M11] * data[M23];
             ij = data[M13] * data[M22] - data[M12] * data[M23];
             kl = data[M12] * data[M21] - data[M11] * data[M22];
             det -= data[M44]
-                    * ( data[M31] * ij
+                    * (data[M31] * ij
                     - data[M32] * hg
-                    + data[M33] * kl );
+                    + data[M33] * kl);
         } // else nada; both == 0
         return det;
     }
 
-    
     public Matrix4f transpose () {
         return transpose( this );
     }
 
     public Matrix4f transpose ( Matrix4f destination ) {
         float tmp;
-        
+
         destination.data[M11] = data[M11];
         destination.data[M22] = data[M22];
         destination.data[M33] = data[M33];
@@ -615,12 +617,24 @@ public class Matrix4f extends VectorFloat {
 
         return destination;
     }
-    
+
+    /**
+    Note: this method allocates a temporary helper float[16].
+    @return this matrix for chaining
+    */
     public Matrix4f invert () {
-        return invert( this );
+        float[] tmp = new float[16];
+        invert( data, tmp );
+        set( tmp );
+        return this;
     }
 
-    public Matrix4f invert ( Matrix4f destination ) {
+    public Matrix4f invert ( Matrix4f output ) {
+        invert( data, output.data );
+        return this;
+    }
+
+    public static float[] invert ( float[] data, float[] output ) {
         float a = data[M11] * data[M22] - data[M12] * data[M21];
         float b = data[M11] * data[M23] - data[M13] * data[M21];
         float c = data[M11] * data[M24] - data[M14] * data[M21];
@@ -633,28 +647,39 @@ public class Matrix4f extends VectorFloat {
         float j = data[M32] * data[M43] - data[M33] * data[M42];
         float k = data[M32] * data[M44] - data[M34] * data[M42];
         float l = data[M33] * data[M44] - data[M34] * data[M43];
+
         float det = a * l - b * k + c * j + d * i - e * h + f * g;
         det = 1.0f / det;
-        float[] de = destination.data;
-        de[0] = (  data[M22] * l - data[M23] * k + data[M24] * j ) * det;
-        de[1] = ( -data[M12] * l + data[M13] * k - data[M14] * j ) * det;
-        de[2] = (  data[M42] * f - data[M43] * e + data[M44] * d ) * det;
-        de[3] = ( -data[M32] * f + data[M33] * e - data[M34] * d ) * det;
-        de[4] = ( -data[M21] * l + data[M23] * i - data[M24] * h ) * det;
-        de[5] = (  data[M11] * l - data[M13] * i + data[M14] * h ) * det;
-        de[6] = ( -data[M41] * f + data[M43] * c - data[M44] * b ) * det;
-        de[7] = (  data[M31] * f - data[M33] * c + data[M34] * b ) * det;
-        de[8] = (  data[M21] * k - data[M22] * i + data[M24] * g ) * det;
-        de[9] = ( -data[M11] * k + data[M12] * i - data[M14] * g ) * det;
-        de[10] = (  data[M41] * e - data[M42] * c + data[M44] * a ) * det;
-        de[11] = ( -data[M31] * e + data[M32] * c - data[M34] * a ) * det;
-        de[12] = ( -data[M21] * j + data[M22] * h - data[M23] * g ) * det;
-        de[13] = (  data[M11] * j - data[M12] * h + data[M13] * g ) * det;
-        de[14] = ( -data[M41] * d + data[M42] * b - data[M43] * a ) * det;
-        de[15] = (  data[M31] * d - data[M32] * b + data[M33] * a ) * det;
-        return destination;
+        a *= det;
+        b *= det;
+        c *= det;
+        d *= det;
+        e *= det;
+        f *= det;
+        g *= det;
+        h *= det;
+        i *= det;
+        j *= det;
+        k *= det;
+        l *= det;
+
+        output[0] = data[M22] * l - data[M23] * k + data[M24] * j;
+        output[1] = -data[M12] * l + data[M13] * k - data[M14] * j;
+        output[2] = data[M42] * f - data[M43] * e + data[M44] * d;
+        output[3] = -data[M32] * f + data[M33] * e - data[M34] * d;
+        output[4] = -data[M21] * l + data[M23] * i - data[M24] * h;
+        output[5] = data[M11] * l - data[M13] * i + data[M14] * h;
+        output[6] = -data[M41] * f + data[M43] * c - data[M44] * b;
+        output[7] = data[M31] * f - data[M33] * c + data[M34] * b;
+        output[8] = data[M21] * k - data[M22] * i + data[M24] * g;
+        output[9] = -data[M11] * k + data[M12] * i - data[M14] * g;
+        output[10] = data[M41] * e - data[M42] * c + data[M44] * a;
+        output[11] = -data[M31] * e + data[M32] * c - data[M34] * a;
+        output[12] = -data[M21] * j + data[M22] * h - data[M23] * g;
+        output[13] = data[M11] * j - data[M12] * h + data[M13] * g;
+        output[14] = -data[M41] * d + data[M42] * b - data[M43] * a;
+        output[15] = data[M31] * d - data[M32] * b + data[M33] * a;
+        return output;
     }
-    
-    
 
 }
