@@ -635,23 +635,23 @@ public class Matrix4f extends VectorFloat {
         float l = data[M33] * data[M44] - data[M34] * data[M43];
         float det = a * l - b * k + c * j + d * i - e * h + f * g;
         det = 1.0f / det;
-        destination.set(
-                 (  data[M22] * l - data[M23] * k + data[M24] * j ) * det,
-                 ( -data[M12] * l + data[M13] * k - data[M14] * j ) * det,
-                 (  data[M42] * f - data[M43] * e + data[M44] * d ) * det,
-                 ( -data[M32] * f + data[M33] * e - data[M34] * d ) * det,
-                 ( -data[M21] * l + data[M23] * i - data[M24] * h ) * det,
-                 (  data[M11] * l - data[M13] * i + data[M14] * h ) * det,
-                 ( -data[M41] * f + data[M43] * c - data[M44] * b ) * det,
-                 (  data[M31] * f - data[M33] * c + data[M34] * b ) * det,
-                 (  data[M21] * k - data[M22] * i + data[M24] * g ) * det,
-                 ( -data[M11] * k + data[M12] * i - data[M14] * g ) * det,
-                 (  data[M41] * e - data[M42] * c + data[M44] * a ) * det,
-                 ( -data[M31] * e + data[M32] * c - data[M34] * a ) * det,
-                 ( -data[M21] * j + data[M22] * h - data[M23] * g ) * det,
-                 (  data[M11] * j - data[M12] * h + data[M13] * g ) * det,
-                 ( -data[M41] * d + data[M42] * b - data[M43] * a ) * det,
-                 (  data[M31] * d - data[M32] * b + data[M33] * a ) * det);
+        float[] de = destination.data;
+        de[0] = (  data[M22] * l - data[M23] * k + data[M24] * j ) * det;
+        de[1] = ( -data[M12] * l + data[M13] * k - data[M14] * j ) * det;
+        de[2] = (  data[M42] * f - data[M43] * e + data[M44] * d ) * det;
+        de[3] = ( -data[M32] * f + data[M33] * e - data[M34] * d ) * det;
+        de[4] = ( -data[M21] * l + data[M23] * i - data[M24] * h ) * det;
+        de[5] = (  data[M11] * l - data[M13] * i + data[M14] * h ) * det;
+        de[6] = ( -data[M41] * f + data[M43] * c - data[M44] * b ) * det;
+        de[7] = (  data[M31] * f - data[M33] * c + data[M34] * b ) * det;
+        de[8] = (  data[M21] * k - data[M22] * i + data[M24] * g ) * det;
+        de[9] = ( -data[M11] * k + data[M12] * i - data[M14] * g ) * det;
+        de[10] = (  data[M41] * e - data[M42] * c + data[M44] * a ) * det;
+        de[11] = ( -data[M31] * e + data[M32] * c - data[M34] * a ) * det;
+        de[12] = ( -data[M21] * j + data[M22] * h - data[M23] * g ) * det;
+        de[13] = (  data[M11] * j - data[M12] * h + data[M13] * g ) * det;
+        de[14] = ( -data[M41] * d + data[M42] * b - data[M43] * a ) * det;
+        de[15] = (  data[M31] * d - data[M32] * b + data[M33] * a ) * det;
         return destination;
     }
     
