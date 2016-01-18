@@ -62,7 +62,7 @@ public class Line3f {
      @param output
      @return output, for chaining
      */
-    public Line3f set ( Line3f output ) {
+    public Line3f get ( Line3f output ) {
         output.direction.set( direction );
         output.origin.set( origin );
         return output;
