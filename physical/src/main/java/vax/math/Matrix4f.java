@@ -682,5 +682,49 @@ public class Matrix4f extends VectorFloat {
         output[15] = data[M31] * d - data[M32] * b + data[M33] * a;
         return output;
     }
+    
+    public Matrix4f multiply ( Matrix4f matrix ) {
+        float a = data[M11] * matrix.data[M11] + data[M21] * matrix.data[M12] + data[M31] * matrix.data[M13] + data[M41] * matrix.data[M14];
+        float b = data[M12] * matrix.data[M11] + data[M22] * matrix.data[M12] + data[M32] * matrix.data[M13] + data[M42] * matrix.data[M14];
+        float c = data[M13] * matrix.data[M11] + data[M23] * matrix.data[M12] + data[M33] * matrix.data[M13] + data[M43] * matrix.data[M14];
+        float d = data[M14] * matrix.data[M11] + data[M24] * matrix.data[M12] + data[M34] * matrix.data[M13] + data[M44] * matrix.data[M14];
+        float e = data[M11] * matrix.data[M21] + data[M21] * matrix.data[M22] + data[M31] * matrix.data[M23] + data[M41] * matrix.data[M24];
+        float f = data[M12] * matrix.data[M21] + data[M22] * matrix.data[M22] + data[M32] * matrix.data[M23] + data[M42] * matrix.data[M24];
+        float g = data[M13] * matrix.data[M21] + data[M23] * matrix.data[M22] + data[M33] * matrix.data[M23] + data[M43] * matrix.data[M24];
+        float h = data[M14] * matrix.data[M21] + data[M24] * matrix.data[M22] + data[M34] * matrix.data[M23] + data[M44] * matrix.data[M24];
+        float i = data[M11] * matrix.data[M31] + data[M21] * matrix.data[M32] + data[M31] * matrix.data[M33] + data[M41] * matrix.data[M34];
+        float j = data[M12] * matrix.data[M31] + data[M22] * matrix.data[M32] + data[M32] * matrix.data[M33] + data[M42] * matrix.data[M34];
+        float k = data[M13] * matrix.data[M31] + data[M23] * matrix.data[M32] + data[M33] * matrix.data[M33] + data[M43] * matrix.data[M34];
+        float l = data[M14] * matrix.data[M31] + data[M24] * matrix.data[M32] + data[M34] * matrix.data[M33] + data[M44] * matrix.data[M34];
+        float m = data[M11] * matrix.data[M41] + data[M21] * matrix.data[M42] + data[M31] * matrix.data[M43] + data[M41] * matrix.data[M44];
+        float n = data[M12] * matrix.data[M41] + data[M22] * matrix.data[M42] + data[M32] * matrix.data[M43] + data[M42] * matrix.data[M44];
+        float o = data[M13] * matrix.data[M41] + data[M23] * matrix.data[M42] + data[M33] * matrix.data[M43] + data[M43] * matrix.data[M44];
+        float p = data[M14] * matrix.data[M41] + data[M24] * matrix.data[M42] + data[M34] * matrix.data[M43] + data[M44] * matrix.data[M44];
+        
+        data[M11] = a;
+        data[M12] = b;
+        data[M13] = c;
+        data[M14] = d;
+        
+        data[M21] = e;
+        data[M22] = f;
+        data[M23] = g;
+        data[M24] = h;
+        
+        data[M31] = i;
+        data[M32] = j;
+        data[M33] = k;
+        data[M34] = l;
+        
+        data[M41] = m;
+        data[M42] = n;
+        data[M43] = o;
+        data[M44] = p;
+        return this;
+    }
+    
+    public static Matrix4f multiply ( Matrix4f m1, Matrix4f m2 ) {
+        return m1.multiply( m2 );
+    }
 
 }
