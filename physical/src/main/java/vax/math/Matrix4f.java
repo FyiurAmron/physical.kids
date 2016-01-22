@@ -635,18 +635,19 @@ public class Matrix4f extends VectorFloat {
     }
 
     public static float[] invert ( float[] data, float[] output ) {
-        float a = data[M11] * data[M22] - data[M12] * data[M21];
-        float b = data[M11] * data[M23] - data[M13] * data[M21];
-        float c = data[M11] * data[M24] - data[M14] * data[M21];
-        float d = data[M12] * data[M23] - data[M13] * data[M22];
-        float e = data[M12] * data[M24] - data[M14] * data[M22];
-        float f = data[M13] * data[M24] - data[M14] * data[M23];
-        float g = data[M31] * data[M42] - data[M32] * data[M41];
-        float h = data[M31] * data[M43] - data[M33] * data[M41];
-        float i = data[M31] * data[M44] - data[M34] * data[M41];
-        float j = data[M32] * data[M43] - data[M33] * data[M42];
-        float k = data[M32] * data[M44] - data[M34] * data[M42];
-        float l = data[M33] * data[M44] - data[M34] * data[M43];
+        float //
+            a = data[M11] * data[M22] - data[M12] * data[M21],
+            b = data[M11] * data[M23] - data[M13] * data[M21],
+            c = data[M11] * data[M24] - data[M14] * data[M21],
+            d = data[M12] * data[M23] - data[M13] * data[M22],
+            e = data[M12] * data[M24] - data[M14] * data[M22],
+            f = data[M13] * data[M24] - data[M14] * data[M23],
+            g = data[M31] * data[M42] - data[M32] * data[M41],
+            h = data[M31] * data[M43] - data[M33] * data[M41],
+            i = data[M31] * data[M44] - data[M34] * data[M41],
+            j = data[M32] * data[M43] - data[M33] * data[M42],
+            k = data[M32] * data[M44] - data[M34] * data[M42],
+            l = data[M33] * data[M44] - data[M34] * data[M43];
 
         float det = a * l - b * k + c * j + d * i - e * h + f * g;
         det = 1.0f / det;
