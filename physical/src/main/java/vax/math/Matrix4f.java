@@ -726,5 +726,47 @@ public class Matrix4f extends VectorFloat {
     public static Matrix4f multiply ( Matrix4f m1, Matrix4f m2 ) {
         return m1.multiply( m2 );
     }
+    
+    public static float[] multiply( float[] m1, float[] m2 ) {
+        float a = m1[M11] * m2[M11] + m1[M21] * m2[M12] + m1[M31] * m2[M13] + m1[M41] * m2[M14];
+        float b = m1[M12] * m2[M11] + m1[M22] * m2[M12] + m1[M32] * m2[M13] + m1[M42] * m2[M14];
+        float c = m1[M13] * m2[M11] + m1[M23] * m2[M12] + m1[M33] * m2[M13] + m1[M43] * m2[M14];
+        float d = m1[M14] * m2[M11] + m1[M24] * m2[M12] + m1[M34] * m2[M13] + m1[M44] * m2[M14];
+        float e = m1[M11] * m2[M21] + m1[M21] * m2[M22] + m1[M31] * m2[M23] + m1[M41] * m2[M24];
+        float f = m1[M12] * m2[M21] + m1[M22] * m2[M22] + m1[M32] * m2[M23] + m1[M42] * m2[M24];
+        float g = m1[M13] * m2[M21] + m1[M23] * m2[M22] + m1[M33] * m2[M23] + m1[M43] * m2[M24];
+        float h = m1[M14] * m2[M21] + m1[M24] * m2[M22] + m1[M34] * m2[M23] + m1[M44] * m2[M24];
+        float i = m1[M11] * m2[M31] + m1[M21] * m2[M32] + m1[M31] * m2[M33] + m1[M41] * m2[M34];
+        float j = m1[M12] * m2[M31] + m1[M22] * m2[M32] + m1[M32] * m2[M33] + m1[M42] * m2[M34];
+        float k = m1[M13] * m2[M31] + m1[M23] * m2[M32] + m1[M33] * m2[M33] + m1[M43] * m2[M34];
+        float l = m1[M14] * m2[M31] + m1[M24] * m2[M32] + m1[M34] * m2[M33] + m1[M44] * m2[M34];
+        float m = m1[M11] * m2[M41] + m1[M21] * m2[M42] + m1[M31] * m2[M43] + m1[M41] * m2[M44];
+        float n = m1[M12] * m2[M41] + m1[M22] * m2[M42] + m1[M32] * m2[M43] + m1[M42] * m2[M44];
+        float o = m1[M13] * m2[M41] + m1[M23] * m2[M42] + m1[M33] * m2[M43] + m1[M43] * m2[M44];
+        float p = m1[M14] * m2[M41] + m1[M24] * m2[M42] + m1[M34] * m2[M43] + m1[M44] * m2[M44];
+        
+        m1[0] = a;
+        m1[1] = b;
+        m1[2] = c;
+        m1[3] = d;
+        
+        m1[4] = e;
+        m1[5] = f;
+        m1[6] = g;
+        m1[7] = h;
+        
+        m1[8] = i;
+        m1[9] = j;
+        m1[10] = k;
+        m1[11] = l;
+        
+        m1[12] = m;
+        m1[13] = n;
+        m1[14] = o;
+        m1[15] = p;
+        
+        return m1;
+        
+    }
 
 }

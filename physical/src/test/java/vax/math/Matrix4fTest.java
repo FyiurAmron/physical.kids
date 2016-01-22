@@ -1,5 +1,6 @@
 package vax.math;
 
+import java.util.Arrays;
 import static org.junit.Assert.*;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
@@ -26,6 +27,17 @@ public class Matrix4fTest {
     public static void assertEquals ( Matrix4f m1, Matrix4f m2, float epsilon ) {
         if ( !m1.equals( m2, epsilon ) )
             throw new ComparisonFailure( "", m1.toString(), m2.toString() );
+    }
+    
+    public static void assertEquals ( float[] m1, float[] m2, float epsilon ) {
+        if( m1.length != m2.length )
+            throw new ComparisonFailure( "", Arrays.toString( m1 ), Arrays.toString( m2 ) );
+        int len = m1.length;
+        for( int i = 0; i < len; i++ ) {
+            if ( Math.abs( m1[i] - m2[i] ) > epsilon )
+                throw new ComparisonFailure( "", Arrays.toString( m1 ), Arrays.toString( m2 ) );
+        }
+        
     }
 
     @Test
@@ -143,6 +155,16 @@ public class Matrix4fTest {
             6812.48577605f, -463.8424489999997f, 110496.546042f, 25322.849354850005f 
         };
         
+        float[] m1ValsCopy = new float[m1Vals.length];
+        float[] m2ValsCopy = new float[m2Vals.length];
+        float[] m3ValsCopy = new float[m3Vals.length];
+        System.arraycopy( m1Vals, 0, m1ValsCopy, 0, m1Vals.length );
+        System.arraycopy( m2Vals, 0, m2ValsCopy, 0, m2Vals.length );
+        System.arraycopy( m3Vals, 0, m3ValsCopy, 0, m3Vals.length );
+        
+        Matrix4f.multiply( m2ValsCopy, m1ValsCopy );
+        assertEquals( m2ValsCopy, m3ValsCopy, 0.01564f );
+        
         Matrix4f identity = new Matrix4f( true );
         Matrix4f m1 = new Matrix4f( m1Vals );
         Matrix4f m1Copy = new Matrix4f( m1 );
@@ -155,7 +177,8 @@ public class Matrix4fTest {
         assertEquals( Matrix4f.multiply(identity, m1 ), m1Copy );
         
         m2.multiply( m1 );
-        assertEquals( m2, m3, 0.01563f );
+        assertEquals( m2, m3, 0.01563f ); 
+        
     }
 
 }
