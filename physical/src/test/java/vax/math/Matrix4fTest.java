@@ -121,5 +121,41 @@ public class Matrix4fTest {
         assertEquals( matrix1, matrix2, 0.125f );
 
     }
+    
+    @Test
+    public void multiplyTest () {
+        float[] m1Vals = {
+            2.34f, 23.637f, 3.2119f, -536,
+            -76.23f, 4.9803f, -32.0001f, 0.11922f,
+            87.293f, 5, -0.0083f, 5.2394f,
+            2.1345f, 6.66f, 9.98f, 283.214f
+        };
+        float[] m2Vals = {
+            1.9909f, 842.594f, -3.42f, 2.7213f,
+            -88.8f, 87.3213f, 4.213f, 0.889f,
+            -223.41f, -313.34f, 732.1234f, 5374,
+            34, 1, 364.28f, -100
+        };
+        float[] m3Vals = {
+            -21035.877473f, 2493.2667820999995f, -192810.99297053998f, 70888.131735f,
+            6559.178874f, -53769.02379561001f, -23102.90394684f, -172183.47661230003f,
+            -90.21446329999995f, 73997.00466400001f, 1625.0549477799998f, -326.5487590999999f,
+            6812.48577605f, -463.8424489999997f, 110496.546042f, 25322.849354850005f 
+        };
+        
+        Matrix4f identity = new Matrix4f( true );
+        Matrix4f m1 = new Matrix4f( m1Vals );
+        Matrix4f m1Copy = new Matrix4f( m1 );
+        Matrix4f m2 = new Matrix4f( m2Vals );
+        Matrix4f m3 = new Matrix4f( m3Vals );
+        
+        m1.multiply( identity );
+        assertEquals( m1, m1Copy );
+        
+        assertEquals( Matrix4f.multiply(identity, m1 ), m1Copy );
+        
+        m2.multiply( m1 );
+        assertEquals( m2, m3, 0.01563f );
+    }
 
 }
