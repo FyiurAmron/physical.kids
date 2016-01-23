@@ -1,6 +1,5 @@
 package vax.math;
 
-import static org.junit.Assert.*;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
 
@@ -10,7 +9,7 @@ import org.junit.Test;
  */
 public class VectorFloatTest {
     public static final float DELTA = 1E-4f;
-    
+
     public static void assertEquals( VectorFloat v1, VectorFloat v2 ) {
         if ( !v1.equals( v2, DELTA ))
             throw new ComparisonFailure("", v1.toString(), v2.toString() );
