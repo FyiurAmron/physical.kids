@@ -20,24 +20,28 @@ public class Matrix4fTest {
     }
 
     public static void assertEquals ( Matrix4f m1, Matrix4f m2 ) {
-        if ( !m1.equals( m2, DELTA ) )
+        if ( !m1.equals( m2, DELTA ) ) {
             throw new ComparisonFailure( "", m1.toString(), m2.toString() );
+        }
     }
-    
+
     public static void assertEquals ( Matrix4f m1, Matrix4f m2, float epsilon ) {
-        if ( !m1.equals( m2, epsilon ) )
+        if ( !m1.equals( m2, epsilon ) ) {
             throw new ComparisonFailure( "", m1.toString(), m2.toString() );
+        }
     }
-    
+
     public static void assertEquals ( float[] m1, float[] m2, float epsilon ) {
-        if( m1.length != m2.length )
+        if ( m1.length != m2.length ) {
             throw new ComparisonFailure( "", Arrays.toString( m1 ), Arrays.toString( m2 ) );
+        }
         int len = m1.length;
         for( int i = 0; i < len; i++ ) {
-            if ( Math.abs( m1[i] - m2[i] ) > epsilon )
+            if ( Math.abs( m1[i] - m2[i] ) > epsilon ) {
                 throw new ComparisonFailure( "", Arrays.toString( m1 ), Arrays.toString( m2 ) );
+            }
         }
-        
+
     }
 
     @Test
@@ -133,7 +137,7 @@ public class Matrix4fTest {
         assertEquals( matrix1, matrix2, 0.125f );
 
     }
-    
+
     @Test
     public void multiplyTest () {
         float[] m1Vals = {
@@ -152,33 +156,33 @@ public class Matrix4fTest {
             -21035.877473f, 2493.2667820999995f, -192810.99297053998f, 70888.131735f,
             6559.178874f, -53769.02379561001f, -23102.90394684f, -172183.47661230003f,
             -90.21446329999995f, 73997.00466400001f, 1625.0549477799998f, -326.5487590999999f,
-            6812.48577605f, -463.8424489999997f, 110496.546042f, 25322.849354850005f 
+            6812.48577605f, -463.8424489999997f, 110496.546042f, 25322.849354850005f
         };
-        
+
         float[] m1ValsCopy = new float[m1Vals.length];
         float[] m2ValsCopy = new float[m2Vals.length];
         float[] m3ValsCopy = new float[m3Vals.length];
         System.arraycopy( m1Vals, 0, m1ValsCopy, 0, m1Vals.length );
         System.arraycopy( m2Vals, 0, m2ValsCopy, 0, m2Vals.length );
         System.arraycopy( m3Vals, 0, m3ValsCopy, 0, m3Vals.length );
-        
+
         Matrix4f.multiply( m2ValsCopy, m1ValsCopy );
         assertEquals( m2ValsCopy, m3ValsCopy, 0.01564f );
-        
+
         Matrix4f identity = new Matrix4f( true );
         Matrix4f m1 = new Matrix4f( m1Vals );
         Matrix4f m1Copy = new Matrix4f( m1 );
         Matrix4f m2 = new Matrix4f( m2Vals );
         Matrix4f m3 = new Matrix4f( m3Vals );
-        
+
         m1.multiply( identity );
         assertEquals( m1, m1Copy );
-        
-        assertEquals( Matrix4f.multiply(identity, m1 ), m1Copy );
-        
+
+        assertEquals( identity.multiply( m1 ), m1Copy );
+
         m2.multiply( m1 );
-        assertEquals( m2, m3, 0.01563f ); 
-        
+        assertEquals( m2, m3, 0.01563f );
+
     }
 
 }
