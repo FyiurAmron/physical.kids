@@ -4,6 +4,12 @@ public class Plane3f {
     public Vector3f normal;
     public float distanceToOrigin;
 
+    /**
+     No-arg intended for deserialization and deferred field setting.
+     <p>
+     Note: this constructor doesn't init <code>normal</code> field at all;
+     please use e.g. <code>setNormal(new Vector3f())</code> before calling #set() on this.
+     */
     public Plane3f () {
         //this( new Vector3f( /* 0, 1, 0 */), 0 );
     }
@@ -97,7 +103,7 @@ public class Plane3f {
     /*
      public Vector3f intersection ( Plane3f plane1, Plane3f plane2, Plane3f plane3 ) {
      // FIXME: cala alg. lin. (liczenie det itd) do Matrix4f etc. i won stad; alg. do poprawy!
-    // http://stackoverflow.com/a/32410473/719662 do lektury i implementacji
+     // http://stackoverflow.com/a/32410473/719662 do lektury i implementacji
      float x1= plane1.createNormal().getX();
      float y1 = plane1.createNormal().getY();
      float z1 = plane1.createNormal().getZ();
@@ -122,7 +128,8 @@ public class Plane3f {
      //return null;
      //}
      // a co, jak wartosci w macierzy beda rzedu 1E-6?? plus, co nam zasadniczo przeszkadza maly, ale wciaz niezerowy det?
-    // inna rzecz, ze dzieki IEEE mozemy przeciez pozwolic dosyc spokojnie nawet na det = 0! dostaniemy infy, ktore oznaczaja "no i-section"
+     // inna rzecz, ze dzieki IEEE mozemy przeciez pozwolic dosyc spokojnie nawet na det = 0! dostaniemy infy, ktore oznaczaja "no
+     i-section"
 
      float r = 1.0f / det;
      // od kiedy intersection czterech plane'ow to wektor?!
