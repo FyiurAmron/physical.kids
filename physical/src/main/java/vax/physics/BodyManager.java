@@ -14,9 +14,12 @@ public class BodyManager {
     private final Map<Body, HashSet<Body>> contactMap = new HashMap<>();
     private final ColliderDescriptor tmpDescriptor = new ColliderDescriptor( null, null );
 
+    private static boolean includeGravity = false;
+
     public BodyManager () {
         _addCollider( new SphereSphereCollider() );
         _addCollider( new SpherePlaneCollider() );
+        _addCollider( new SphereTriangleCollider() );
     }
 
     private void _addCollider ( Collider<?, ?> collider ) {
@@ -101,12 +104,13 @@ public class BodyManager {
         if ( deltaT < 0 ) {
             throw new IllegalArgumentException( "deltaT < 0" );
         }
-        //Console.WriteLine( "update; deltaT = " + deltaT );
 
         for( int i = bodies.size() - 1; i >= 0; i-- ) {
             Body body1 = bodies.get( i );
             if ( body1.mass != Float.POSITIVE_INFINITY ) {
-                body1.acceleration.add( gravity );
+                if ( includeGravity ) {
+                    body1.acceleration.add( gravity );
+                }
             }
 
             for( int j = i - 1; j >= 0; j-- ) {
@@ -123,7 +127,7 @@ public class BodyManager {
                     continue;
                 }
 
-                tmpDescriptor.set( c1, c2 );
+                tmpDescriptor.set( c2, c1 ); // FIXME (c2, c1) or (c1, c2)
                 collider = colliderMap.getOrDefault( tmpDescriptor, null );
                 if ( collider != null ) {
                     collide( collider, contact, body2, body1/*, i, j*/ );
