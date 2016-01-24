@@ -3,17 +3,15 @@ package vax.physics;
 import vax.math.Plane3f;
 import vax.math.Vector3f;
 
+import javax.sound.midi.Soundbank;
+
 /**
  Created by Kuba on 2016-01-16.
  */
 public abstract class PolygonBody extends Body {
     protected static int verticesCount;
     protected Vector3f[] vertices;
-    //    protected final Vector3f //
-//            point1 = new Vector3f(),
-//            point2 = new Vector3f(),
-//            point3 = new Vector3f();
-    protected Plane3f plane = new Plane3f();
+    protected Plane3f plane = new Plane3f(new Vector3f( ), 0f );
 
 
     /**
@@ -28,8 +26,16 @@ public abstract class PolygonBody extends Body {
      @param vArray
      */
     public PolygonBody ( Vector3f[] vArray ) {
-        vertices = new Vector3f[verticesCount];
+        super();
+        initializeVerticesArray();
         _setPoints( vArray );
+    }
+
+    private void initializeVerticesArray () {
+        vertices = new Vector3f[verticesCount];
+        for (Vector3f v : vertices) {
+            v = new Vector3f();
+        }
     }
 
     /**
@@ -64,13 +70,18 @@ public abstract class PolygonBody extends Body {
     }
 
     protected void _setPoints ( Vector3f[] vArray ) {
+
         if ( vArray.length != vertices.length ) {
             throw new IllegalStateException();
         }
-
         for( int i = 0; i < vArray.length; i++ ) {
+            if (vertices[i] == null) {
+                vertices[i] = new Vector3f();
+            }
             vertices[i].set( vArray[i] );
         }
+
+        plane.set( vertices[0], vertices[1], vertices[2] );
     }
 
     /**
