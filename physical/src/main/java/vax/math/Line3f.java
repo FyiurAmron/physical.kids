@@ -68,9 +68,20 @@ public class Line3f {
         return output;
     }
 
-    //    http://mathworld.wolfram.com/Point-LineDistance3-Dimensional.html
+    /**
+     @param point
+     @return
+     */
     public float calcDistance ( Vector3f point ) {
-        throw new UnsupportedOperationException( "not yet implemented" );
+        return FloatUtils.sqrt( calcDistanceSq( point ) );
+    }
+
+    public float calcDistanceSq ( Vector3f point ) {
+        point.subtract( origin );
+        float dot = direction.dot( point );
+        float dist = point.calcLengthSq() - dot * dot / direction.calcLengthSq();
+        point.add( origin );
+        return dist;
     }
 
 //    http://mathworld.wolfram.com/Line-LineDistance.html
