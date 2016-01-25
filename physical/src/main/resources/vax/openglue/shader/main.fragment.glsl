@@ -39,7 +39,7 @@ void main() {
     //if ( nl > 0 ) {
         vec3 viewDir = normalize(vec3(-viewMatrix[3] - modelMatrix * vec4(raw_Position,1)));
         diffuseColor = vec4( lightColor * clamp( nl, 0.0, 1.0 ) );
-        specularColor = 0.5 * clamp( vec4(pow(max(0.0, dot(reflect(lightDirUnit, normal), viewDir)), shininess)), 0.0, 1.0 );
+        specularColor = 0.5 * clamp( vec4(pow(max(0.0, dot(reflect(-lightDirUnit, normal), viewDir)), shininess)), 0.0, 1.0 );
 /*
     } else {
         diffuseColor = vec4( 0,0,0,1 );
