@@ -53,6 +53,8 @@ public class SceneManager implements EventListenerGL {
     private Material framebufferMaterial;
     private final WindowGLUE.Settings initialSettings;
     private final BodyManager bodyManager = new BodyManager();
+    
+    private Vector3f cameraPos;
 
     public SceneManager ( WindowGLUE.Settings initialSettings ) {
         this.initialSettings = initialSettings;
@@ -132,7 +134,7 @@ public class SceneManager implements EventListenerGL {
         trans.setValue( -1, 2 );
         trans.setValue( -1, 5 );
         trans.setValue( -1, 8 );
-        trans.setValue( -1, 15 );
+        trans.setValue( 1, 15 );
         worldMeshes[1].getTransform().setTranslation( -shiftX, shiftY, 0 );
         worldMeshes[2].getTransform().setTranslation( 0, boxY, 0 );
         worldMeshes[3].getTransform().setTranslation( 0, 0, 0 );
@@ -190,10 +192,9 @@ public class SceneManager implements EventListenerGL {
         viewMatrix.setToIdentity();
         //modelviewMatrix.scaleZ( -1f );
         //modelviewMatrix.scaleY( -1f );
-        viewMatrix.setTranslationZ( -40f );
-        viewMatrix.setTranslationY( -10f );
-        viewMatrix.setTranslationX( -20f );
-
+        cameraPos = new Vector3f( -20f, -10f, -40f );
+        viewMatrix.setTranslation( cameraPos );
+        
         //backgroundColor.set( 0.01f, 0.01f, 0.01f, 0.01f );
         backgroundColor.set( 0.1f, 0.1f, 0.1f, 0.1f );
         ambientColor.set( 0.4f, 0.4f, 0.4f, 1.0f );
@@ -254,6 +255,7 @@ public class SceneManager implements EventListenerGL {
         };
         for( PlaneBody pb : planeBodies ) {
             pb.setFriction( 0.1f );
+            pb.setRestitution( 0.8f );
             bodyManager.addBody( pb );
         }
         bodyManager.addBody( squirrelBody, squirrelMesh );
