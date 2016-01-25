@@ -460,8 +460,81 @@ public class Matrix4f extends VectorFloat {
         return this;
     }
 
-    public static Matrix4f lookAt ( Vector3f pos, Vector3f vector3f, Vector3f vector3f0 ) {
-        throw new UnsupportedOperationException( "Not yet implemented." );
+    public Matrix4f lookAt ( Vector3f eye, Vector3f center, Vector3f pos ) {
+        // Compute direction from position to lookAt
+        float dirX, dirY, dirZ;
+        dirX = center.getX() - eye.getX();
+        dirY = center.getY() - eye.getY();
+        dirZ = center.getZ() - eye.getZ();
+        // Normalize direction
+        float invDirLength = 1.0f / (float) Math.sqrt(
+                  (eye.getX() - center.getX()) * (eye.getX() - center.getX())
+                + (eye.getY() - center.getY()) * (eye.getY() - center.getY())
+                + (eye.getZ() - center.getZ()) * (eye.getZ() - center.getZ()));
+        dirX *= invDirLength;
+        dirY *= invDirLength;
+        dirZ *= invDirLength;
+        // right = direction x up
+        float rightX, rightY, rightZ;
+        rightX = dirY * pos.getZ() - dirZ * pos.getY();
+        rightY = dirZ * pos.getX() - dirX * pos.getZ();
+        rightZ = dirX * pos.getY() - dirY * pos.getX();
+        // normalize right
+        float invRightLength = 1.0f / (float) Math.sqrt(rightX * rightX + rightY * rightY + rightZ * rightZ);
+        rightX *= invRightLength;
+        rightY *= invRightLength;
+        rightZ *= invRightLength;
+        // up = right x direction
+        float upnX = rightY * dirZ - rightZ * dirY;
+        float upnY = rightZ * dirX - rightX * dirZ;
+        float upnZ = rightX * dirY - rightY * dirX;
+
+        // calculate right matrix elements
+        float rm00 = rightX;
+        float rm01 = upnX;
+        float rm02 = -dirX;
+        float rm10 = rightY;
+        float rm11 = upnY;
+        float rm12 = -dirY;
+        float rm20 = rightZ;
+        float rm21 = upnZ;
+        float rm22 = -dirZ;
+        float rm30 = -rightX * eye.getX() - rightY * eye.getY() - rightZ * eye.getZ();
+        float rm31 = -upnX * eye.getX() - upnY * eye.getY() - upnZ * eye.getZ();
+        float rm32 = dirX * eye.getX() + dirY * eye.getY() + dirZ * eye.getZ();
+
+        // perform optimized matrix multiplication
+        // compute last column first, because others do not depend on it
+        
+        data[M41] = data[M11] * rm30 + data[M21] * rm31 + data[M31] * rm32 + data[M41];
+        data[M42] = data[M12] * rm30 + data[M22] * rm31 + data[M32] * rm32 + data[M42];
+        data[M43] = data[M13] * rm30 + data[M23] * rm31 + data[M33] * rm32 + data[M43];
+        data[M44] = data[M14] * rm30 + data[M24] * rm31 + data[M34] * rm32 + data[M44];
+        // introduce temporaries for dependent results
+        float nm00 = data[M11] * rm00 + data[M21] * rm01 + data[M31] * rm02;
+        float nm01 = data[M12] * rm00 + data[M22] * rm01 + data[M32] * rm02;
+        float nm02 = data[M13] * rm00 + data[M23] * rm01 + data[M33] * rm02;
+        float nm03 = data[M14] * rm00 + data[M24] * rm01 + data[M34] * rm02;
+        float nm10 = data[M11] * rm10 + data[M21] * rm11 + data[M31] * rm12;
+        float nm11 = data[M12] * rm10 + data[M22] * rm11 + data[M32] * rm12;
+        float nm12 = data[M13] * rm10 + data[M23] * rm11 + data[M33] * rm12;
+        float nm13 = data[M14] * rm10 + data[M24] * rm11 + data[M34] * rm12;
+        data[M31] = data[M11] * rm20 + data[M21] * rm21 + data[M31] * rm22;
+        data[M32] = data[M12] * rm20 + data[M22] * rm21 + data[M32] * rm22;
+        data[M33] = data[M13] * rm20 + data[M23] * rm21 + data[M33] * rm22;
+        data[M34] = data[M14] * rm20 + data[M24] * rm21 + data[M34] * rm22;
+        // set the rest of the matrix elements
+        data[M11] = nm00;
+        data[M12] = nm01;
+        data[M13] = nm02;
+        data[M14] = nm03;
+        data[M21] = nm10;
+        data[M22] = nm11;
+        data[M23] = nm12;
+        data[M24] = nm13;
+
+        return this;
+    
     }
 
     /**
