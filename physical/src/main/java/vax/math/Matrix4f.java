@@ -460,7 +460,7 @@ public class Matrix4f extends VectorFloat {
         return this;
     }
 
-    public Matrix4f lookAt ( Vector3f eye, Vector3f center, Vector3f pos ) {
+    public Matrix4f lookAt ( Vector3f eye, Vector3f center, Vector3f up ) {
         // Compute direction from position to lookAt
         float dirX, dirY, dirZ;
         dirX = center.getX() - eye.getX();
@@ -476,9 +476,9 @@ public class Matrix4f extends VectorFloat {
         dirZ *= invDirLength;
         // right = direction x up
         float rightX, rightY, rightZ;
-        rightX = dirY * pos.getZ() - dirZ * pos.getY();
-        rightY = dirZ * pos.getX() - dirX * pos.getZ();
-        rightZ = dirX * pos.getY() - dirY * pos.getX();
+        rightX = dirY * up.getZ() - dirZ * up.getY();
+        rightY = dirZ * up.getX() - dirX * up.getZ();
+        rightZ = dirX * up.getY() - dirY * up.getX();
         // normalize right
         float invRightLength = 1.0f / (float) Math.sqrt(rightX * rightX + rightY * rightY + rightZ * rightZ);
         rightX *= invRightLength;
