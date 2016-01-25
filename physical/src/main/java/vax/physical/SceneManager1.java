@@ -8,19 +8,14 @@ import vax.openglue.*;
 import vax.openglue.constants.ClearBufferMask;
 import vax.openglue.mesh.*;
 import vax.physical.resource.Resource;
-import vax.physics.BodyManager;
-import vax.physics.PlaneBody;
-import vax.physics.SphereBody;
 
 /**
 
  @author toor
  */
-public class SceneManager implements EventListenerGL {
+public class SceneManager1 implements EventListenerGL {
     private final ArrayList<Mesh> meshes = new ArrayList<>();
     private final ArrayList<Texture> textures = new ArrayList<>();
-
-    private final static float BALL_RADIUS = 1.0f, JUMP_HEIGHT = 10f, MIN_RADIUS = 10f, BASE_VIEW_HEIGHT = 10f, WORLD_MOVE_FRAME_DELTA = 0.5f;
 
     private final boolean debug = false;
 
@@ -41,7 +36,6 @@ public class SceneManager implements EventListenerGL {
             viewMatrix = new Matrix4f(),
             modelMatrix = new Matrix4f( true );
     private final Vector2i viewportSize = new Vector2i(), mousePos = new Vector2i();
-    private SphereBody squirrelBody, turtleBody, dilloBody;
 
     private final DebugGLUE debugGLUE = new DebugGLUE();
 
@@ -52,9 +46,8 @@ public class SceneManager implements EventListenerGL {
     private Framebuffer framebuffer;
     private Material framebufferMaterial;
     private final WindowGLUE.Settings initialSettings;
-    private final BodyManager bodyManager = new BodyManager();
 
-    public SceneManager ( WindowGLUE.Settings initialSettings ) {
+    public SceneManager1 ( WindowGLUE.Settings initialSettings ) {
         this.initialSettings = initialSettings;
         viewportSize.set( initialSettings.windowSize );
     }
@@ -71,110 +64,95 @@ public class SceneManager implements EventListenerGL {
 
         CameraDistanceSorter cds = new CameraDistanceSorter( viewMatrix );
         mainMeshBatch = new MeshBatch( "main", cds );
-        //noiseMeshBatch = new MeshBatch( "noise", cds );
-        //overlayMeshBatch = new MeshBatch( "overlay", cds );
+        noiseMeshBatch = new MeshBatch( "noise", cds );
+        overlayMeshBatch = new MeshBatch( "overlay", cds );
 
         TextureData<?> dilloTD = imageGlue.readTextureData( "angry-armadillo.png", Resource.class );
-        TextureData<?> squirrelTD = imageGlue.readTextureData( "angry-squirrel.png", Resource.class );
-        TextureData<?> turtleTD = imageGlue.readTextureData( "angry-turtle.png", Resource.class );
-        //TextureData<?> leftInterfaceTD = imageGlue.readTextureData( "interface.png", Resource.class );
-        TextureData<?> grassTD = imageGlue.readTextureData( "grass.png", Resource.class );
-        TextureData<?> drzewka1TD = imageGlue.readTextureData( "drzewka-1.png", Resource.class );
-        TextureData<?> drzewka2TD = imageGlue.readTextureData( "drzewka-2.png", Resource.class );
-        TextureData<?> drzewka3TD = imageGlue.readTextureData( "drzewka-3.png", Resource.class );
-        TextureData<?> drzewka4TD = imageGlue.readTextureData( "drzewka-4.png", Resource.class );
-        TextureData<?> skyTD = imageGlue.readTextureData( "sky.png", Resource.class );
+        TextureData<?> leftInterfaceTD = imageGlue.readTextureData( "interface.png", Resource.class );
 
-        Texture dilloTex = new Texture( dilloTD, TextureParameters.TRILINEAR_CLAMP, debug );
-        Texture squirrelTex = new Texture( squirrelTD, TextureParameters.TRILINEAR_CLAMP, debug );
-        Texture turtleTex = new Texture( turtleTD, TextureParameters.TRILINEAR_CLAMP, debug );
 
-        Texture grassTex = new Texture( grassTD, TextureParameters.TRILINEAR_CLAMP, debug );
-        Texture drzewka1Tex = new Texture( drzewka1TD, TextureParameters.TRILINEAR_CLAMP, debug );
-        Texture drzewka2Tex = new Texture( drzewka2TD, TextureParameters.TRILINEAR_CLAMP, debug );
-        Texture drzewka3Tex = new Texture( drzewka3TD, TextureParameters.TRILINEAR_CLAMP, debug );
-        Texture drzewka4Tex = new Texture( drzewka4TD, TextureParameters.TRILINEAR_CLAMP, debug );
-        Texture skyTex = new Texture( skyTD, TextureParameters.TRILINEAR_CLAMP, debug );
-
-        Texture[] worldTextures = new Texture[]{
-            drzewka1Tex,
-            drzewka3Tex,
-            skyTex,
-            grassTex,
-            drzewka2Tex,
-            drzewka4Tex, };
-
-        float boxX = 100, boxY = 50, boxZ = 100, shiftX = 0.5f * boxX, shiftY = 0.5f * boxY, shiftZ = 0.5f * boxZ;
-        RectangleMesh[] worldMeshes = new RectangleMesh[]{
-            new RectangleMesh( Vector3f.OZ, boxX, boxY ),
-            new RectangleMesh( Vector3f.OZ, boxX, -boxY ),
-            new RectangleMesh( Vector3f.OY, boxX, boxZ ),
-            new RectangleMesh( Vector3f.OY, -boxX, boxZ ),
-            new RectangleMesh( Vector3f.OZ, -boxX, boxY ),
-            new RectangleMesh( Vector3f.OZ, boxX, boxY )
-        };
-
-        for( int i = worldMeshes.length - 1; i >= 0; i-- ) {
-            Mesh m = worldMeshes[i];
-            m.setMaterial( new Material( worldTextures[i] ) );
-            meshes.add( m );
-        }
-        Matrix4f trans;
-        trans = worldMeshes[0].getTransform();
-        trans.setToZero();
-        trans.setValue( 1, 2 );
-        trans.setValue( 1, 5 );
-        trans.setValue( 1, 8 );
-        trans.setValue( 1, 15 );
-        trans.setTranslation( shiftX, shiftY, 0 );
-        trans = worldMeshes[1].getTransform();
-        trans.setToZero();
-        trans.setValue( -1, 2 );
-        trans.setValue( -1, 5 );
-        trans.setValue( -1, 8 );
-        trans.setValue( -1, 15 );
-        worldMeshes[1].getTransform().setTranslation( -shiftX, shiftY, 0 );
-        worldMeshes[2].getTransform().setTranslation( 0, boxY, 0 );
-        worldMeshes[3].getTransform().setTranslation( 0, 0, 0 );
-        worldMeshes[4].getTransform().setTranslation( 0, shiftY, shiftZ );
-        worldMeshes[5].getTransform().setTranslation( 0, shiftY, -shiftZ );
-        Mesh squirrelMesh, turtleMesh, dilloMesh;
-
-        squirrelMesh = new SphereMesh( BALL_RADIUS, 20, 20, true );
-        squirrelMesh.setMaterial( new Material( squirrelTex ) );
-        meshes.add( squirrelMesh );
-
-        turtleMesh = new SphereMesh( BALL_RADIUS * 5, 10, 10, true );
-        turtleMesh.setMaterial( new Material( turtleTex ) );
-        meshes.add( turtleMesh );
-        dilloMesh = new SphereMesh( BALL_RADIUS * 2, 20, 20, true );
-        dilloMesh.setMaterial( new Material( dilloTex ) );
-        meshes.add( dilloMesh );
+        /* SphereMesh */ ball = new SphereMesh( /* 0.1f */ 0.3f, 40, 40, true );
+        ///* SphereMesh */ ball = new PrismMesh( new float[]{ 0, 0, 0 }, new float[]{ -0.5f, 0, -0.5f }, new float[]{ 0.5f, 0, -0.5f }, 0.3f );
+        RectangleMesh leftInterface = new RectangleMesh( -1f, -2f, RectangleMesh.RECT_VT_PROTO_2 );
+        RectangleMesh rightInterface = new RectangleMesh( -1f, -2f, RectangleMesh.RECT_VT_PROTO_2 );
+        leftInterface.getTransform().setTranslationX( -0.5f );
+        leftInterface.getTransform().setTranslationY( 1f );
+        //rightInterface.getTransform().setTranslationX( -0.5f );
+        //rightInterface.getTransform().setTranslationY( 1f );
+        //rightInterface.getTransform().setTranslationZ( -1f );
 
         RectangleMesh overlay = new RectangleMesh( -2f, -2f, RectangleMesh.RECT_VT_PROTO_2 );
         //overlay.getTransform().setTranslationX( -2f );
         overlay.getTransform().setTranslationY( 1f );
 
-        Texture[] ts = new Texture[]{
-            dilloTex, turtleTex, squirrelTex, skyTex, grassTex, drzewka1Tex, drzewka2Tex, drzewka3Tex, drzewka4Tex
-        };
 
-        for( Texture tex : ts ) {
+        //RectangleMesh leftInterface = new RectangleMesh( 2, 2, 2 );
+
+        /* Texture */ dilloTex = new Texture( dilloTD, TextureParameters.TRILINEAR_ANISO_CLAMP, true );
+        Texture //
+                interfaceLeftTex = new Texture( leftInterfaceTD, TextureParameters.TRILINEAR_ANISO_CLAMP, true );
+        dilloMaterial = new Material( dilloTex );
+        ball.setMaterial( dilloMaterial );
+        Material ilt = new Material( interfaceLeftTex );
+        leftInterface.setMaterial( ilt );
+        //rightInterface.setMaterial( new Material( interfaceLeftTex ) );
+        rightInterface.setMaterial( ilt );
+
+        textures.add( dilloTex );
+        textures.add( interfaceLeftTex );
+
+        for( Texture tex : textures ) {
             tex.init( gl );
         }
 
-        for( Mesh m : meshes ) {
-            mainMeshBatch.getNonAlphaBlendedMeshes().add( m );
-            m.setUpdateAction( (Mesh target) -> {
-                Matrix4f trans1 = target.getTransform();
+        ball.setUpdateAction( (Mesh target) -> {
+            Matrix4f trans = target.getTransform();
 
-                Material mat = target.getMaterial();
-                if ( mat != null ) {
-                    shininess.setValue( mat.shininess );
-                }
-                modelMatrix.set( trans1 );
-            } );
-        }
+             float t = getTime();
+             trans.setTranslationZ( (float) Math.sin( t ) );
+             //trans.setTranslationZ( -1.5f + (float) Math.cos( t ) );
+
+
+            Material mat = target.getMaterial();
+            if ( mat != null ) {
+                shininess.setValue( mat.shininess );
+            }
+            modelMatrix.set( trans );
+        } );
+
+        leftInterface.setUpdateAction( (Mesh target) -> {
+            Material mat = target.getMaterial();
+            if ( mat != null ) {
+                shininess.setValue( mat.shininess );
+            }
+            modelMatrix.set( target.getTransform() );
+        } );
+
+        rightInterface.setUpdateAction( (Mesh target) -> {
+            Material mat = target.getMaterial();
+            if ( mat != null ) {
+                shininess.setValue( mat.shininess );
+            }
+            modelMatrix.set( target.getTransform() );
+        } );
+
+        overlay.setUpdateAction( (Mesh target) -> {
+            Material mat = target.getMaterial();
+            if ( mat != null ) {
+                shininess.setValue( mat.shininess );
+            }
+            modelMatrix.set( target.getTransform() );
+        } );
+
+        meshes.add( ball );
+        meshes.add( leftInterface );
+        meshes.add( rightInterface );
+        mainMeshBatch.getNonAlphaBlendedMeshes().add( ball );
+        mainMeshBatch.getAlphaBlendedMeshes().add( leftInterface );
+        mainMeshBatch.getAlphaBlendedMeshes().add( rightInterface );
+        //mainMeshBatch.getNonAlphaBlendedMeshes().add( leftInterface );
+        noiseMeshBatch.getAlphaBlendedMeshes().add( overlay );
+        overlayMeshBatch.getAlphaBlendedMeshes().add( overlay );
 
         float aspectRatio = initialSettings.getAspectRatio();
         //gl.glPolygonMode( OpenGLUE.Constants.GL_FRONT_AND_BACK, OpenGLUE.Constants.GL_LINE ); // DEBUG
@@ -183,16 +161,14 @@ public class SceneManager implements EventListenerGL {
         gl.glEnable( OpenGLUE.Constants.GL_DEPTH_TEST );
         //gl.glEnable( GL.GL_BLEND ); // per-mesh now
         gl.glBlendFunc( OpenGLUE.Constants.GL_SRC_ALPHA, OpenGLUE.Constants.GL_ONE_MINUS_SRC_ALPHA );
-        projectionMatrix.setToPerspective( 0.1f, 1000f, 67, aspectRatio );
+        //projectionMatrix.setToPerspective( 0.1f, 100f, 67, aspectRatio );
         float halfSizeX = 1f, halfSizeY = 1f, sizeX = 2 * halfSizeX, sizeY = 2 * halfSizeY;
-        //projectionMatrix.setToOrthoWindow( -halfSizeX, -halfSizeY, sizeX, sizeY, -10, 10 );
+        projectionMatrix.setToOrthoWindow( -halfSizeX, -halfSizeY, sizeX, sizeY, -10, 10 );
         //projectionMatrix.setToIdentity();
         viewMatrix.setToIdentity();
         //modelviewMatrix.scaleZ( -1f );
         //modelviewMatrix.scaleY( -1f );
-        viewMatrix.setTranslationZ( -40f );
-        viewMatrix.setTranslationY( -10f );
-        viewMatrix.setTranslationX( -20f );
+        viewMatrix.setTranslationZ( 3f );
 
         //backgroundColor.set( 0.01f, 0.01f, 0.01f, 0.01f );
         backgroundColor.set( 0.1f, 0.1f, 0.1f, 0.1f );
@@ -221,45 +197,34 @@ public class SceneManager implements EventListenerGL {
         };
 
         HashSet<Uniform> //
-                mainUniSet = mainMeshBatch.getPerRenderUniforms();
+                mainUniSet = mainMeshBatch.getPerRenderUniforms(),
+                noiseUniSet = noiseMeshBatch.getPerRenderUniforms(),
+                overlayUniSet = overlayMeshBatch.getPerRenderUniforms();
         for( Uniform u : perRenderUniforms ) {
             mainUniSet.add( u );
+            noiseUniSet.add( u );
+            overlayUniSet.add( u );
         }
-
-        squirrelBody = new SphereBody( 1, BALL_RADIUS );
-        squirrelBody.getTransform().setTranslation( 40, 40, 40 );
-        /* SphereBody */
-        turtleBody = new SphereBody( 25, BALL_RADIUS * 5 );
-        turtleBody.getTransform().setTranslation( 0, 20, 0 );
-        //turtleBody.Velocity.Y = 5;
-        /* SphereBody */
-        dilloBody = new SphereBody( 25, BALL_RADIUS * 2 );
-        //dilloBody.Transform.setTranslation( -20, 100, -30 );
-        dilloBody.getTransform().setTranslation( 0, 30, 0 );
-        //dilloBody.Velocity.Y = -5;
-        Vector3f fixPoint = new Vector3f( 0, 42, 9 );
 
         mainUniSet = mainMeshBatch.getPerMeshUniforms();
+        noiseUniSet = noiseMeshBatch.getPerMeshUniforms();
+        overlayUniSet = overlayMeshBatch.getPerMeshUniforms();
         for( Uniform u : perMeshUniforms ) {
             mainUniSet.add( u );
+            noiseUniSet.add( u );
+            overlayUniSet.add( u );
         }
 
-        PlaneBody[] planeBodies = new PlaneBody[]{
-            new PlaneBody( new Plane3f( new Vector3f( 0, 1, 0 ), 0 ) ),
-            new PlaneBody( new Plane3f( new Vector3f( 0, -1, 0 ), boxY ) ),
-            new PlaneBody( new Plane3f( new Vector3f( 1, 0, 0 ), shiftX ) ),
-            new PlaneBody( new Plane3f( new Vector3f( -1, 0, 0 ), shiftX ) ),
-            new PlaneBody( new Plane3f( new Vector3f( 0, 0, 1 ), shiftZ ) ),
-            new PlaneBody( new Plane3f( new Vector3f( 0, 0, -1 ), shiftZ ) )
-        };
-        for( PlaneBody pb : planeBodies ) {
-            pb.setFriction( 0.1f );
-            bodyManager.addBody( pb );
-        }
-        bodyManager.addBody( squirrelBody, squirrelMesh );
-        bodyManager.addBody( turtleBody, turtleMesh );
-        bodyManager.addBody( dilloBody, dilloMesh );
         mainMeshBatch.init( gl );
+        noiseMeshBatch.init( gl );
+        overlayMeshBatch.init( gl );
+
+        /*
+         Vector2i windowSize = initialSettings.windowSize;
+         framebuffer = new Framebuffer( windowSize.getX(), windowSize.getY() );
+         framebuffer.init( gl );
+         framebufferMaterial = new Material(framebuffer.getTexture() );
+         */
     }
 
     @Override
@@ -280,18 +245,6 @@ public class SceneManager implements EventListenerGL {
         //System.out.println( ftime );
         time.setValue( getTime() );
 
-        if ( true ) {
-            float TIME_THRESHOLD = 1f / 60f;
-            float stepTime = TIME_THRESHOLD;
-            /*float stepTime = time.getValue();
-            while( stepTime > TIME_THRESHOLD ) {
-                bodyManager.update( TIME_THRESHOLD );
-                stepTime -= TIME_THRESHOLD;
-            }*/
-            bodyManager.update( stepTime );
-        }
-
-        //viewMatrix.setTranslationZ( viewMatrix.getTranslationZ() - 0.1f );
         //ball.getTransform().setToRotationZ( time.getValue() );
         //ball.getTransform().setToRotationTB( 0, 0, time.getValue() );
         //ball.getTransform().setToRotationTB( time.getValue(), time.getValue(), time.getValue() );
@@ -328,6 +281,8 @@ public class SceneManager implements EventListenerGL {
         }
 
         // overlays
+        gl.glClear( ClearBufferMask.DepthBufferBit );
+        noiseMeshBatch.render( gl );
         gl.glClear( ClearBufferMask.DepthBufferBit );
         //overlayMeshBatch.render( gl );
     }

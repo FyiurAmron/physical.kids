@@ -14,7 +14,7 @@ public class BodyManager {
     private final Map<Body, HashSet<Body>> contactMap = new HashMap<>();
     private final ColliderDescriptor tmpDescriptor = new ColliderDescriptor( null, null );
 
-    private static boolean includeGravity = false;
+    private static boolean includeGravity = true; // debug
 
     public BodyManager () {
         _addCollider( new SphereSphereCollider() );
