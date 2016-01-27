@@ -25,7 +25,7 @@ public abstract class PolygonBody extends Body {
 
      @param vArray
      */
-    public PolygonBody ( Vector3f[] vArray ) {
+    public PolygonBody ( Vector3f... vArray ) {
         super();
         initializeVerticesArray();
         _setPoints( vArray );

@@ -15,7 +15,7 @@ public class TriangleBody extends PolygonBody {
         super();
     }
 
-    public TriangleBody ( Vector3f[] vArray ) {
+    public TriangleBody ( Vector3f... vArray ) {
         super( vArray );
     }
 
