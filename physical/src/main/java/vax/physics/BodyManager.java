@@ -14,12 +14,14 @@ public class BodyManager {
     private final Map<Body, HashSet<Body>> contactMap = new HashMap<>();
     private final ColliderDescriptor tmpDescriptor = new ColliderDescriptor( null, null );
 
-    private static boolean includeGravity = true; // debug
-
     public BodyManager () {
         _addCollider( new SphereSphereCollider() );
         _addCollider( new SpherePlaneCollider() );
         _addCollider( new SphereTriangleCollider() );
+    }
+
+    public Vector3f getGravity () {
+        return gravity;
     }
 
     private void _addCollider ( Collider<?, ?> collider ) {
@@ -108,9 +110,7 @@ public class BodyManager {
         for( int i = bodies.size() - 1; i >= 0; i-- ) {
             Body body1 = bodies.get( i );
             if ( body1.mass != Float.POSITIVE_INFINITY ) {
-                if ( includeGravity ) {
-                    body1.acceleration.add( gravity );
-                }
+                body1.acceleration.add( gravity );
             }
 
             for( int j = i - 1; j >= 0; j-- ) {

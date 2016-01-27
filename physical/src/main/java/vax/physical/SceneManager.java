@@ -10,7 +10,9 @@ import vax.openglue.mesh.*;
 import vax.physical.resource.Resource;
 import vax.physics.BodyManager;
 import vax.physics.PlaneBody;
+import vax.physics.PolygonBody;
 import vax.physics.SphereBody;
+import vax.physics.TriangleBody;
 
 /**
 
@@ -53,7 +55,7 @@ public class SceneManager implements EventListenerGL {
     private Material framebufferMaterial;
     private final WindowGLUE.Settings initialSettings;
     private final BodyManager bodyManager = new BodyManager();
-    
+
     private Vector3f cameraPos;
 
     public SceneManager ( WindowGLUE.Settings initialSettings ) {
@@ -62,7 +64,7 @@ public class SceneManager implements EventListenerGL {
     }
 
     private float getTime () {
-        return (float) ( System.currentTimeMillis() % 1_000_000 ) / 1000; // 6 digits of precision, about max for float
+        return (float) (System.currentTimeMillis() % 1_000_000) / 1000; // 6 digits of precision, about max for float
     }
 
     @Override
@@ -87,16 +89,20 @@ public class SceneManager implements EventListenerGL {
         TextureData<?> drzewka4TD = imageGlue.readTextureData( "drzewka-4.png", Resource.class );
         TextureData<?> skyTD = imageGlue.readTextureData( "sky.png", Resource.class );
 
-        Texture dilloTex = new Texture( dilloTD, TextureParameters.TRILINEAR_CLAMP, debug );
-        Texture squirrelTex = new Texture( squirrelTD, TextureParameters.TRILINEAR_CLAMP, debug );
-        Texture turtleTex = new Texture( turtleTD, TextureParameters.TRILINEAR_CLAMP, debug );
+        TextureParameters tp = TextureParameters.TRILINEAR_ANISO_CLAMP;
+        //TextureParameters tp = TextureParameters.BILINEAR_CLAMP;
+        boolean mip = true;
 
-        Texture grassTex = new Texture( grassTD, TextureParameters.TRILINEAR_CLAMP, debug );
-        Texture drzewka1Tex = new Texture( drzewka1TD, TextureParameters.TRILINEAR_CLAMP, debug );
-        Texture drzewka2Tex = new Texture( drzewka2TD, TextureParameters.TRILINEAR_CLAMP, debug );
-        Texture drzewka3Tex = new Texture( drzewka3TD, TextureParameters.TRILINEAR_CLAMP, debug );
-        Texture drzewka4Tex = new Texture( drzewka4TD, TextureParameters.TRILINEAR_CLAMP, debug );
-        Texture skyTex = new Texture( skyTD, TextureParameters.TRILINEAR_CLAMP, debug );
+        Texture dilloTex = new Texture( dilloTD, tp, mip );
+        Texture squirrelTex = new Texture( squirrelTD, tp, mip );
+        Texture turtleTex = new Texture( turtleTD, tp, mip );
+
+        Texture grassTex = new Texture( grassTD, tp, mip );
+        Texture drzewka1Tex = new Texture( drzewka1TD, tp, mip );
+        Texture drzewka2Tex = new Texture( drzewka2TD, tp, mip );
+        Texture drzewka3Tex = new Texture( drzewka3TD, tp, mip );
+        Texture drzewka4Tex = new Texture( drzewka4TD, tp, mip );
+        Texture skyTex = new Texture( skyTD, tp, mip );
 
         Texture[] worldTextures = new Texture[]{
             drzewka1Tex,
@@ -194,7 +200,7 @@ public class SceneManager implements EventListenerGL {
         //modelviewMatrix.scaleY( -1f );
         cameraPos = new Vector3f( -20f, -10f, -40f );
         viewMatrix.setTranslation( cameraPos );
-        
+
         //backgroundColor.set( 0.01f, 0.01f, 0.01f, 0.01f );
         backgroundColor.set( 0.1f, 0.1f, 0.1f, 0.1f );
         ambientColor.set( 0.4f, 0.4f, 0.4f, 1.0f );
@@ -228,17 +234,25 @@ public class SceneManager implements EventListenerGL {
         }
 
         squirrelBody = new SphereBody( 1, BALL_RADIUS );
-        squirrelBody.getTransform().setTranslation( 40, 40, 40 );
+        squirrelBody.getTransform().setTranslation( 20, 20, 20 );
         /* SphereBody */
         turtleBody = new SphereBody( 25, BALL_RADIUS * 5 );
-        turtleBody.getTransform().setTranslation( 0, 20, 0 );
+        turtleBody.getTransform().setTranslation( 2, 20, 2 );
         //turtleBody.Velocity.Y = 5;
         /* SphereBody */
         dilloBody = new SphereBody( 25, BALL_RADIUS * 2 );
         //dilloBody.Transform.setTranslation( -20, 100, -30 );
         dilloBody.getTransform().setTranslation( 0, 30, 0 );
         //dilloBody.Velocity.Y = -5;
-        Vector3f fixPoint = new Vector3f( 0, 42, 9 );
+
+        Vector3f fixPoint = new Vector3f( 10, 30, 20 );
+        squirrelBody.getForces().add( (obj) -> {
+            Vector3f disp = new Vector3f();
+            obj.getTransform().getDisplacement( fixPoint, disp );
+            float k = 10.0f, l = 15.0f;
+            disp.scale( k * (disp.calcLength() - l) );
+            obj.applyForce( disp );
+        } );
 
         mainUniSet = mainMeshBatch.getPerMeshUniforms();
         for( Uniform u : perMeshUniforms ) {
@@ -253,16 +267,22 @@ public class SceneManager implements EventListenerGL {
             new PlaneBody( new Plane3f( new Vector3f( 0, 0, 1 ), shiftZ ) ),
             new PlaneBody( new Plane3f( new Vector3f( 0, 0, -1 ), shiftZ ) )
         };
+        //TriangleBody pb1 = new TriangleBody( new Vector3f( -40, 10, 40 ), new Vector3f( 40, 10, 40 ),new Vector3f( 40, 10, -40));
         for( PlaneBody pb : planeBodies ) {
             pb.setFriction( 0.1f );
             pb.setRestitution( 0.8f );
             bodyManager.addBody( pb );
         }
+        //bodyManager.addBody( pb1 );
         bodyManager.addBody( squirrelBody, squirrelMesh );
         bodyManager.addBody( turtleBody, turtleMesh );
         bodyManager.addBody( dilloBody, dilloMesh );
         mainMeshBatch.init( gl );
     }
+
+    Vector3f up = new Vector3f( 0, 1, 0 );
+    Vector3f target = new Vector3f();
+    int count = 0;
 
     @Override
     public void render ( OpenGLUE gl ) {
@@ -273,9 +293,22 @@ public class SceneManager implements EventListenerGL {
 
         MouseGLUE mg = Main.wg.getMouseGLUE();
         int mouseX = mg.getX(), mouseY = mg.getY();
+        if ( mg.isButtonDown( 0 ) || mg.isButtonDown( 1 ) ) {
+            //float f = 
+            count++;
+            if ( count == 60 ) {
+                bodyManager.getGravity().scale( -1.01f );
+            }
+        }
         mousePos.set( mouseX, mouseY );
         lightDirUnit.setX( mg.getRatioX() * 2 - 1 );
-        lightDirUnit.setY( -( mg.getRatioY() * 2 - 1 ) );
+        lightDirUnit.setY( -(mg.getRatioY() * 2 - 1) );
+        target.setX( mg.getRatioX() * 10 - 5 );
+        target.setY( mg.getRatioY() * 10 - 5 );
+        cameraPos.setX( mg.getRatioX() * 40 - 20 );
+        cameraPos.setY( -mg.getRatioY() * 40 );
+        viewMatrix.setTranslation( cameraPos );
+        //viewMatrix.lookAt( cameraPos, target, up );
 
         random.setValue( MathUtils.nextFloat() );
         //float ftime = (float) ( System.currentTimeMillis() % 1000 ) / 1000;

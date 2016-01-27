@@ -74,7 +74,7 @@ public class SceneManager1 implements EventListenerGL {
         /* SphereMesh */ ball = new SphereMesh( /* 0.1f */ 0.3f, 40, 40, true );
         ///* SphereMesh */ ball = new PrismMesh( new float[]{ 0, 0, 0 }, new float[]{ -0.5f, 0, -0.5f }, new float[]{ 0.5f, 0, -0.5f }, 0.3f );
         RectangleMesh leftInterface = new RectangleMesh( -1f, -2f, RectangleMesh.RECT_VT_PROTO_2 );
-        RectangleMesh rightInterface = new RectangleMesh( -1f, -2f, RectangleMesh.RECT_VT_PROTO_2 );
+        //RectangleMesh rightInterface = new RectangleMesh( -1f, -2f, RectangleMesh.RECT_VT_PROTO_2 );
         leftInterface.getTransform().setTranslationX( -0.5f );
         leftInterface.getTransform().setTranslationY( 1f );
         //rightInterface.getTransform().setTranslationX( -0.5f );
@@ -96,7 +96,7 @@ public class SceneManager1 implements EventListenerGL {
         Material ilt = new Material( interfaceLeftTex );
         leftInterface.setMaterial( ilt );
         //rightInterface.setMaterial( new Material( interfaceLeftTex ) );
-        rightInterface.setMaterial( ilt );
+        //rightInterface.setMaterial( ilt );
 
         textures.add( dilloTex );
         textures.add( interfaceLeftTex );
@@ -127,7 +127,7 @@ public class SceneManager1 implements EventListenerGL {
             }
             modelMatrix.set( target.getTransform() );
         } );
-
+/*
         rightInterface.setUpdateAction( (Mesh target) -> {
             Material mat = target.getMaterial();
             if ( mat != null ) {
@@ -135,7 +135,7 @@ public class SceneManager1 implements EventListenerGL {
             }
             modelMatrix.set( target.getTransform() );
         } );
-
+*/
         overlay.setUpdateAction( (Mesh target) -> {
             Material mat = target.getMaterial();
             if ( mat != null ) {
@@ -146,10 +146,10 @@ public class SceneManager1 implements EventListenerGL {
 
         meshes.add( ball );
         meshes.add( leftInterface );
-        meshes.add( rightInterface );
+        //meshes.add( rightInterface );
         mainMeshBatch.getNonAlphaBlendedMeshes().add( ball );
         mainMeshBatch.getAlphaBlendedMeshes().add( leftInterface );
-        mainMeshBatch.getAlphaBlendedMeshes().add( rightInterface );
+        //mainMeshBatch.getAlphaBlendedMeshes().add( rightInterface );
         //mainMeshBatch.getNonAlphaBlendedMeshes().add( leftInterface );
         noiseMeshBatch.getAlphaBlendedMeshes().add( overlay );
         overlayMeshBatch.getAlphaBlendedMeshes().add( overlay );
@@ -284,7 +284,7 @@ public class SceneManager1 implements EventListenerGL {
         gl.glClear( ClearBufferMask.DepthBufferBit );
         noiseMeshBatch.render( gl );
         gl.glClear( ClearBufferMask.DepthBufferBit );
-        //overlayMeshBatch.render( gl );
+        overlayMeshBatch.render( gl );
     }
 
     // TODO implement a proper export filter here
