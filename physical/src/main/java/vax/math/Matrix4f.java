@@ -460,6 +460,7 @@ public class Matrix4f extends VectorFloat {
         return this;
     }
 
+    // TODO ported code below; check if valid/optimal
     public Matrix4f lookAt ( Vector3f eye, Vector3f center, Vector3f up ) {
         // Compute direction from position to lookAt
         float dirX, dirY, dirZ;
@@ -468,9 +469,9 @@ public class Matrix4f extends VectorFloat {
         dirZ = center.getZ() - eye.getZ();
         // Normalize direction
         float invDirLength = 1.0f / (float) Math.sqrt(
-                  (eye.getX() - center.getX()) * (eye.getX() - center.getX())
-                + (eye.getY() - center.getY()) * (eye.getY() - center.getY())
-                + (eye.getZ() - center.getZ()) * (eye.getZ() - center.getZ()));
+                ( eye.getX() - center.getX() ) * ( eye.getX() - center.getX() )
+                + ( eye.getY() - center.getY() ) * ( eye.getY() - center.getY() )
+                + ( eye.getZ() - center.getZ() ) * ( eye.getZ() - center.getZ() ) );
         dirX *= invDirLength;
         dirY *= invDirLength;
         dirZ *= invDirLength;
@@ -480,7 +481,7 @@ public class Matrix4f extends VectorFloat {
         rightY = dirZ * up.getX() - dirX * up.getZ();
         rightZ = dirX * up.getY() - dirY * up.getX();
         // normalize right
-        float invRightLength = 1.0f / (float) Math.sqrt(rightX * rightX + rightY * rightY + rightZ * rightZ);
+        float invRightLength = 1.0f / (float) Math.sqrt( rightX * rightX + rightY * rightY + rightZ * rightZ );
         rightX *= invRightLength;
         rightY *= invRightLength;
         rightZ *= invRightLength;
@@ -505,7 +506,6 @@ public class Matrix4f extends VectorFloat {
 
         // perform optimized matrix multiplication
         // compute last column first, because others do not depend on it
-        
         data[M41] = data[M11] * rm30 + data[M21] * rm31 + data[M31] * rm32 + data[M41];
         data[M42] = data[M12] * rm30 + data[M22] * rm31 + data[M32] * rm32 + data[M42];
         data[M43] = data[M13] * rm30 + data[M23] * rm31 + data[M33] * rm32 + data[M43];
@@ -534,7 +534,7 @@ public class Matrix4f extends VectorFloat {
         data[M24] = nm13;
 
         return this;
-    
+
     }
 
     /**
@@ -866,6 +866,64 @@ public class Matrix4f extends VectorFloat {
     }
 
     /**
+     Matrix is assumed of model-view kind, with fourth row assumed to be (0,0,0,1);
+
+     @param data
+     @param output has to be != m1 && != m2, otherwise UB
+     @return output for chaining
+     */
+    public static float[] invertMV ( float[] data, float[] output ) {
+        float //
+                a = data[M11] * data[M22] - data[M12] * data[M21],
+                b = data[M11] * data[M23] - data[M13] * data[M21],
+                c = data[M11] * data[M24] - data[M14] * data[M21],
+                d = data[M12] * data[M23] - data[M13] * data[M22],
+                e = data[M12] * data[M24] - data[M14] * data[M22],
+                f = data[M13] * data[M24] - data[M14] * data[M23],
+                g = 0,
+                h = 0,
+                i = data[M31],
+                j = 0,
+                k = data[M32],
+                l = data[M33];
+
+        float det = a * l - b * k/* + c * j */ + d * i/* - e * h + f * g */;
+        det = 1.0f / det;
+
+        a *= det;
+        b *= det;
+        c *= det;
+        d *= det;
+        e *= det;
+        f *= det;
+        //g *= det;
+        //h *= det;
+        i *= det;
+        //j *= det;
+        k *= det;
+        l *= det;
+
+        output[0] = data[M22] * l - data[M23] * k/* + data[M24] * j */;
+        output[1] = -data[M12] * l + data[M13] * k/* - data[M14] * j */;
+        output[2] = d; //data[M42] * f - data[M43] * e + data[M44] * d;
+        output[3] = -data[M32] * f + data[M33] * e - data[M34] * d;
+        output[4] = -data[M21] * l + data[M23] * i/* - data[M24] * h */;
+        output[5] = data[M11] * l - data[M13] * i/* + data[M14] * h */;
+        output[6] = -b; //-data[M41] * f + data[M43] * c - data[M44] * b;
+        output[7] = data[M31] * f - data[M33] * c + data[M34] * b;
+        output[8] = data[M21] * k - data[M22] * i/* + data[M24] * g */;
+        output[9] = -data[M11] * k + data[M12] * i/* - data[M14] * g */;
+        output[10] = a; //data[M41] * e - data[M42] * c + data[M44] * a;
+        output[11] = -data[M31] * e + data[M32] * c - data[M34] * a;
+        output[12] = -data[M21] * j + data[M22] * h/* - data[M23] * g */;
+        output[13] = data[M11] * j - data[M12] * h/* + data[M13] * g */;
+        output[14] = 0; //-data[M41] * d + data[M42] * b - data[M43] * a;
+        output[15] = data[M31] * d - data[M32] * b + data[M33] * a;
+
+        return output;
+    }
+
+    /**
      Does a self-mutable left side multiplication of this matrix, i.e. this = this M2
 
      @param m2
@@ -900,55 +958,130 @@ public class Matrix4f extends VectorFloat {
     }
 
     /**
-     Does a non-mutating multiplication, i.e. output = M1 M2
+     Does a self-mutable left side multiplication of this matrix, i.e. this = this M2
+
+     @param m2
+     @return this matrix for chaining
+     */
+    public Matrix4f multiplyMV ( Matrix4f m2 ) {
+        multiplyMV( data, m2.data );
+        return this;
+    }
+
+    /**
+     Does a self-mutable right side multiplication of this matrix, i.e. this = M1 this
+     <p>
+     Both matrices are assumed of model-view kind, with fourth row assumed to be (0,0,0,1);
+     this is about 25% faster than regular matrix multiply.
 
      @param m1
+     @return this matrix for chaining
+     */
+    public Matrix4f multiplyLeftMV ( Matrix4f m1 ) {
+        multiplyLeftMV( data, m1.data );
+        return this;
+    }
+
+    /**
+     Does a non-mutating multiplication, i.e. output = this M2
+     <p>
+     Both matrices are assumed of model-view kind, with fourth row assumed to be (0,0,0,1);
+     this is about 25% faster than regular matrix multiply.
+
      @param m2
+     @param output
+     @return output for chaining
+     */
+    public Matrix4f multiplyMV ( Matrix4f m2, Matrix4f output ) {
+        multiplyMV( data, m2.data, output.data );
+        return output;
+    }
+
+    /**
+     Does a non-mutating multiplication, i.e. output = M1 M2
+
+     @param m2
+     @param m1
      @param output has to be != m1 && != m2, otherwise UB
      @return output for chaining
      */
     public static float[] multiply ( float[] m1, float[] m2, float[] output ) {
-        output[0] = m1[M11] * m2[M11] + m1[M21] * m2[M12] + m1[M31] * m2[M13] + m1[M41] * m2[M14];
-        output[1] = m1[M12] * m2[M11] + m1[M22] * m2[M12] + m1[M32] * m2[M13] + m1[M42] * m2[M14];
-        output[2] = m1[M13] * m2[M11] + m1[M23] * m2[M12] + m1[M33] * m2[M13] + m1[M43] * m2[M14];
-        output[3] = m1[M14] * m2[M11] + m1[M24] * m2[M12] + m1[M34] * m2[M13] + m1[M44] * m2[M14];
+        output[0] = m2[M11] * m1[M11] + m2[M21] * m1[M12] + m2[M31] * m1[M13] + m2[M41] * m1[M14];
+        output[1] = m2[M12] * m1[M11] + m2[M22] * m1[M12] + m2[M32] * m1[M13] + m2[M42] * m1[M14];
+        output[2] = m2[M13] * m1[M11] + m2[M23] * m1[M12] + m2[M33] * m1[M13] + m2[M43] * m1[M14];
+        output[3] = m2[M14] * m1[M11] + m2[M24] * m1[M12] + m2[M34] * m1[M13] + m2[M44] * m1[M14];
 
-        output[4] = m1[M11] * m2[M21] + m1[M21] * m2[M22] + m1[M31] * m2[M23] + m1[M41] * m2[M24];
-        output[5] = m1[M12] * m2[M21] + m1[M22] * m2[M22] + m1[M32] * m2[M23] + m1[M42] * m2[M24];
-        output[6] = m1[M13] * m2[M21] + m1[M23] * m2[M22] + m1[M33] * m2[M23] + m1[M43] * m2[M24];
-        output[7] = m1[M14] * m2[M21] + m1[M24] * m2[M22] + m1[M34] * m2[M23] + m1[M44] * m2[M24];
+        output[4] = m2[M11] * m1[M21] + m2[M21] * m1[M22] + m2[M31] * m1[M23] + m2[M41] * m1[M24];
+        output[5] = m2[M12] * m1[M21] + m2[M22] * m1[M22] + m2[M32] * m1[M23] + m2[M42] * m1[M24];
+        output[6] = m2[M13] * m1[M21] + m2[M23] * m1[M22] + m2[M33] * m1[M23] + m2[M43] * m1[M24];
+        output[7] = m2[M14] * m1[M21] + m2[M24] * m1[M22] + m2[M34] * m1[M23] + m2[M44] * m1[M24];
 
-        output[8] = m1[M11] * m2[M31] + m1[M21] * m2[M32] + m1[M31] * m2[M33] + m1[M41] * m2[M34];
-        output[9] = m1[M12] * m2[M31] + m1[M22] * m2[M32] + m1[M32] * m2[M33] + m1[M42] * m2[M34];
-        output[10] = m1[M13] * m2[M31] + m1[M23] * m2[M32] + m1[M33] * m2[M33] + m1[M43] * m2[M34];
-        output[11] = m1[M14] * m2[M31] + m1[M24] * m2[M32] + m1[M34] * m2[M33] + m1[M44] * m2[M34];
+        output[8] = m2[M11] * m1[M31] + m2[M21] * m1[M32] + m2[M31] * m1[M33] + m2[M41] * m1[M34];
+        output[9] = m2[M12] * m1[M31] + m2[M22] * m1[M32] + m2[M32] * m1[M33] + m2[M42] * m1[M34];
+        output[10] = m2[M13] * m1[M31] + m2[M23] * m1[M32] + m2[M33] * m1[M33] + m2[M43] * m1[M34];
+        output[11] = m2[M14] * m1[M31] + m2[M24] * m1[M32] + m2[M34] * m1[M33] + m2[M44] * m1[M34];
 
-        output[12] = m1[M11] * m2[M41] + m1[M21] * m2[M42] + m1[M31] * m2[M43] + m1[M41] * m2[M44];
-        output[13] = m1[M12] * m2[M41] + m1[M22] * m2[M42] + m1[M32] * m2[M43] + m1[M42] * m2[M44];
-        output[14] = m1[M13] * m2[M41] + m1[M23] * m2[M42] + m1[M33] * m2[M43] + m1[M43] * m2[M44];
-        output[15] = m1[M14] * m2[M41] + m1[M24] * m2[M42] + m1[M34] * m2[M43] + m1[M44] * m2[M44];
+        output[12] = m2[M11] * m1[M41] + m2[M21] * m1[M42] + m2[M31] * m1[M43] + m2[M41] * m1[M44];
+        output[13] = m2[M12] * m1[M41] + m2[M22] * m1[M42] + m2[M32] * m1[M43] + m2[M42] * m1[M44];
+        output[14] = m2[M13] * m1[M41] + m2[M23] * m1[M42] + m2[M33] * m1[M43] + m2[M43] * m1[M44];
+        output[15] = m2[M14] * m1[M41] + m2[M24] * m1[M42] + m2[M34] * m1[M43] + m2[M44] * m1[M44];
+
+        return output;
+    }
+
+    /**
+     Does a non-mutating multiplication, i.e. output = M1 M2
+     <p>
+     Both matrices are assumed of model-view kind, with fourth row assumed to be (0,0,0,1);
+     this is about 25% faster than regular matrix multiply.
+
+     @param m2
+     @param m1
+     @param output has to be != m1 && != m2, otherwise UB
+     @return output for chaining
+     */
+    public static float[] multiplyMV ( float[] m1, float[] m2, float[] output ) {
+        output[0] = m2[M11] * m1[M11] + m2[M21] * m1[M12] + m2[M31] * m1[M13];
+        output[1] = m2[M12] * m1[M11] + m2[M22] * m1[M12] + m2[M32] * m1[M13];
+        output[2] = m2[M13] * m1[M11] + m2[M23] * m1[M12] + m2[M33] * m1[M13];
+        output[3] = m2[M14] * m1[M11] + m2[M24] * m1[M12] + m2[M34] * m1[M13] + m1[M14];
+
+        output[4] = m2[M11] * m1[M21] + m2[M21] * m1[M22] + m2[M31] * m1[M23];
+        output[5] = m2[M12] * m1[M21] + m2[M22] * m1[M22] + m2[M32] * m1[M23];
+        output[6] = m2[M13] * m1[M21] + m2[M23] * m1[M22] + m2[M33] * m1[M23];
+        output[7] = m2[M14] * m1[M21] + m2[M24] * m1[M22] + m2[M34] * m1[M23] + m1[M24];
+
+        output[8] = m2[M11] * m1[M31] + m2[M21] * m1[M32] + m2[M31] * m1[M33];
+        output[9] = m2[M12] * m1[M31] + m2[M22] * m1[M32] + m2[M32] * m1[M33];
+        output[10] = m2[M13] * m1[M31] + m2[M23] * m1[M32] + m2[M33] * m1[M33];
+        output[11] = m2[M14] * m1[M31] + m2[M24] * m1[M32] + m2[M34] * m1[M33] + m1[M34];
+
+        output[12] = 0;
+        output[13] = 0;
+        output[14] = 0;
+        output[15] = 1;
 
         return output;
     }
 
     private static float[] multiplyToSelf ( float[] m1, float[] m2, float[] output ) {
         float //
-                a = m1[M11] * m2[M11] + m1[M21] * m2[M12] + m1[M31] * m2[M13] + m1[M41] * m2[M14],
-                b = m1[M12] * m2[M11] + m1[M22] * m2[M12] + m1[M32] * m2[M13] + m1[M42] * m2[M14],
-                c = m1[M13] * m2[M11] + m1[M23] * m2[M12] + m1[M33] * m2[M13] + m1[M43] * m2[M14],
-                d = m1[M14] * m2[M11] + m1[M24] * m2[M12] + m1[M34] * m2[M13] + m1[M44] * m2[M14],
-                e = m1[M11] * m2[M21] + m1[M21] * m2[M22] + m1[M31] * m2[M23] + m1[M41] * m2[M24],
-                f = m1[M12] * m2[M21] + m1[M22] * m2[M22] + m1[M32] * m2[M23] + m1[M42] * m2[M24],
-                g = m1[M13] * m2[M21] + m1[M23] * m2[M22] + m1[M33] * m2[M23] + m1[M43] * m2[M24],
-                h = m1[M14] * m2[M21] + m1[M24] * m2[M22] + m1[M34] * m2[M23] + m1[M44] * m2[M24],
-                i = m1[M11] * m2[M31] + m1[M21] * m2[M32] + m1[M31] * m2[M33] + m1[M41] * m2[M34],
-                j = m1[M12] * m2[M31] + m1[M22] * m2[M32] + m1[M32] * m2[M33] + m1[M42] * m2[M34],
-                k = m1[M13] * m2[M31] + m1[M23] * m2[M32] + m1[M33] * m2[M33] + m1[M43] * m2[M34],
-                l = m1[M14] * m2[M31] + m1[M24] * m2[M32] + m1[M34] * m2[M33] + m1[M44] * m2[M34],
-                m = m1[M11] * m2[M41] + m1[M21] * m2[M42] + m1[M31] * m2[M43] + m1[M41] * m2[M44],
-                n = m1[M12] * m2[M41] + m1[M22] * m2[M42] + m1[M32] * m2[M43] + m1[M42] * m2[M44],
-                o = m1[M13] * m2[M41] + m1[M23] * m2[M42] + m1[M33] * m2[M43] + m1[M43] * m2[M44],
-                p = m1[M14] * m2[M41] + m1[M24] * m2[M42] + m1[M34] * m2[M43] + m1[M44] * m2[M44];
+                a = m2[M11] * m1[M11] + m2[M21] * m1[M12] + m2[M31] * m1[M13] + m2[M41] * m1[M14],
+                b = m2[M12] * m1[M11] + m2[M22] * m1[M12] + m2[M32] * m1[M13] + m2[M42] * m1[M14],
+                c = m2[M13] * m1[M11] + m2[M23] * m1[M12] + m2[M33] * m1[M13] + m2[M43] * m1[M14],
+                d = m2[M14] * m1[M11] + m2[M24] * m1[M12] + m2[M34] * m1[M13] + m2[M44] * m1[M14],
+                e = m2[M11] * m1[M21] + m2[M21] * m1[M22] + m2[M31] * m1[M23] + m2[M41] * m1[M24],
+                f = m2[M12] * m1[M21] + m2[M22] * m1[M22] + m2[M32] * m1[M23] + m2[M42] * m1[M24],
+                g = m2[M13] * m1[M21] + m2[M23] * m1[M22] + m2[M33] * m1[M23] + m2[M43] * m1[M24],
+                h = m2[M14] * m1[M21] + m2[M24] * m1[M22] + m2[M34] * m1[M23] + m2[M44] * m1[M24],
+                i = m2[M11] * m1[M31] + m2[M21] * m1[M32] + m2[M31] * m1[M33] + m2[M41] * m1[M34],
+                j = m2[M12] * m1[M31] + m2[M22] * m1[M32] + m2[M32] * m1[M33] + m2[M42] * m1[M34],
+                k = m2[M13] * m1[M31] + m2[M23] * m1[M32] + m2[M33] * m1[M33] + m2[M43] * m1[M34],
+                l = m2[M14] * m1[M31] + m2[M24] * m1[M32] + m2[M34] * m1[M33] + m2[M44] * m1[M34],
+                m = m2[M11] * m1[M41] + m2[M21] * m1[M42] + m2[M31] * m1[M43] + m2[M41] * m1[M44],
+                n = m2[M12] * m1[M41] + m2[M22] * m1[M42] + m2[M32] * m1[M43] + m2[M42] * m1[M44],
+                o = m2[M13] * m1[M41] + m2[M23] * m1[M42] + m2[M33] * m1[M43] + m2[M43] * m1[M44],
+                p = m2[M14] * m1[M41] + m2[M24] * m1[M42] + m2[M34] * m1[M43] + m2[M44] * m1[M44];
 
         output[0] = a;
         output[1] = b;
@@ -973,6 +1106,52 @@ public class Matrix4f extends VectorFloat {
         return output;
     }
 
+    private static float[] multiplyToSelfMV ( float[] m1, float[] m2, float[] output ) {
+        float //
+                a = m2[M11] * m1[M11] + m2[M21] * m1[M12] + m2[M31] * m1[M13],
+                b = m2[M12] * m1[M11] + m2[M22] * m1[M12] + m2[M32] * m1[M13],
+                c = m2[M13] * m1[M11] + m2[M23] * m1[M12] + m2[M33] * m1[M13],
+                d = m2[M14] * m1[M11] + m2[M24] * m1[M12] + m2[M34] * m1[M13] + m1[M14],
+                e = m2[M11] * m1[M21] + m2[M21] * m1[M22] + m2[M31] * m1[M23],
+                f = m2[M12] * m1[M21] + m2[M22] * m1[M22] + m2[M32] * m1[M23],
+                g = m2[M13] * m1[M21] + m2[M23] * m1[M22] + m2[M33] * m1[M23],
+                h = m2[M14] * m1[M21] + m2[M24] * m1[M22] + m2[M34] * m1[M23] + m1[M24],
+                i = m2[M11] * m1[M31] + m2[M21] * m1[M32] + m2[M31] * m1[M33],
+                j = m2[M12] * m1[M31] + m2[M22] * m1[M32] + m2[M32] * m1[M33],
+                k = m2[M13] * m1[M31] + m2[M23] * m1[M32] + m2[M33] * m1[M33],
+                l = m2[M14] * m1[M31] + m2[M24] * m1[M32] + m2[M34] * m1[M33] + m1[M34];
+        /*
+         m = 0,
+         n = 0,
+         o = 0,
+         p = 1;
+         */
+
+        output[0] = a;
+        output[1] = b;
+        output[2] = c;
+        output[3] = d;
+
+        output[4] = e;
+        output[5] = f;
+        output[6] = g;
+        output[7] = h;
+
+        output[8] = i;
+        output[9] = j;
+        output[10] = k;
+        output[11] = l;
+
+        /*
+         output[12] = m;
+         output[13] = n;
+         output[14] = o;
+         output[15] = p;
+         */
+        // stays the same for MV matrices
+        return output;
+    }
+
     /**
      Does a self-mutable right side multiplication of m1, i.e. M1 = M1 M2
 
@@ -993,5 +1172,33 @@ public class Matrix4f extends VectorFloat {
      */
     public static float[] multiplyLeft ( float[] m1, float[] m2 ) {
         return multiplyToSelf( m2, m1, m1 );
+    }
+
+    /**
+     Does a self-mutable right side multiplication of m1, i.e. M1 = M1 M2
+     <p>
+     Both matrices are assumed of model-view kind, with fourth row assumed to be (0,0,0,1);
+     this is about 25% faster than regular matrix multiply.
+
+     @param m1 both source left matrix and output target
+     @param m2 right matrix
+     @return m1 for chaining
+     */
+    public static float[] multiplyMV ( float[] m1, float[] m2 ) {
+        return multiplyToSelfMV( m1, m2, m1 );
+    }
+
+    /**
+     Does a self-mutable left side multiplication of m1, i.e. M1 = M2 M1
+     <p>
+     Both matrices are assumed of model-view kind, with fourth row assumed to be (0,0,0,1);
+     this is about 25% faster than regular matrix multiply.
+
+     @param m1 both source left matrix and output target
+     @param m2 right matrix
+     @return m1 for chaining
+     */
+    public static float[] multiplyLeftMV ( float[] m1, float[] m2 ) {
+        return multiplyToSelfMV( m2, m1, m1 );
     }
 }
