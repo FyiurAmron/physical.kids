@@ -735,8 +735,18 @@ public class Matrix4f extends VectorFloat {
         return this;
     }
 
+    public Matrix4f invertMV () {
+        invertMV( data );
+        return this;
+    }
+
     public Matrix4f invert ( Matrix4f output ) {
         invert( data, output.data );
+        return output;
+    }
+
+    public Matrix4f invertMV ( Matrix4f output ) {
+        invertMV( data, output.data );
         return output;
     }
 
@@ -867,6 +877,82 @@ public class Matrix4f extends VectorFloat {
 
     /**
      Matrix is assumed of model-view kind, with fourth row assumed to be (0,0,0,1);
+     much faster than regular invert.
+
+     @param data
+     @return output for chaining
+     */
+    public static float[] invertMV ( float[] data ) {
+        float //
+                a = data[M11] * data[M22] - data[M12] * data[M21],
+                b = data[M13] * data[M21] - data[M11] * data[M23], // -b, actually
+                c = data[M11] * data[M24] - data[M14] * data[M21],
+                d = data[M12] * data[M23] - data[M13] * data[M22],
+                e = data[M12] * data[M24] - data[M14] * data[M22],
+                f = data[M13] * data[M24] - data[M14] * data[M23],
+                //g = 0,
+                //h = 0,
+                i = data[M31],
+                //j = 0,
+                k = data[M32],
+                l = data[M33];
+
+        float det = a * l + b * k/* + c * j */ + d * i/* - e * h + f * g */;
+        det = 1.0f / det;
+
+        a *= det;
+        b *= det;
+        c *= det;
+        d *= det;
+        e *= det;
+        f *= det;
+        //g *= det;
+        //h *= det;
+        i *= det;
+        //j *= det;
+        k *= det;
+        l *= det;
+
+        float output0 = data[M22] * l - data[M23] * k/* + data[M24] * j */,
+                output1 = -data[M12] * l + data[M13] * k/* - data[M14] * j */,
+                output2 = d, //data[M42] * f - data[M43] * e + data[M44] * d;
+                output3 = -data[M32] * f + data[M33] * e - data[M34] * d,
+                output4 = -data[M21] * l + data[M23] * i/* - data[M24] * h */,
+                output5 = data[M11] * l - data[M13] * i/* + data[M14] * h */,
+                output6 = b, //-data[M41] * f + data[M43] * c - data[M44] * b;
+                output7 = data[M31] * f - data[M33] * c + data[M34] * b,
+                output8 = data[M21] * k - data[M22] * i/* + data[M24] * g */,
+                output9 = -data[M11] * k + data[M12] * i/* - data[M14] * g */,
+                output10 = a, //data[M41] * e - data[M42] * c + data[M44] * a;
+                output11 = -data[M31] * e + data[M32] * c - data[M34] * a,
+                output12 = 0, // -data[M21] * j + data[M22] * h - data[M23] * g;
+                output13 = 0, // data[M11] * j - data[M12] * h + data[M13] * g;
+                output14 = 0, //-data[M41] * d + data[M42] * b - data[M43] * a;
+                output15 = 1; //data[M31] * d - data[M32] * b + data[M33] * a;
+
+        data[0] = output0;
+        data[1] = output1;
+        data[2] = output2;
+        data[3] = output3;
+        data[4] = output4;
+        data[5] = output5;
+        data[6] = output6;
+        data[7] = output7;
+        data[8] = output8;
+        data[9] = output9;
+        data[10] = output10;
+        data[11] = output11;
+        data[12] = output12;
+        data[13] = output13;
+        data[14] = output14;
+        data[15] = output15;
+
+        return data;
+    }
+
+    /**
+     Matrix is assumed of model-view kind, with fourth row assumed to be (0,0,0,1);
+     much faster than regular invert.
 
      @param data
      @param output has to be != m1 && != m2, otherwise UB
@@ -875,19 +961,19 @@ public class Matrix4f extends VectorFloat {
     public static float[] invertMV ( float[] data, float[] output ) {
         float //
                 a = data[M11] * data[M22] - data[M12] * data[M21],
-                b = data[M11] * data[M23] - data[M13] * data[M21],
+                b = data[M13] * data[M21] - data[M11] * data[M23], // -b, actually
                 c = data[M11] * data[M24] - data[M14] * data[M21],
                 d = data[M12] * data[M23] - data[M13] * data[M22],
                 e = data[M12] * data[M24] - data[M14] * data[M22],
                 f = data[M13] * data[M24] - data[M14] * data[M23],
-                g = 0,
-                h = 0,
+                //g = 0,
+                //h = 0,
                 i = data[M31],
-                j = 0,
+                //j = 0,
                 k = data[M32],
                 l = data[M33];
 
-        float det = a * l - b * k/* + c * j */ + d * i/* - e * h + f * g */;
+        float det = a * l + b * k/* + c * j */ + d * i/* - e * h + f * g */;
         det = 1.0f / det;
 
         a *= det;
@@ -909,16 +995,16 @@ public class Matrix4f extends VectorFloat {
         output[3] = -data[M32] * f + data[M33] * e - data[M34] * d;
         output[4] = -data[M21] * l + data[M23] * i/* - data[M24] * h */;
         output[5] = data[M11] * l - data[M13] * i/* + data[M14] * h */;
-        output[6] = -b; //-data[M41] * f + data[M43] * c - data[M44] * b;
+        output[6] = b; //-data[M41] * f + data[M43] * c - data[M44] * b;
         output[7] = data[M31] * f - data[M33] * c + data[M34] * b;
         output[8] = data[M21] * k - data[M22] * i/* + data[M24] * g */;
         output[9] = -data[M11] * k + data[M12] * i/* - data[M14] * g */;
         output[10] = a; //data[M41] * e - data[M42] * c + data[M44] * a;
         output[11] = -data[M31] * e + data[M32] * c - data[M34] * a;
-        output[12] = -data[M21] * j + data[M22] * h/* - data[M23] * g */;
-        output[13] = data[M11] * j - data[M12] * h/* + data[M13] * g */;
+        output[12] = 0; // -data[M21] * j + data[M22] * h - data[M23] * g;
+        output[13] = 0; // data[M11] * j - data[M12] * h + data[M13] * g;
         output[14] = 0; //-data[M41] * d + data[M42] * b - data[M43] * a;
-        output[15] = data[M31] * d - data[M32] * b + data[M33] * a;
+        output[15] = 1; //data[M31] * d - data[M32] * b + data[M33] * a;
 
         return output;
     }
