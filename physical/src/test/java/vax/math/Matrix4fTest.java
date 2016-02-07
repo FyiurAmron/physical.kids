@@ -125,16 +125,39 @@ public class Matrix4fTest {
             976.3345f, 1, 88.98f, 10
         };
         float[] matrixInvertedVals = {
-            0.100548f, -0.0146469f, -0.00322558f, 0.000498648f,
-            -0.0452761f, 0.0308433f, 0.000522623f, 0.000203908f,
-            0.994809f, -0.144705f, 0.0111746f, -0.00368197f,
-            -18.6642f, 2.71453f, 0.215441f, 0.0840571f
+            0.099905f, -0.0142086f, -0.00321816f, 0.000501545f,
+            -0.0439214f, 0.0299204f, 0.000506986f, 0.000197807f,
+            0.988454f, -0.140375f, 0.011248f, -0.00365334f,
+            -18.5449f, 2.63331f, 0.214065f, 0.0835201f
         };
         Matrix4f matrix1 = new Matrix4f( matrixVals );
         Matrix4f matrix2 = new Matrix4f( matrixInvertedVals );
         matrix1.invert();
-        assertEquals( matrix1, matrix2, 0.125f );
+        assertEquals( matrix1, matrix2, 0.001f );
+    }
 
+    @Test
+    public void invertMVTest () {
+        Matrix4f identity = new Matrix4f( true );
+        Matrix4f invertedIdentity = new Matrix4f( true ).invertMV();
+        assertEquals( identity, invertedIdentity );
+
+        float[] matrixVals = {
+            4, 6, 0.874f, 0,
+            0, 42.223f, 0, -0.1f,
+            -34.4f, 0, 41, 2,
+            0, 0, 0, 1
+        };
+        float[] matrixInvertedVals = {
+            0.211269f, -0.0300219f, -0.00450363f, 0.00600508f,
+            0, 0.0236838f, 0, 0.00236838f,
+            0.17726f, -0.0251891f, 0.0206116f, -0.0437421f,
+            0, 0, 0, 1
+        };
+        Matrix4f matrix1 = new Matrix4f( matrixVals );
+        Matrix4f matrix2 = new Matrix4f( matrixInvertedVals );
+        matrix1.invert();
+        assertEquals( matrix1, matrix2, 0.001f );
     }
 
     @Test
