@@ -35,6 +35,18 @@ public class FloatUtils {
         return (float) Math.sqrt( f );
     }
 
+    public static float[] copy ( float[] fs ) {
+        int len = fs.length;
+        float[] ret = new float[len];
+        System.arraycopy( fs, 0, ret, 0, len );
+        return ret;
+    }
+
+    public static float[] set ( float[] src, float[] dest ) {
+        System.arraycopy( src, 0, dest, 0, Math.min( src.length, dest.length ) );
+        return dest;
+    }
+
     private FloatUtils () {
         throw new UnsupportedOperationException();
     }

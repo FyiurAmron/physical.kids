@@ -45,29 +45,49 @@ public class Matrix4fTest {
 
     @Test
     public void detTest () {
-        Matrix4f matrix1 = new Matrix4f( true );
-        float det1 = matrix1.det();
-        assertEquals( det1, 1.0f );
+        assertEquals( new Matrix4f( true ).det(), 1.0f );
+        assertEquals( new Matrix4f().det(), 0.0f );
 
-        float[] matrix2Vals = {
-            2, 5, 3, 5,
-            4, 6, 6, 3,
-            11, 3, 2, -2,
-            4, -7, 9, 3
-        };
-        Matrix4f matrix2 = new Matrix4f( matrix2Vals );
-        float det2 = matrix2.det();
-        assertEquals( det2, 2960 );
+        assertEquals( new Matrix4f(
+                2, 5, 3, 5,
+                4, 6, 6, 3,
+                11, 3, 2, -2,
+                4, -7, 9, 3
+        ).det(), 2960 );
 
-        float[] matrix3Vals = {
-            1, 0, -5, 0,
-            0, 1, 0, 2.456f,
-            -0.123f, 1.987f, -56.29f, 0,
-            0, 2.3f, 0, 1
-        };
-        Matrix4f matrix3 = new Matrix4f( matrix3Vals );
-        float det3 = matrix3.det();
-        assertEquals( det3, 264.539964f );
+        assertEquals( new Matrix4f(
+                1, 0, -5, 0,
+                0, 1, 0, 2.456f,
+                -0.123f, 1.987f, -56.29f, 0,
+                0, 2.3f, 0, 1
+        ).det(), 264.539964f );
+    }
+
+    @Test
+    public void det3x3Test () {
+        assertEquals( new Matrix4f( true ).det3x3(), 1.0f );
+        assertEquals( new Matrix4f().det3x3(), 0.0f );
+
+        assertEquals( new Matrix4f(
+                2, 5, 3, 5,
+                4, 6, 6, 3,
+                11, 3, 2, -2,
+                4, -7, 9, 3
+        ).det3x3(), 116 );
+
+        assertEquals( new Matrix4f(
+                2, 5, 3, 5,
+                4, 6, 6, 3,
+                11, 3, 2, -2,
+                0, 0, 0, 1
+        ).transpose().det3x3(), 116 );
+
+        assertEquals( new Matrix4f(
+                1, 0, -5, 0,
+                0, 1, 0, 2.456f,
+                -0.123f, 1.987f, -56.29f, 0,
+                0, 0, 0, 1
+        ).det3x3(), -56.905f );
     }
 
     @Test
@@ -154,105 +174,124 @@ public class Matrix4fTest {
             0.17726f, -0.0251891f, 0.0206116f, -0.0437421f,
             0, 0, 0, 1
         };
-        Matrix4f matrix1 = new Matrix4f( matrixVals );
-        Matrix4f matrix2 = new Matrix4f( matrixInvertedVals );
+        Matrix4f matrix1 = new Matrix4f( matrixVals ).transpose();
+        Matrix4f matrix2 = new Matrix4f( matrixInvertedVals ).transpose();
         matrix1.invert();
         assertEquals( matrix1, matrix2, 0.001f );
     }
 
     @Test
     public void multiplyTest () {
-        float[] m1Vals = {
+        float[] M1arr = {
             2.34f, 23.637f, 3.2119f, -536,
             -76.23f, 4.9803f, -32.0001f, 0.11922f,
             87.293f, 5, -0.0083f, 5.2394f,
             2.1345f, 6.66f, 9.98f, 283.214f
         };
-        float[] m2Vals = {
+        float[] M2arr = {
             1.9909f, 842.594f, -3.42f, 2.7213f,
             -88.8f, 87.3213f, 4.213f, 0.889f,
             -223.41f, -313.34f, 732.1234f, 5374,
             34, 1, 364.28f, -100
         };
-        float[] m3Vals = {
+        float[] M1xM2arr = {
             -21035.877473f, 2493.2667820999995f, -192810.99297053998f, 70888.131735f,
             6559.178874f, -53769.02379561001f, -23102.90394684f, -172183.47661230003f,
             -90.21446329999995f, 73997.00466400001f, 1625.0549477799998f, -326.5487590999999f,
             6812.48577605f, -463.8424489999997f, 110496.546042f, 25322.849354850005f
         };
+        float[] M2xM1arr = {
+            -64519.01535915f, 4244.4536595f, -26929.51072769f, -213.87683312f,
+            -6494.6317195f, -1637.09358961f, -3070.66980003f, 47881.061283585994f,
+            98743.1797562f, 32610.187628f, 62935.78413078f, 1.64553832694716E6f,
+            31588.97404f, 1964.0383000000002f, -923.819024f, -44636.672148f
+        };
 
-        float[] m1ValsCopy = new float[m1Vals.length];
-        float[] m2ValsCopy = new float[m2Vals.length];
-        float[] m3ValsCopy = new float[m3Vals.length];
-        System.arraycopy( m1Vals, 0, m1ValsCopy, 0, m1Vals.length );
-        System.arraycopy( m2Vals, 0, m2ValsCopy, 0, m2Vals.length );
-        System.arraycopy( m3Vals, 0, m3ValsCopy, 0, m3Vals.length );
+        Matrix4f m1 = new Matrix4f( true, M1arr ), m2 = new Matrix4f( true, M2arr );
+        Matrix4f m1x2 = new Matrix4f( true, M1xM2arr ), m2x1 = new Matrix4f( true, M2xM1arr );
+        Matrix4f id = new Matrix4f( true ), zero = new Matrix4f();
 
-        Matrix4f.multiply( m1ValsCopy, m2ValsCopy );
-        assertEquals( m1ValsCopy, m3ValsCopy, 0.01564f );
+        assertEquals( new Matrix4f( zero ).multiply( m1 ), zero );
+        assertEquals( new Matrix4f( m1 ).multiply( zero ), zero );
 
-        Matrix4f identity = new Matrix4f( true );
-        Matrix4f m1 = new Matrix4f( m1Vals );
-        Matrix4f m1Copy = new Matrix4f( m1 );
-        Matrix4f m2 = new Matrix4f( m2Vals );
-        Matrix4f m3 = new Matrix4f( m3Vals );
+        assertEquals( m1, new Matrix4f( m1 ).multiply( id ) );
+        assertEquals( m1, new Matrix4f( id ).multiply( m1 ) );
 
-        m1.multiply( identity );
-        assertEquals( m1, m1Copy );
+        assertEquals( new Matrix4f( m1 ).multiply( m2 ), m1x2, 0.2f );
+        assertEquals( new Matrix4f( m2 ).multiply( m1 ), m2x1, 0.2f );
 
-        assertEquals( identity.multiply( m1 ), m1Copy );
+        assertEquals( new Matrix4f( m1 ).multiplyLeft( m2 ), m2x1, 0.2f );
+        assertEquals( new Matrix4f( m2 ).multiplyLeft( m1 ), m1x2, 0.2f );
 
-        m1.multiply( m2 );
-        assertEquals( m1, m3, 0.01563f );
+        assertEquals( new Matrix4f( m1 ).multiplyLeft( m2 ), new Matrix4f( m2 ).multiply( m1 ), 0.001f );
+        assertEquals( new Matrix4f( m1 ).transpose().multiplyLeft( new Matrix4f( m2 ).transpose() ),
+                new Matrix4f( m1 ).multiply( m2 ).transpose(), 0.001f );
     }
 
     @Test
     public void multiplyMVTest () {
-        float[] m1Vals = {
+        float[] M1arr = {
             2.34f, 23.637f, 3.2119f, -536,
             -76.23f, 4.9803f, -32.0001f, 0.11922f,
             87.293f, 5, -0.0083f, 5.2394f,
             0, 0, 0, 1
         };
-        float[] m2Vals = {
+        float[] M2arr = {
             1.9909f, 842.594f, -3.42f, 2.7213f,
             -88.8f, 87.3213f, 4.213f, 0.889f,
             -223.41f, -313.34f, 732.1234f, 5374,
             0, 0, 0, 1
         };
-        /*
-         float[] m3Vals = {
-         -21035.877473f, 2493.2667820999995f, -192810.99297053998f, 70888.131735f,
-         6559.178874f, -53769.02379561001f, -23102.90394684f, -172183.47661230003f,
-         -90.21446329999995f, 73997.00466400001f, 1625.0549477799998f, -326.5487590999999f,
-         0, 0, 0, 1
-         };
-         */
-        float[] m3Vals = new float[16];
-        Matrix4f.multiply( m1Vals, m2Vals, m3Vals );
+        float[] M1xM2arr = { // note the reversed order vs multiplyTest() due to the transpositions needed
+            -64524.824f, 4226.3298f, -26956.669f, -981.86579f,
+            -6496.5293f, -1643.0143f, -3079.542f, 47630.173f,
+            87272.377f, -3180.6524f, 9303.2641f, 128920.29f,
+            0, 0, 0, 1
+        };
+        float[] M2xM1arr = {
+            -2811.8775f, 3029.2668f, 2443.087f, 16752.132f,
+            6555.1254f, -53769.143f, -23146.333f, -172171.44f,
+            -268.35406f, 73991.765f, -283.55368f, 202.63064f,
+            0, 0, 0, 1
+        };
 
-        float[] m1ValsCopy = new float[m1Vals.length];
-        float[] m2ValsCopy = new float[m2Vals.length];
-        float[] m3ValsCopy = new float[m3Vals.length];
-        System.arraycopy( m1Vals, 0, m1ValsCopy, 0, m1Vals.length );
-        System.arraycopy( m2Vals, 0, m2ValsCopy, 0, m2Vals.length );
-        System.arraycopy( m3Vals, 0, m3ValsCopy, 0, m3Vals.length );
+        Matrix4f m1 = new Matrix4f( true, M1arr ).transpose(), m2 = new Matrix4f( true, M2arr ).transpose();
+        Matrix4f m1x2 = new Matrix4f( true, M1xM2arr ).transpose(), m2x1 = new Matrix4f( true, M2xM1arr ).transpose();
+        Matrix4f id = new Matrix4f( true ), zero = new Matrix4f();
 
-        Matrix4f.multiplyMV( m1ValsCopy, m2ValsCopy );
-        assertEquals( m1ValsCopy, m3ValsCopy, 0.01564f );
+        Matrix4f h = new Matrix4f( zero );
+        h.setTranslation( m1.getTranslation( new Vector3f() ) );
 
-        Matrix4f identity = new Matrix4f( true );
-        Matrix4f m1 = new Matrix4f( m1Vals );
-        Matrix4f m1Copy = new Matrix4f( m1 );
-        Matrix4f m2 = new Matrix4f( m2Vals );
-        Matrix4f m3 = new Matrix4f( m3Vals );
+        assertEquals( new Matrix4f( zero ).multiplyMV( m1 ), h );
+        h.setToZero();
+        h.setValue( 1, Matrix4f.M44 );
+        assertEquals( new Matrix4f( m1 ).multiplyMV( zero ), h );
 
-        m1.multiplyMV( identity );
-        assertEquals( m1, m1Copy );
+        assertEquals( m1, new Matrix4f( m1 ).multiplyMV( id ) );
+        assertEquals( m1, new Matrix4f( id ).multiplyMV( m1 ) );
 
-        assertEquals( identity.multiplyMV( m1 ), m1Copy );
+        assertEquals( new Matrix4f( m1 ).multiplyMV( m2 ), m1x2, 0.2f );
+        assertEquals( new Matrix4f( m2 ).multiplyMV( m1 ), m2x1, 0.2f );
 
-        m1.multiplyMV( m2 );
-        assertEquals( m1, m3, 0.01563f );
+        assertEquals( new Matrix4f( m1 ).multiplyLeftMV( m2 ), m2x1, 0.2f );
+        assertEquals( new Matrix4f( m2 ).multiplyLeftMV( m1 ), m1x2, 0.2f );
+
+        assertEquals( new Matrix4f( m1 ).multiplyLeftMV( m2 ), new Matrix4f( m2 ).multiplyMV( m1 ), 0.001f );
+        m1 = new Matrix4f(
+                2.34f, 23.637f, 3.2119f, 0,
+                -76.23f, 4.9803f, -32.0001f, 0,
+                87.293f, 5, -0.0083f, 0,
+                0, 0, 0, 1
+        );
+        m2 = new Matrix4f(
+                1.9909f, 842.594f, -3.42f, 0,
+                -88.8f, 87.3213f, 4.213f, 0,
+                -223.41f, -313.34f, 732.1234f, 0,
+                0, 0, 0, 1
+        );
+
+        assertEquals(
+                new Matrix4f( m1 ).transpose3x3().multiplyLeftMV( new Matrix4f( m2 ).transpose3x3() ),
+                new Matrix4f( m1 ).multiplyMV( m2 ).transpose3x3(), 0.001f );
     }
 }

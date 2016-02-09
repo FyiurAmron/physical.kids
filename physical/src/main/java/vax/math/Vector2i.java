@@ -25,6 +25,10 @@ public class Vector2i extends VectorInt {
         super( SIZE, data );
     }
 
+    public Vector2i ( boolean copyData, int[] data ) {
+        super( copyData, data );
+    }
+
     public Vector2i ( int x, int y ) {
         super( new int[]{ x, y } );
     }
