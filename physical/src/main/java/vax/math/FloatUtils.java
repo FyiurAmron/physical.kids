@@ -42,7 +42,18 @@ public class FloatUtils {
         return ret;
     }
 
-    public static float[] set ( float[] src, float[] dest ) {
+    /**
+     Copies one array into the other. Only <code>min(src.length, dest.length)</code> elements are copied, i.e.:
+     <p>
+     If dest.length &lt; src.length, only as many elements as can fit into dest are copied.
+     <p>
+     If dest.length &gt; src.length, only as many elements as src has are copied.
+
+     @param src
+     @param dest
+     @return
+     */
+    public static float[] copy ( float[] src, float[] dest ) {
         System.arraycopy( src, 0, dest, 0, Math.min( src.length, dest.length ) );
         return dest;
     }
