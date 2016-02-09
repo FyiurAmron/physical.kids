@@ -56,7 +56,7 @@ public class VectorInt {
     }
 
     public final VectorInt set ( int... data ) {
-        IntUtils.set( this.data, data );
+        IntUtils.copy( data, this.data );
         return this;
     }
 

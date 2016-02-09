@@ -71,7 +71,7 @@ public class VectorFloat {
     }
 
     public final VectorFloat set ( float... data ) {
-        FloatUtils.set( this.data, data );
+        FloatUtils.copy( data, this.data );
         return this;
     }
 
