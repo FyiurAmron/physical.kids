@@ -21,6 +21,10 @@ public class Vector3f extends VectorFloat {
         super( SIZE, data );
     }
 
+    public Vector3f ( boolean copyData, float[] data ) {
+        super( copyData, data );
+    }
+
     /**
      Creates a getCross product.
 

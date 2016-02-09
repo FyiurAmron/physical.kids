@@ -20,6 +20,10 @@ public class Vector2f extends VectorFloat {
         super( SIZE, data );
     }
 
+    public Vector2f ( boolean copyData, float[] data ) {
+        super( copyData, data );
+    }
+
     public Vector2f ( float x, float y ) {
         super( new float[]{ x, y } );
     }

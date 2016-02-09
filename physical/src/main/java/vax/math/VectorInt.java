@@ -14,6 +14,14 @@ public class VectorInt {
     }
 
     /**
+     @param copyData copies the data to new array if true; creates a wrapper VectorFloat otherwise.
+     @param data
+     */
+    public VectorInt ( boolean copyData, int[] data ) {
+        this.data = copyData ? IntUtils.copy( data ) : data;
+    }
+
+    /**
 
      @param requiredSize
      @param data
@@ -25,10 +33,13 @@ public class VectorInt {
         this.data = data;
     }
 
+    /**
+     Note: this constructor always copies the data from the vector provided.
+
+     @param vector
+     */
     public VectorInt ( VectorInt vector ) {
-        int len = vector.data.length;
-        this.data = new int[len];
-        System.arraycopy( vector.data, 0, this.data, 0, len );
+        this( IntUtils.copy( vector.data ) );
     }
 
     public int[] getData () {
@@ -44,12 +55,13 @@ public class VectorInt {
         this.data = data;
     }
 
-    public final void set ( int... data ) {
-        System.arraycopy( data, 0, this.data, 0, Math.min( this.data.length, data.length ) );
+    public final VectorInt set ( int... data ) {
+        IntUtils.set( this.data, data );
+        return this;
     }
 
-    public final void set ( VectorInt vector ) {
-        System.arraycopy( vector.data, 0, this.data, 0, Math.min( this.data.length, vector.data.length ) );
+    public final VectorInt set ( VectorInt vector ) {
+        return set( vector.data );
     }
 
     public void rotate ( int offset ) {

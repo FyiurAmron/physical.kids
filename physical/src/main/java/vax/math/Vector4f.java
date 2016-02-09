@@ -24,6 +24,10 @@ public class Vector4f extends VectorFloat {
         super( new float[]{ x, y, z, w } );
     }
 
+    public Vector4f ( boolean copyData, float[] data ) {
+        super( copyData, data );
+    }
+
     public float getX () {
         return data[0];
     }
