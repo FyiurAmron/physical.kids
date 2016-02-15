@@ -135,7 +135,8 @@ public class Matrix4fTest {
     @Test
     public void invertTest () {
         Matrix4f identity = new Matrix4f( true );
-        Matrix4f invertedIdentity = new Matrix4f( true ).invert();
+        Matrix4f invertedIdentity = new Matrix4f( true );
+        invertedIdentity.invert();
         assertEquals( identity, invertedIdentity );
 
         float[] matrixVals = {
@@ -159,7 +160,8 @@ public class Matrix4fTest {
     @Test
     public void invertMVTest () {
         Matrix4f identity = new Matrix4f( true );
-        Matrix4f invertedIdentity = new Matrix4f( true ).invertMV();
+        Matrix4f invertedIdentity = new Matrix4f( true );
+        invertedIdentity.invertMV();
         assertEquals( identity, invertedIdentity );
 
         float[] matrixVals = {
@@ -293,5 +295,19 @@ public class Matrix4fTest {
         assertEquals(
                 new Matrix4f( m1 ).transpose3x3().multiplyLeftMV( new Matrix4f( m2 ).transpose3x3() ),
                 new Matrix4f( m1 ).multiplyMV( m2 ).transpose3x3(), 0.001f );
+    }
+
+    @Test
+    public void lookAtTest () {
+        Matrix4f m = new Matrix4f();
+        m.setToLookAt( 1, 2, 3, 6, 7, 8, 0, 1, 0 );
+        float[] result = { // please note the visual transposition here!
+            -0.70710677f, -0.40824825f, -0.5773502f, 0,
+            0, 0.8164965f, -0.5773502f, 0,
+            0.70710677f, -0.40824825f, -0.5773502f, 0,
+            -1.4142134f, 0, 3.4641013f, 1
+        };
+
+        assertEquals( m, new Matrix4f( result ) );
     }
 }

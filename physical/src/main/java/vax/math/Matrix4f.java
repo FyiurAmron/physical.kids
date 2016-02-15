@@ -482,81 +482,156 @@ public class Matrix4f extends VectorFloat {
         return this;
     }
 
-    // TODO ported code below; check if valid/optimal
-    public Matrix4f lookAt ( Vector3f eye, Vector3f center, Vector3f up ) {
-        // Compute direction from position to lookAt
-        float dirX, dirY, dirZ;
-        dirX = center.getX() - eye.getX();
-        dirY = center.getY() - eye.getY();
-        dirZ = center.getZ() - eye.getZ();
-        // Normalize direction
-        float invDirLength = 1.0f / (float) Math.sqrt(
-                ( eye.getX() - center.getX() ) * ( eye.getX() - center.getX() )
-                + ( eye.getY() - center.getY() ) * ( eye.getY() - center.getY() )
-                + ( eye.getZ() - center.getZ() ) * ( eye.getZ() - center.getZ() ) );
+    public Matrix4f setToLookAt (
+            float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ ) {
+        setToLookAt( eyeX, eyeY, eyeZ, centerX, centerY, centerZ, data );
+        return this;
+    }
+
+    public Matrix4f setToLookAt (
+            Vector3f eye, Vector3f center ) {
+        float[] eyeData = eye.data, centerData = center.data;
+        setToLookAt( eyeData[0], eyeData[1], eyeData[2], centerData[0], centerData[1], centerData[2], data );
+        return this;
+    }
+
+    public Matrix4f setToLookAt (
+            float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX, float upY, float upZ ) {
+        setToLookAt( eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ, data );
+        return this;
+    }
+
+    public Matrix4f setToLookAt (
+            Vector3f eye, Vector3f center, Vector3f up ) {
+        float[] eyeData = eye.data, centerData = center.data, upData = up.data;
+        setToLookAt( eyeData[0], eyeData[1], eyeData[2], centerData[0], centerData[1], centerData[2], upData[0], upData[1], upData[2], data );
+        return this;
+    }
+
+    public static float[] setToLookAt ( float[] eye, float[] center, float[] up, float[] output ) {
+        return setToLookAt( eye[0], eye[1], eye[2], center[0], center[1], center[2], up[0], up[1], up[2], output );
+    }
+
+    public static float[] setToLookAt (
+            float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ, float upX, float upY, float upZ,
+            float[] output ) {
+        float //
+                dirX = eyeX - centerX,
+                dirY = eyeY - centerY,
+                dirZ = eyeZ - centerZ;
+        float invDirLength = 1.0f / FloatUtils.sqrt( dirX * dirX + dirY * dirY + dirZ * dirZ );
         dirX *= invDirLength;
         dirY *= invDirLength;
         dirZ *= invDirLength;
-        // right = direction x up
-        float rightX, rightY, rightZ;
-        rightX = dirY * up.getZ() - dirZ * up.getY();
-        rightY = dirZ * up.getX() - dirX * up.getZ();
-        rightZ = dirX * up.getY() - dirY * up.getX();
-        // normalize right
-        float invRightLength = 1.0f / (float) Math.sqrt( rightX * rightX + rightY * rightY + rightZ * rightZ );
+
+        float // right = dir x up
+                rightX = dirZ * upY - dirY * upZ,
+                rightY = dirX * upZ - dirZ * upX,
+                rightZ = dirY * upX - dirX * upY;
+        float invRightLength = 1.0f / FloatUtils.sqrt( rightX * rightX + rightY * rightY + rightZ * rightZ );
         rightX *= invRightLength;
         rightY *= invRightLength;
         rightZ *= invRightLength;
-        // up = right x direction
-        float upnX = rightY * dirZ - rightZ * dirY;
-        float upnY = rightZ * dirX - rightX * dirZ;
-        float upnZ = rightX * dirY - rightY * dirX;
 
-        // calculate right matrix elements
-        float rm00 = rightX;
-        float rm01 = upnX;
-        float rm02 = -dirX;
-        float rm10 = rightY;
-        float rm11 = upnY;
-        float rm12 = -dirY;
-        float rm20 = rightZ;
-        float rm21 = upnZ;
-        float rm22 = -dirZ;
-        float rm30 = -rightX * eye.getX() - rightY * eye.getY() - rightZ * eye.getZ();
-        float rm31 = -upnX * eye.getX() - upnY * eye.getY() - upnZ * eye.getZ();
-        float rm32 = dirX * eye.getX() + dirY * eye.getY() + dirZ * eye.getZ();
+        float // up2 = right x dir
+                up2X = rightZ * dirY - rightY * dirZ,
+                up2Y = rightX * dirZ - rightZ * dirX,
+                up2Z = rightY * dirX - rightX * dirY;
 
-        // perform optimized matrix multiplication
-        // compute last column first, because others do not depend on it
-        data[M41] = data[M11] * rm30 + data[M21] * rm31 + data[M31] * rm32 + data[M41];
-        data[M42] = data[M12] * rm30 + data[M22] * rm31 + data[M32] * rm32 + data[M42];
-        data[M43] = data[M13] * rm30 + data[M23] * rm31 + data[M33] * rm32 + data[M43];
-        data[M44] = data[M14] * rm30 + data[M24] * rm31 + data[M34] * rm32 + data[M44];
-        // introduce temporaries for dependent results
-        float nm00 = data[M11] * rm00 + data[M21] * rm01 + data[M31] * rm02;
-        float nm01 = data[M12] * rm00 + data[M22] * rm01 + data[M32] * rm02;
-        float nm02 = data[M13] * rm00 + data[M23] * rm01 + data[M33] * rm02;
-        float nm03 = data[M14] * rm00 + data[M24] * rm01 + data[M34] * rm02;
-        float nm10 = data[M11] * rm10 + data[M21] * rm11 + data[M31] * rm12;
-        float nm11 = data[M12] * rm10 + data[M22] * rm11 + data[M32] * rm12;
-        float nm12 = data[M13] * rm10 + data[M23] * rm11 + data[M33] * rm12;
-        float nm13 = data[M14] * rm10 + data[M24] * rm11 + data[M34] * rm12;
-        data[M31] = data[M11] * rm20 + data[M21] * rm21 + data[M31] * rm22;
-        data[M32] = data[M12] * rm20 + data[M22] * rm21 + data[M32] * rm22;
-        data[M33] = data[M13] * rm20 + data[M23] * rm21 + data[M33] * rm22;
-        data[M34] = data[M14] * rm20 + data[M24] * rm21 + data[M34] * rm22;
-        // set the rest of the matrix elements
-        data[M11] = nm00;
-        data[M12] = nm01;
-        data[M13] = nm02;
-        data[M14] = nm03;
-        data[M21] = nm10;
-        data[M22] = nm11;
-        data[M23] = nm12;
-        data[M24] = nm13;
+        output[0] = rightX;
+        output[1] = up2X;
+        output[2] = dirX;
+        output[3] = 0;
 
-        return this;
+        output[4] = rightY;
+        output[5] = up2Y;
+        output[6] = dirY;
+        output[7] = 0;
 
+        output[8] = rightZ;
+        output[9] = up2Z;
+        output[10] = dirZ;
+        output[11] = 0;
+
+        output[12] = -rightX * eyeX - rightY * eyeY - rightZ * eyeZ;
+        output[13] = -up2X * eyeX - up2Y * eyeY - up2Z * eyeZ;
+        output[14] = -dirX * eyeX - dirY * eyeY - dirZ * eyeZ;
+        output[15] = 1;
+
+        return output;
+    }
+
+    /**
+     Trivialized version with up always being (0,1,0). Slightly faster.
+
+     @param eye
+     @param center
+     @param output
+     @return
+     */
+    public static float[] setToLookAt ( float[] eye, float[] center, float[] output ) {
+        return setToLookAt( eye[0], eye[1], eye[2], center[0], center[1], center[2], output );
+    }
+
+    /**
+     Trivialized version with up always being (0,1,0). Slightly faster.
+
+     @param eyeX
+     @param eyeY
+     @param eyeZ
+     @param centerX
+     @param centerY
+     @param centerZ
+     @param output
+     @return
+     */
+    public static float[] setToLookAt (
+            float eyeX, float eyeY, float eyeZ, float centerX, float centerY, float centerZ,
+            float[] output ) {
+        float //
+                dirX = centerX - eyeX,
+                dirY = centerY - eyeY,
+                dirZ = centerZ - eyeZ;
+        float invDirLength = -1.0f / FloatUtils.sqrt( dirX * dirX + dirY * dirY + dirZ * dirZ );
+        dirX *= invDirLength;
+        dirY *= invDirLength;
+        dirZ *= invDirLength;
+
+        float //
+                rightX = dirZ,
+                //rightY = 0,
+                rightZ = -dirX;
+        float invRightLength = 1.0f / FloatUtils.sqrt( rightX * rightX + rightZ * rightZ );
+        rightX *= invRightLength;
+        //rightY *= invRightLength;
+        rightZ *= invRightLength;
+
+        float // up = right x direction
+                upnX = rightZ * dirY,
+                upnY = rightX * dirZ - rightZ * dirX,
+                upnZ = -rightX * dirY;
+
+        output[0] = rightX;
+        output[1] = upnX;
+        output[2] = dirX;
+        output[3] = 0;
+
+        output[4] = 0;
+        output[5] = upnY;
+        output[6] = dirY;
+        output[7] = 0;
+
+        output[8] = rightZ;
+        output[9] = upnZ;
+        output[10] = dirZ;
+        output[11] = 0;
+
+        output[12] = -rightX * eyeX - rightZ * eyeZ;
+        output[13] = -upnX * eyeX - upnY * eyeY - upnZ * eyeZ;
+        output[14] = -dirX * eyeX - dirY * eyeY - dirZ * eyeZ;
+        output[15] = 1;
+
+        return output;
     }
 
     /**
@@ -758,44 +833,70 @@ public class Matrix4f extends VectorFloat {
     }
 
     /**
-     @return this matrix for chaining
+     No inversion happens if the matrix is singular.
+
+     @return det of the input matrix (if 0, no inversion happens); 1.0f / return is the det of the inverted matrix
      */
-    public Matrix4f invert () {
-        invert( data );
-        return this;
-    }
-
-    public Matrix4f invertMV () {
-        invertMV( data );
-        return this;
-    }
-
-    public Matrix4f invert ( Matrix4f output ) {
-        invert( data, output.data );
-        return output;
-    }
-
-    public Matrix4f invertMV ( Matrix4f output ) {
-        invertMV( data, output.data );
-        return output;
-    }
-
-    public static float[] invert ( float[] data ) {
-        return invert( data, data );
+    public float invert () {
+        return invert( data );
     }
 
     /**
+     Matrix is assumed of model-view kind, with fourth row assumed to be (0,0,0,1);
+     much faster than regular invert.
+     No inversion happens if the matrix is singular.
 
-     @param data
-     @param output can be == data (values are cached, no UB here)
-     @return output for chaining
+     @return det of the input matrix (if 0, no inversion happens); 1.0f / return is the det of the inverted matrix
      */
-    public static float[] invert ( float[] data, float[] output ) {
+    public float invertMV () {
+        return invertMV( data );
+    }
+
+    /**
+     No inversion happens if the matrix is singular.
+
+     @param output
+     @return det of the input matrix (if 0, no inversion happens); 1.0f / return is the det of the inverted matrix
+     */
+    public float invert ( Matrix4f output ) {
+        return invert( data, output.data );
+    }
+
+    /**
+     Matrix is assumed of model-view kind, with fourth row assumed to be (0,0,0,1);
+     much faster than regular invert.
+     No inversion happens if the matrix is singular.
+
+     @param output
+     @return det of the input matrix (if 0, no inversion happens); 1.0f / return is the det of the inverted matrix
+     */
+    public float invertMV ( Matrix4f output ) {
+        return invertMV( data, output.data );
+    }
+
+    /**
+     No inversion happens if the matrix is singular.
+
+     @param matrix
+     @return det of the input matrix (if 0, no inversion happens); 1.0f / return is the det of the inverted matrix
+     */
+    public static float invert ( float[] matrix ) {
+        return invert( matrix, matrix );
+    }
+
+    /**
+     No inversion happens if the matrix is singular.
+
+     @param matrix
+     @param output can be == data (values are cached, no UB here)
+     @return det of the input matrix (if 0, no inversion happens); 1.0f / return is the det of the inverted matrix
+     */
+    public static float invert ( float[] matrix, float[] output ) {
         float //
-                dataM11 = data[M11], dataM21 = data[M21], dataM31 = data[M31], dataM41 = data[M41],
-                dataM12 = data[M12], dataM22 = data[M22], dataM32 = data[M32], dataM42 = data[M42],
-                dataM13 = data[M13], dataM23 = data[M23], dataM33 = data[M33], dataM43 = data[M43],
-                dataM14 = data[M14], dataM24 = data[M24], dataM34 = data[M34], dataM44 = data[M44];
+                dataM11 = matrix[M11], dataM21 = matrix[M21], dataM31 = matrix[M31], dataM41 = matrix[M41],
+                dataM12 = matrix[M12], dataM22 = matrix[M22], dataM32 = matrix[M32], dataM42 = matrix[M42],
+                dataM13 = matrix[M13], dataM23 = matrix[M23], dataM33 = matrix[M33], dataM43 = matrix[M43],
+                dataM14 = matrix[M14], dataM24 = matrix[M24], dataM34 = matrix[M34], dataM44 = matrix[M44];
 
         float //
                 a = dataM11 * dataM22 - dataM12 * dataM21,
@@ -811,21 +912,25 @@ public class Matrix4f extends VectorFloat {
                 k = dataM32 * dataM44 - dataM34 * dataM42,
                 l = dataM33 * dataM44 - dataM34 * dataM43;
 
-        float det = a * l - b * k + c * j + d * i - e * h + f * g;
-        det = 1.0f / det;
+        float det1 = a * l - b * k + c * j + d * i - e * h + f * g;
+        if ( det1 == 0 ) {
+            return 0;
+        }
 
-        a *= det;
-        b *= det;
-        c *= det;
-        d *= det;
-        e *= det;
-        f *= det;
-        g *= det;
-        h *= det;
-        i *= det;
-        j *= det;
-        k *= det;
-        l *= det;
+        float det2 = 1.0f / det1;
+
+        a *= det2;
+        b *= det2;
+        c *= det2;
+        d *= det2;
+        e *= det2;
+        f *= det2;
+        g *= det2;
+        h *= det2;
+        i *= det2;
+        j *= det2;
+        k *= det2;
+        l *= det2;
 
         output[0] = dataM22 * l - dataM23 * k + dataM24 * j;
         output[1] = dataM13 * k - dataM14 * j - dataM12 * l;
@@ -844,21 +949,22 @@ public class Matrix4f extends VectorFloat {
         output[14] = dataM42 * b - dataM43 * a - dataM41 * d;
         output[15] = dataM31 * d - dataM32 * b + dataM33 * a;
 
-        return output;
+        return det1;
     }
 
     /**
      Matrix is assumed of model-view kind, with fourth row assumed to be (0,0,0,1);
      much faster than regular invert.
+     No inversion happens if the matrix is singular.
 
-     @param data
-     @return output for chaining
+     @param matrix
+     @return det of the input matrix (if 0, no inversion happens); 1.0f / return is the det of the inverted matrix
      */
-    public static float[] invertMV ( float[] data ) {
+    public static float invertMV ( float[] matrix ) {
         float //
-                dataM11 = data[M11], dataM21 = data[M21], dataM31 = data[M31], dataM41 = data[M41],
-                dataM12 = data[M12], dataM22 = data[M22], dataM32 = data[M32], dataM42 = data[M42],
-                dataM13 = data[M13], dataM23 = data[M23], dataM33 = data[M33], dataM43 = data[M43];//,
+                dataM11 = matrix[M11], dataM21 = matrix[M21], dataM31 = matrix[M31], dataM41 = matrix[M41],
+                dataM12 = matrix[M12], dataM22 = matrix[M22], dataM32 = matrix[M32], dataM42 = matrix[M42],
+                dataM13 = matrix[M13], dataM23 = matrix[M23], dataM33 = matrix[M33], dataM43 = matrix[M43];//,
         //dataM14 = data[M14], dataM24 = data[M24], dataM34 = data[M34], dataM44 = data[M44];
 
         float //
@@ -875,58 +981,62 @@ public class Matrix4f extends VectorFloat {
         //k = dataM32,
         //l = dataM33;
 
-        float det = a * dataM33 - b * dataM32 + d * dataM31;
-        det = 1.0f / det;
+        float det1 = a * dataM33 - b * dataM32 + d * dataM31;
+        if ( det1 == 0 ) {
+            return 0;
+        }
+        float det2 = 1.0f / det1;
 
-        a *= det;
-        b *= det;
+        a *= det2;
+        b *= det2;
         //c *= det;
-        d *= det;
+        d *= det2;
         //e *= det;
         //f *= det;
-        g *= det;
-        h *= det;
+        g *= det2;
+        h *= det2;
         //i *= det;
-        j *= det;
+        j *= det2;
         //k *= det;
         //l *= det;
-        dataM31 *= det;
-        dataM32 *= det;
-        dataM33 *= det;
+        dataM31 *= det2;
+        dataM32 *= det2;
+        dataM33 *= det2;
 
-        data[0] = dataM22 * dataM33 - dataM23 * dataM32;
-        data[1] = dataM13 * dataM32 - dataM12 * dataM33;
-        data[2] = d;
+        matrix[0] = dataM22 * dataM33 - dataM23 * dataM32;
+        matrix[1] = dataM13 * dataM32 - dataM12 * dataM33;
+        matrix[2] = d;
         //data[3] = 0;
-        data[4] = dataM23 * dataM31 - dataM21 * dataM33;
-        data[5] = dataM11 * dataM33 - dataM13 * dataM31;
-        data[6] = -b;
+        matrix[4] = dataM23 * dataM31 - dataM21 * dataM33;
+        matrix[5] = dataM11 * dataM33 - dataM13 * dataM31;
+        matrix[6] = -b;
         //data[7] = 0;
-        data[8] = dataM21 * dataM32 - dataM22 * dataM31;
-        data[9] = dataM12 * dataM31 - dataM11 * dataM32;
-        data[10] = a;
+        matrix[8] = dataM21 * dataM32 - dataM22 * dataM31;
+        matrix[9] = dataM12 * dataM31 - dataM11 * dataM32;
+        matrix[10] = a;
         //data[11] = 0;
-        data[12] = dataM22 * h - dataM23 * g - dataM21 * j;
-        data[13] = dataM11 * j - dataM12 * h + dataM13 * g;
-        data[14] = dataM42 * b - dataM43 * a - dataM41 * d;
+        matrix[12] = dataM22 * h - dataM23 * g - dataM21 * j;
+        matrix[13] = dataM11 * j - dataM12 * h + dataM13 * g;
+        matrix[14] = dataM42 * b - dataM43 * a - dataM41 * d;
         //data[15] = 1;
 
-        return data;
+        return det1;
     }
 
     /**
      Matrix is assumed of model-view kind, with fourth row assumed to be (0,0,0,1);
      much faster than regular invert.
+     No inversion happens if the matrix is singular.
 
-     @param data
+     @param matrix
      @param output can be == data (values are cached, no UB here)
-     @return output for chaining
+     @return det of the input matrix (if 0, no inversion happens); 1.0f / return is the det of the inverted matrix
      */
-    public static float[] invertMV ( float[] data, float[] output ) {
+    public static float invertMV ( float[] matrix, float[] output ) {
         float //
-                dataM11 = data[M11], dataM21 = data[M21], dataM31 = data[M31], dataM41 = data[M41],
-                dataM12 = data[M12], dataM22 = data[M22], dataM32 = data[M32], dataM42 = data[M42],
-                dataM13 = data[M13], dataM23 = data[M23], dataM33 = data[M33], dataM43 = data[M43];//,
+                dataM11 = matrix[M11], dataM21 = matrix[M21], dataM31 = matrix[M31], dataM41 = matrix[M41],
+                dataM12 = matrix[M12], dataM22 = matrix[M22], dataM32 = matrix[M32], dataM42 = matrix[M42],
+                dataM13 = matrix[M13], dataM23 = matrix[M23], dataM33 = matrix[M33], dataM43 = matrix[M43];//,
         //dataM14 = data[M14], dataM24 = data[M24], dataM34 = data[M34], dataM44 = data[M44];
 
         float //
@@ -943,24 +1053,27 @@ public class Matrix4f extends VectorFloat {
         //k = dataM32,
         //l = dataM33;
 
-        float det = a * dataM33 - b * dataM32 + d * dataM31;
-        det = 1.0f / det;
+        float det1 = a * dataM33 - b * dataM32 + d * dataM31;
+        if ( det1 == 0 ) {
+            return 0;
+        }
+        float det2 = 1.0f / det1;
 
-        a *= det;
-        b *= det;
+        a *= det2;
+        b *= det2;
         //c *= det;
-        d *= det;
+        d *= det2;
         //e *= det;
         //f *= det;
-        g *= det;
-        h *= det;
+        g *= det2;
+        h *= det2;
         //i *= det;
-        j *= det;
+        j *= det2;
         //k *= det;
         //l *= det;
-        dataM31 *= det;
-        dataM32 *= det;
-        dataM33 *= det;
+        dataM31 *= det2;
+        dataM32 *= det2;
+        dataM33 *= det2;
 
         output[0] = dataM22 * dataM33 - dataM23 * dataM32;
         output[1] = dataM13 * dataM32 - dataM12 * dataM33;
@@ -979,7 +1092,7 @@ public class Matrix4f extends VectorFloat {
         output[14] = dataM42 * b - dataM43 * a - dataM41 * d;
         output[15] = 1;
 
-        return data;
+        return det1;
     }
 
     /**
@@ -1053,6 +1166,56 @@ public class Matrix4f extends VectorFloat {
      */
     public Matrix4f multiplyMV ( Matrix4f m2, Matrix4f output ) {
         multiplyMV( data, m2.data, output.data );
+        return output;
+    }
+
+    public Vector4f multiply ( Vector4f v ) {
+        float[] sourceData = v.data;
+        multiply( data, sourceData[0], sourceData[1], sourceData[2], sourceData[3], sourceData );
+        return v;
+    }
+
+    public Vector4f multiply ( Vector4f source, Vector4f output ) {
+        float[] sourceData = source.data;
+        multiply( data, sourceData[0], sourceData[1], sourceData[2], sourceData[3], output.data );
+        return output;
+    }
+
+    public Vector3f multiplyMV ( Vector3f v ) {
+        float[] sourceData = v.data;
+        multiplyMV( data, sourceData[0], sourceData[1], sourceData[2], sourceData );
+        return v;
+    }
+
+    public Vector3f multiplyMV ( Vector3f source, Vector3f output ) {
+        float[] sourceData = source.data;
+        multiplyMV( data, sourceData[0], sourceData[1], sourceData[2], output.data );
+        return output;
+    }
+
+    /**
+     Multiplies a given matrix by (x,y,z,w) vector, essentially transforming the vector by a transformation matrix.
+
+     @param matrix
+     @param x
+     @param y
+     @param z
+     @param w
+     @param output
+     @return
+     */
+    public static float[] multiply ( float[] matrix, float x, float y, float z, float w, float[] output ) {
+        output[0] = matrix[M11] * x + matrix[M21] * y + matrix[M31] * z + matrix[M41] * w;
+        output[1] = matrix[M12] * x + matrix[M22] * y + matrix[M32] * z + matrix[M42] * w;
+        output[2] = matrix[M13] * x + matrix[M23] * y + matrix[M33] * z + matrix[M43] * w;
+        output[3] = matrix[M14] * x + matrix[M24] * y + matrix[M34] * z + matrix[M44] * w;
+        return output;
+    }
+
+    public static float[] multiplyMV ( float[] matrix, float x, float y, float z, float[] output ) {
+        output[0] = matrix[M11] * x + matrix[M21] * y + matrix[M31] * z + matrix[M41];
+        output[1] = matrix[M12] * x + matrix[M22] * y + matrix[M32] * z + matrix[M42];
+        output[2] = matrix[M13] * x + matrix[M23] * y + matrix[M33] * z + matrix[M43];
         return output;
     }
 
@@ -1223,7 +1386,7 @@ public class Matrix4f extends VectorFloat {
      @return m1 for chaining
      */
     public static float[] multiplyLeftMV ( float[] m1, float[] m2 ) {
-         float //
+        float //
                 m1M11 = m1[M11], m1M21 = m1[M21], m1M31 = m1[M31],// m1M41 = m1[M41],
                 m1M12 = m1[M12], m1M22 = m1[M22], m1M32 = m1[M32],// m1M42 = m1[M42],
                 m1M13 = m1[M13], m1M23 = m1[M23], m1M33 = m1[M33];// m1M43 = m1[M43],
