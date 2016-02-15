@@ -17,9 +17,9 @@ public class SphereTriangleColliderTest {
             vertex2 = new Vector3f(),
             vertex3 = new Vector3f();
     Vector3f[] triangleVertices = new Vector3f[]{
-            vertex1,
-            vertex2,
-            vertex3
+        vertex1,
+        vertex2,
+        vertex3
     };
     TriangleBody tb = new TriangleBody( triangleVertices );
     SphereBody sb = new SphereBody( 1f, 1f );
@@ -36,7 +36,7 @@ public class SphereTriangleColliderTest {
     @Ignore
     @Test
     public void generalTest1 () {
-        System.out.println( "TEST START : general 1" );
+        println( "TEST START : general 1" );
         sb.getTransform().addTranslation( 0f, 0f, -1.0f );
 
         float tPosX = 2f;
@@ -58,7 +58,7 @@ public class SphereTriangleColliderTest {
     @Ignore
     @Test
     public void generalTest2 () {
-        System.out.println( "TEST START : general 2" );
+        println( "TEST START : general 2" );
         sb.getTransform().addTranslation( 0f, 0f, -0.1f );
 
         float tPosX = 2f;
@@ -76,33 +76,34 @@ public class SphereTriangleColliderTest {
         }
     }
 
-    @Test
-    public void threePlusTest () {
-        System.out.println( "TEST START : 3 +" );
-        sb.getTransform().addTranslation( 0f, 0f, -0.1f );
+    /*
+     @Test
+     public void threePlusTest () {
+     System.out.println( "TEST START : 3 +" );
+     sb.getTransform().addTranslation( 0f, 0f, -0.1f );
 
-        float tPosX = 2f;
-        vertex1.set( tPosX, 0f, 0f );
-        vertex2.set( tPosX, -1f, -1f );
-        vertex3.set( tPosX, +1f, -1f );
-        tb.setPoints( triangleVertices );
-        sb.applyImpulse( new Vector3f( 1f, 0f, 0f ) );
+     float tPosX = 2f;
+     vertex1.set( tPosX, 0f, 0f );
+     vertex2.set( tPosX, -1f, -1f );
+     vertex3.set( tPosX, +1f, -1f );
+     tb.setPoints( triangleVertices );
+     sb.applyImpulse( new Vector3f( 1f, 0f, 0f ) );
 
-        while( !bm.hasContact( sb, tb ) ) {
-            printBodyInfo();
-            bm.update( 0.1f );
-            if ( getEndCondition() ) {
-                break;
-            }
-        }
+     while( !bm.hasContact( sb, tb ) ) {
+     printBodyInfo();
+     bm.update( 0.1f );
+     if ( getEndCondition() ) {
+     break;
+     }
+     }
 
-        assertTrue( bm.hasContact( sb, tb ) );
-    }
-
+     assertTrue( bm.hasContact( sb, tb ) );
+     }
+     */
     @Ignore
     @Test
     public void twoPlusTestPositive1 () {
-        System.out.println( "TEST START : 2 + positive (1)" );
+        println( "TEST START : 2 + positive (1)" );
         sb.getTransform().addTranslation( 0f, 0f, 0.9f );
 
         float tPosX = 1f;
@@ -127,7 +128,7 @@ public class SphereTriangleColliderTest {
     @Ignore
     @Test
     public void twoPlusTestPositive2 () {
-        System.out.println( "TEST START : 2 + positive (2)" );
+        println( "TEST START : 2 + positive (2)" );
         sb.getTransform().addTranslation( 0f, 0.9f, 0.9f );
 
         float tPosX = 1f;
@@ -152,7 +153,7 @@ public class SphereTriangleColliderTest {
     @Ignore
     @Test
     public void twoPlusTestNegative1 () {
-        System.out.println( "TEST START : 2 + negative (1)" );
+        println( "TEST START : 2 + negative (1)" );
         sb.getTransform().addTranslation( 0f, 0f, 1.1f );
 
         float tPosX = 1f;
@@ -177,7 +178,7 @@ public class SphereTriangleColliderTest {
     @Ignore
     @Test
     public void twoPlusTestNegative2 () {
-        System.out.println( "TEST START : 2 + negative (2)" );
+        println( "TEST START : 2 + negative (2)" );
         sb.getTransform().addTranslation( 0f, 2f, 1.1f );
 
         float tPosX = 1f;
@@ -201,7 +202,7 @@ public class SphereTriangleColliderTest {
 
     @Test
     public void onePlusTestPositive () {
-        System.out.println( "TEST START : 1 + positive" );
+        println( "TEST START : 1 + positive" );
         sb.getTransform().addTranslation( 0f, 0f, 0.1f );
 
         float tPosX = 1f;
@@ -225,7 +226,7 @@ public class SphereTriangleColliderTest {
 
     @Test
     public void onePlusTestNegative () {
-        System.out.println( "TEST START : 1 + negative" );
+        println( "TEST START : 1 + negative" );
         sb.getTransform().addTranslation( 0f, 1f, 1.1f );
 
         float tPosX = 1f;
@@ -247,16 +248,21 @@ public class SphereTriangleColliderTest {
         assertFalse( bm.hasContact( sb, tb ) );
     }
 
+    public void println ( String s ) {
+        // System.out.println(s);
+    }
 
-    public void printBodyInfo(){
-        System.out.printf( " Sphere: pos( %.2f %.2f %.2f ) velocity ( %.2f %.2f %.2f ) ",
-                sb.getTransform().getTranslationX(),
-                sb.getTransform().getTranslationY(),
-                sb.getTransform().getTranslationZ(),
-                sb.getVelocity().getX(),
-                sb.getVelocity().getY(),
-                sb.getVelocity().getZ()
-        );
+    public void printBodyInfo () {
+        /*
+         System.out.printf( " Sphere: pos( %.2f %.2f %.2f ) velocity ( %.2f %.2f %.2f ) ",
+         sb.getTransform().getTranslationX(),
+         sb.getTransform().getTranslationY(),
+         sb.getTransform().getTranslationZ(),
+         sb.getVelocity().getX(),
+         sb.getVelocity().getY(),
+         sb.getVelocity().getZ()
+         );
+         */
     }
 
     public boolean getEndCondition () {
