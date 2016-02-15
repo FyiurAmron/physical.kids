@@ -142,6 +142,7 @@ public class SphereTriangleCollider extends Collider<SphereBody, TriangleBody> {
     }
 
     public void printCollisionResult ( Boolean collision, float spherePlaneDistance, int sameSideCount, Float additionalDistance ) {
+        /*
         String s = "";
         s += collision == null ? "NOTHING\t" : collision ? "COLLISION\t" : " --- \t";
         s += " planeDistance: %.2f ";
@@ -157,6 +158,7 @@ public class SphereTriangleCollider extends Collider<SphereBody, TriangleBody> {
             System.out.printf( s, spherePlaneDistance, sameSideCount );
 //            System.out.printf( s, spherePlaneDistance, sameSideCount, sbPlaneCenter.getX(), sbPlaneCenter.getY(), sbPlaneCenter.getZ() );
         }
+*/
     }
 
     @Override
