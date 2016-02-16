@@ -184,7 +184,7 @@ public class Matrix4fTest {
 
     @Test
     public void multiplyTest () {
-        float[] M1arr = {
+        float[] M1arr = { // note: transposition is needed to match this actual matrix in memory
             2.34f, 23.637f, 3.2119f, -536,
             -76.23f, 4.9803f, -32.0001f, 0.11922f,
             87.293f, 5, -0.0083f, 5.2394f,
@@ -209,8 +209,8 @@ public class Matrix4fTest {
             31588.97404f, 1964.0383000000002f, -923.819024f, -44636.672148f
         };
 
-        Matrix4f m1 = new Matrix4f( true, M1arr ), m2 = new Matrix4f( true, M2arr );
-        Matrix4f m1x2 = new Matrix4f( true, M1xM2arr ), m2x1 = new Matrix4f( true, M2xM1arr );
+        Matrix4f m1 = new Matrix4f( true, M1arr ).transpose(), m2 = new Matrix4f( true, M2arr ).transpose();
+        Matrix4f m1x2 = new Matrix4f( true, M1xM2arr ).transpose(), m2x1 = new Matrix4f( true, M2xM1arr ).transpose();
         Matrix4f id = new Matrix4f( true ), zero = new Matrix4f();
 
         assertEquals( new Matrix4f( zero ).multiply( m1 ), zero );
@@ -232,7 +232,7 @@ public class Matrix4fTest {
 
     @Test
     public void multiplyMVTest () {
-        float[] M1arr = {
+        float[] M1arr = { // note the actual matrices are transposed vs what's visible here!
             2.34f, 23.637f, 3.2119f, -536,
             -76.23f, 4.9803f, -32.0001f, 0.11922f,
             87.293f, 5, -0.0083f, 5.2394f,
@@ -244,16 +244,17 @@ public class Matrix4fTest {
             -223.41f, -313.34f, 732.1234f, 5374,
             0, 0, 0, 1
         };
-        float[] M1xM2arr = { // note the reversed order vs multiplyTest() due to the transpositions needed
-            -64524.824f, 4226.3298f, -26956.669f, -981.86579f,
-            -6496.5293f, -1643.0143f, -3079.542f, 47630.173f,
-            87272.377f, -3180.6524f, 9303.2641f, 128920.29f,
-            0, 0, 0, 1
-        };
-        float[] M2xM1arr = {
+
+        float[] M1xM2arr = {
             -2811.8775f, 3029.2668f, 2443.087f, 16752.132f,
             6555.1254f, -53769.143f, -23146.333f, -172171.44f,
             -268.35406f, 73991.765f, -283.55368f, 202.63064f,
+            0, 0, 0, 1
+        };
+        float[] M2xM1arr = {
+            -64524.824f, 4226.3298f, -26956.669f, -981.86579f,
+            -6496.5293f, -1643.0143f, -3079.542f, 47630.173f,
+            87272.377f, -3180.6524f, 9303.2641f, 128920.29f,
             0, 0, 0, 1
         };
 
@@ -264,10 +265,10 @@ public class Matrix4fTest {
         Matrix4f h = new Matrix4f( zero );
         h.setTranslation( m1.getTranslation( new Vector3f() ) );
 
-        assertEquals( new Matrix4f( zero ).multiplyMV( m1 ), h );
+        assertEquals( new Matrix4f( zero ).multiplyLeftMV( m1 ), h );
         h.setToZero();
         h.setValue( 1, Matrix4f.M44 );
-        assertEquals( new Matrix4f( m1 ).multiplyMV( zero ), h );
+        assertEquals( new Matrix4f( m1 ).multiplyLeftMV( zero ), h );
 
         assertEquals( m1, new Matrix4f( m1 ).multiplyMV( id ) );
         assertEquals( m1, new Matrix4f( id ).multiplyMV( m1 ) );

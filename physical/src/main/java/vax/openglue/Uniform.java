@@ -1,5 +1,6 @@
 package vax.openglue;
 
+import java.lang.reflect.Field;
 import vax.math.*;
 
 /**
@@ -14,6 +15,35 @@ public interface Uniform {
     String getPrefix ();
 
     String toShaderString ();
+
+    static Uniform from ( Field field, Object value ) {
+        try {
+            return from( field.getName(), field.get( value ) );
+        } catch (IllegalArgumentException | IllegalAccessException ex) {
+            throw new RuntimeException( ex );
+        }
+    }
+
+    static Uniform from ( String name, Object value ) {
+        if ( value instanceof Value1i ) {
+            return new U1i( name, (Value1i) value );
+        } else if ( value instanceof Vector2i ) {
+            return new U2i( name, (Vector2i) value );
+        } else if ( value instanceof Value1f ) {
+            return new U1f( name, (Value1f) value );
+        } else if ( value instanceof Vector2f ) {
+            return new U2f( name, (Vector2f) value );
+        } else if ( value instanceof Vector3f ) {
+            return new U3f( name, (Vector3f) value );
+        } else if ( value instanceof Vector4f ) {
+            return new U4f( name, (Vector4f) value );
+        } else if ( value instanceof Matrix4f ) {
+            return new UMatrix4f( name, (Matrix4f) value );
+        }
+
+        throw new IllegalArgumentException( ( ( value instanceof Uniform ) ? "uknown uniform type: '" : "not a Uniform type: '" )
+                + value.getClass() + "'" );
+    }
 
     static U1i from ( String name, Value1i value ) {
         return new U1i( name, value );
@@ -113,7 +143,7 @@ public interface Uniform {
 
         @Override
         public void updateGL ( OpenGLUE gl, int uniformLocation ) {
-            gl.glUniform1f( uniformLocation, gl.ueGetGLUtils().wrap( value.getValue() ) );
+            gl.glUniform1f( uniformLocation, gl.ueGetGLUtils().wrap( value.get() ) );
         }
 
         @Override
