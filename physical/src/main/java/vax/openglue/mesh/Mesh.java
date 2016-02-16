@@ -45,7 +45,7 @@ public class Mesh implements Renderable {
 
     protected final Matrix4f transform = new Matrix4f( true );
 
-    private Action<Mesh> updateAction, prerenderAction;
+    private Action<Mesh> updateAction, updateUniformAction;
     private Material material;
     protected PrimitiveType primitiveType = PrimitiveType.Triangles;
     protected int //
@@ -88,6 +88,14 @@ public class Mesh implements Renderable {
         this.updateAction = updateAction;
     }
 
+    public Action<Mesh> getUpdateUniformAction () {
+        return updateUniformAction;
+    }
+
+    public void setUpdateUniformAction ( Action<Mesh> updateUniformAction ) {
+        this.updateUniformAction = updateUniformAction;
+    }
+
     public Matrix4f getTransform () {
         return transform;
     }
@@ -111,6 +119,9 @@ public class Mesh implements Renderable {
     public void update () {
         if ( updateAction != null ) {
             updateAction.exec( this );
+        }
+        if ( updateUniformAction != null ) {
+            updateUniformAction.exec( this );
         }
     }
 
@@ -187,8 +198,8 @@ public class Mesh implements Renderable {
     }
 
     public void writeOBJ ( String filename ) throws IOException {
-        try (FileOutputStream fos = new FileOutputStream( filename + ".obj" );
-                DataOutputStream dos = new DataOutputStream( fos )) {
+        try ( FileOutputStream fos = new FileOutputStream( filename + ".obj" );
+                DataOutputStream dos = new DataOutputStream( fos ) ) {
             dos.writeBytes( "# created by " + Main.APP_NAME + "\n" );
             int tri_cnt = meshData.getVertexCount() / VERTEX_COUNT;
             dos.writeBytes( "# " + meshData.getVertexCount() + " vertex total == normals == UVs\n"
