@@ -7,6 +7,7 @@ uniform mat4 modelMatrix;
 
 uniform vec4 ambientColor;
 uniform vec4 lightColor;
+uniform vec4 modelColor;
 uniform float shininess;
 
 uniform vec3 lightDirUnit;
@@ -27,7 +28,7 @@ in vec3 raw_Position;
 out vec4 out_fragColor;
 
 void main() {
-    //vec4 diffuseColor = vec4(0.8,0.6,0,1); // Gold Shader :P
+    //vec4 diffuseColor = vec4(0.8,0.6,0,1); // Gold Shader +_+
     vec4 textureColor = texture(textureSampler, uv);
     //textureColor = vec4(uv.x,uv.y,0,1);
     float nl = dot( lightDirUnit, normal );
@@ -38,7 +39,7 @@ void main() {
     vec4 diffuseColor, specularColor;
     if ( nl > 0 ) {
         vec3 viewDir = normalize(vec3(-viewMatrix[3] - modelMatrix * vec4(raw_Position,1)));
-        diffuseColor = vec4( lightColor * clamp( nl, 0.0, 1.0 ) );
+        diffuseColor = vec4( lightColor * clamp( nl, 0.0, 1.0 ) ) * modelColor;
         specularColor = 0.5 * clamp( vec4(pow(max(0.0, dot(reflect(-lightDirUnit, normal), viewDir)), shininess)), 0.0, 1.0 );
     } else {
         diffuseColor = vec4( 0,0,0,1 );
@@ -50,10 +51,14 @@ void main() {
     mouseHighlight *= 0.5;
     mouseHighlight += 1;
 */
-//out_fragColor = vec4(uv.x,uv.y,0,1);
-//out_fragColor = textureColor;
 
     out_fragColor = //mouseHighlight +
        vec4( clamp( textureColor * clamp( diffuseColor + ambientColor, 0.0, 1.0 ) + specularColor, 0.0, 1.0 ) );
+
+    // IN CASE OF DEBUG:
+    //out_fragColor = vec4(uv.x,uv.y,0,1);
+    //out_fragColor = vec4(normal,1);
+    //out_fragColor = textureColor;
+    //out_fragColor = modelColor;
 }
 

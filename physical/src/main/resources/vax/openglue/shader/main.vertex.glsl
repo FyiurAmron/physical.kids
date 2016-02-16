@@ -4,6 +4,7 @@ precision highp float;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;
+uniform mat4 combinedMatrix; // = projectionMatrix * viewMatrix * modelMatrix;
 
 uniform float time;
 uniform float random;
@@ -18,12 +19,11 @@ out vec4 outPosition;
 out vec3 raw_Position;
 
 void main() {
-    mat4 combined = projectionMatrix * viewMatrix;
     normal = (modelMatrix * vec4(in_normal, 0)).xyz;
     uv = in_uv;
 
     raw_Position = in_position;
-    outPosition = combined * modelMatrix * vec4(in_position, 1);
+    outPosition = combinedMatrix * vec4(in_position, 1);
     gl_Position = outPosition;
 }
 
