@@ -10,11 +10,11 @@ public class Value1f {
         this.value = value;
     }
 
-    public void setValue ( float val ) {
+    public void set ( float val ) {
         this.value = val;
     }
 
-    public float getValue () {
+    public float get () {
         return this.value;
     }
 
