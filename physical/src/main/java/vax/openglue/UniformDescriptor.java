@@ -20,7 +20,9 @@ public interface UniformDescriptor {
     }
 
     class Reflective {
-        public ArrayList<Uniform> perRenderUniforms = new ArrayList<>(), perMeshUniforms = new ArrayList<>();
+        public ArrayList<Uniform> //
+                perRenderUniforms = new ArrayList<>(),
+                perMeshUniforms = new ArrayList<>();
 
         public void init () {
             for( Field f : getClass().getFields() ) {

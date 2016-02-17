@@ -17,7 +17,7 @@ public class RectangleMesh extends Mesh {
     }
 
     public RectangleMesh ( float[] p1, float[] p2, float[] p3, int segU, int segV ) {
-        this( p1, p2, p3, segU, segV, RECT_VT_PROTO_1);
+        this( p1, p2, p3, segU, segV, RECT_VT_PROTO_1 );
     }
 
     /**

@@ -3,6 +3,7 @@ package vax.openglue;
 import java.util.HashSet;
 
 import vax.openglue.mesh.Mesh;
+import vax.openglue.mesh.MeshInstance;
 import vax.openglue.mesh.MeshSorter;
 import vax.openglue.shader.ShaderProgram;
 import vax.physical.ResourceShaderProgram;
@@ -12,8 +13,9 @@ import vax.physical.ResourceShaderProgram;
  @author toor
  */
 public class MeshBatch implements EventListenerGL {
-    private final HashSet<Mesh> nonAlphaBlendedMeshes;
-    private final HashSet<Mesh> alphaBlendedMeshes;
+    private final HashSet<MeshInstance> nonAlphaBlendedMeshInstances;
+    private final HashSet<MeshInstance> alphaBlendedMeshInstances;
+    private final HashSet<Mesh> meshes;
     private final MeshSorter meshSorter;
     private final ShaderProgram shaderProgram;
     private final HashSet<Uniform> perRenderUniforms;
@@ -21,14 +23,16 @@ public class MeshBatch implements EventListenerGL {
     private final UniformManager uniformManager;
 
     public MeshBatch ( String shaderName, MeshSorter meshSorter ) {
-        this( new HashSet<>(), new HashSet<>(), meshSorter, new ResourceShaderProgram( shaderName ),
+        this( new HashSet<>(), new HashSet<>(), new HashSet<>(), meshSorter, new ResourceShaderProgram( shaderName ),
                 new HashSet<>(), new HashSet<>(), new UniformManager() );
     }
 
-    public MeshBatch ( HashSet<Mesh> nonAlphaBlendedMeshes, HashSet<Mesh> alphaBlendedMeshes, MeshSorter meshSorter,
+    public MeshBatch ( HashSet<MeshInstance> nonAlphaBlendedMeshes, HashSet<MeshInstance> alphaBlendedMeshes, HashSet<Mesh> meshes,
+            MeshSorter meshSorter,
             ShaderProgram shaderProgram, HashSet<Uniform> perPassUniforms, HashSet<Uniform> perMeshUniforms, UniformManager uniformManager ) {
-        this.nonAlphaBlendedMeshes = nonAlphaBlendedMeshes;
-        this.alphaBlendedMeshes = alphaBlendedMeshes;
+        this.nonAlphaBlendedMeshInstances = nonAlphaBlendedMeshes;
+        this.alphaBlendedMeshInstances = alphaBlendedMeshes;
+        this.meshes = meshes;
         this.meshSorter = meshSorter;
         this.shaderProgram = shaderProgram;
         this.perRenderUniforms = perPassUniforms;
@@ -56,16 +60,16 @@ public class MeshBatch implements EventListenerGL {
 
      @return explicitly mutable batch's mesh set
      */
-    public HashSet<Mesh> getAlphaBlendedMeshes () {
-        return alphaBlendedMeshes;
+    public HashSet<MeshInstance> getAlphaBlendedMeshInstances () {
+        return alphaBlendedMeshInstances;
     }
 
     /**
 
      @return explicitly mutable batch's mesh set
      */
-    public HashSet<Mesh> getNonAlphaBlendedMeshes () {
-        return nonAlphaBlendedMeshes;
+    public HashSet<MeshInstance> getNonAlphaBlendedMeshInstances () {
+        return nonAlphaBlendedMeshInstances;
     }
 
     @Override
@@ -77,11 +81,15 @@ public class MeshBatch implements EventListenerGL {
         uniformManager.addUniforms( perMeshUniforms );
         uniformManager.init( gl, shaderProgram );
 
-        for( Mesh m : nonAlphaBlendedMeshes ) {
-            m.init( gl );
+        for( MeshInstance m : nonAlphaBlendedMeshInstances ) {
+            meshes.add( m.getMesh() );
         }
 
-        for( Mesh m : alphaBlendedMeshes ) {
+        for( MeshInstance m : alphaBlendedMeshInstances ) {
+            meshes.add( m.getMesh() );
+        }
+
+        for( Mesh m : meshes ) {
             m.init( gl );
         }
     }
@@ -93,9 +101,9 @@ public class MeshBatch implements EventListenerGL {
             uniformManager.updateGl( gl, u );
         }
 
-        if ( !nonAlphaBlendedMeshes.isEmpty() ) {
+        if ( !nonAlphaBlendedMeshInstances.isEmpty() ) {
             gl.glDisable( OpenGL.Constants.GL_BLEND );
-            for( Mesh m : meshSorter.sort( nonAlphaBlendedMeshes ) ) {
+            for( MeshInstance m : meshSorter.sort( nonAlphaBlendedMeshInstances ) ) {
                 m.update();
                 for( Uniform u : perMeshUniforms ) {
                     uniformManager.updateGl( gl, u );
@@ -104,9 +112,9 @@ public class MeshBatch implements EventListenerGL {
             }
         }
 
-        if ( !alphaBlendedMeshes.isEmpty() ) {
+        if ( !alphaBlendedMeshInstances.isEmpty() ) {
             gl.glEnable( OpenGL.Constants.GL_BLEND );
-            for( Mesh m : meshSorter.sort( alphaBlendedMeshes, false ) ) {
+            for( MeshInstance m : meshSorter.sort( alphaBlendedMeshInstances, false ) ) {
                 m.update();
                 for( Uniform u : perMeshUniforms ) {
                     uniformManager.updateGl( gl, u );
@@ -122,10 +130,7 @@ public class MeshBatch implements EventListenerGL {
     }
 
     public void disposeMeshes ( OpenGLUE gl ) {
-        for( Mesh mesh : nonAlphaBlendedMeshes ) {
-            mesh.dispose( gl );
-        }
-        for( Mesh mesh : alphaBlendedMeshes ) {
+        for( Mesh mesh : meshes ) {
             mesh.dispose( gl );
         }
     }

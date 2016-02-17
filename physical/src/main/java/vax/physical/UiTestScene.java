@@ -8,7 +8,6 @@ import vax.openglue.*;
 import vax.openglue.constants.ClearBufferMask;
 import vax.openglue.mesh.*;
 import vax.physical.resource.Resource;
-import vax.util.Action;
 
 /**
 
@@ -29,7 +28,7 @@ public class UiTestScene implements EventListenerGL {
     // misc junk
     private Texture dilloTex;
     private Material dilloMaterial;
-    private Mesh ball;
+    private MeshInstance ball;
     private Framebuffer framebuffer;
     private Material framebufferMaterial;
     private final WindowGLUE.Settings initialSettings;
@@ -57,70 +56,67 @@ public class UiTestScene implements EventListenerGL {
 
         TextureData<?> dilloTD = imageGlue.readTextureData( "angry-armadillo.png", Resource.class );
         TextureData<?> leftInterfaceTD = imageGlue.readTextureData( "interface.png", Resource.class );
+        TextureData<?> squareHairTD = imageGlue.readTextureData( "squarehair.png", Resource.class );
 
-
-        /* SphereMesh */ ball = new SphereMesh( /* 0.1f */ 0.3f, 40, 40, true );
+        SphereMesh ballMesh = new SphereMesh( /* 0.1f */ 0.3f, 40, 40, true );
+        ball = new MeshInstance( ballMesh );
         ///* SphereMesh */ ball = new PrismMesh( new float[]{ 0, 0, 0 }, new float[]{ -0.5f, 0, -0.5f }, new float[]{ 0.5f, 0, -0.5f }, 0.3f );
         RectangleMesh leftInterface = new RectangleMesh( -1f, -2f, RectangleMesh.RECT_VT_PROTO_2 );
         //RectangleMesh rightInterface = new RectangleMesh( -1f, -2f, RectangleMesh.RECT_VT_PROTO_2 );
-        leftInterface.getTransform().setTranslationX( -0.5f );
-        leftInterface.getTransform().setTranslationY( 1f );
+        MeshInstance leftInterfaceMI = new MeshInstance( leftInterface );
+        leftInterfaceMI.getTransform().setTranslationX( -0.5f );
+        leftInterfaceMI.getTransform().setTranslationY( 1f );
         //rightInterface.getTransform().setTranslationX( -0.5f );
         //rightInterface.getTransform().setTranslationY( 1f );
         //rightInterface.getTransform().setTranslationZ( -1f );
 
         RectangleMesh overlay = new RectangleMesh( -2f, -2f, RectangleMesh.RECT_VT_PROTO_2 );
+        MeshInstance overlayMI = new MeshInstance( overlay );
         //overlay.getTransform().setTranslationX( -2f );
-        overlay.getTransform().setTranslationY( 1f );
+        overlayMI.getTransform().setTranslationY( 1f );
 
 
         //RectangleMesh leftInterface = new RectangleMesh( 2, 2, 2 );
 
         /* Texture */ dilloTex = new Texture( dilloTD, TextureParameters.TRILINEAR_ANISO_CLAMP, true );
+        Texture squareHairTex = new Texture( squareHairTD, TextureParameters.TRILINEAR_ANISO_CLAMP, true );
         Texture //
                 interfaceLeftTex = new Texture( leftInterfaceTD, TextureParameters.TRILINEAR_ANISO_CLAMP, true );
         dilloMaterial = new Material( dilloTex );
+        Material squareHairMaterial = new Material( squareHairTex );
         //dilloMaterial.color.set( 1, 0, 0, 1);
-        Action<Mesh> uniformUpdater = (Mesh mesh) -> {
-            Material mat = mesh.getMaterial();
-            if ( mat != null ) {
-                cud.shininess.set( mat.shininess );
-                cud.modelColor.set( mat.color );
-            }
-            cud.modelMatrix.set( mesh.getTransform() );
-            cud.updateCombinedMatrix();
-        };
         ball.setMaterial( dilloMaterial );
         Material ilt = new Material( interfaceLeftTex );
-        leftInterface.setMaterial( ilt );
+        leftInterfaceMI.setMaterial( ilt );
         //rightInterface.setMaterial( new Material( interfaceLeftTex ) );
         //rightInterface.setMaterial( ilt );
 
         textures.add( dilloTex );
         textures.add( interfaceLeftTex );
+        textures.add( squareHairTex );
 
         for( Texture tex : textures ) {
             tex.init( gl );
         }
 
-        ball.setUpdateAction( (Mesh target) -> {
+        ball.setUpdateAction( (MeshInstance target) -> {
             target.getTransform().setTranslationZ( (float) Math.sin( getTime() ) );
             //trans.setTranslationZ( -1.5f + (float) Math.cos( t ) );
         } );
-        ball.setUpdateUniformAction( uniformUpdater );
-        leftInterface.setUpdateUniformAction( uniformUpdater );
+        ball.setUpdateUniformAction( cud.uniformUpdater );
+        leftInterfaceMI.setUpdateUniformAction( cud.uniformUpdater );
         //rightInterface.setUpdateUniformAction( uniformUpdater );
-        overlay.setUpdateUniformAction( uniformUpdater );
+        overlayMI.setUpdateUniformAction( cud.uniformUpdater );
 
-        meshes.add( ball );
+        meshes.add( ballMesh );
         meshes.add( leftInterface );
         //meshes.add( rightInterface );
-        mainMeshBatch.getNonAlphaBlendedMeshes().add( ball );
-        mainMeshBatch.getAlphaBlendedMeshes().add( leftInterface );
-        //mainMeshBatch.getAlphaBlendedMeshes().add( rightInterface );
-        //mainMeshBatch.getNonAlphaBlendedMeshes().add( leftInterface );
-        noiseMeshBatch.getAlphaBlendedMeshes().add( overlay );
-        overlayMeshBatch.getAlphaBlendedMeshes().add( overlay );
+        mainMeshBatch.getNonAlphaBlendedMeshInstances().add( ball );
+        mainMeshBatch.getAlphaBlendedMeshInstances().add( leftInterfaceMI );
+        //mainMeshBatch.getAlphaBlendedMeshInstances().add( rightInterface );
+        //mainMeshBatch.getNonAlphaBlendedMeshInstances().add( leftInterface );
+        noiseMeshBatch.getAlphaBlendedMeshInstances().add( overlayMI );
+        overlayMeshBatch.getAlphaBlendedMeshInstances().add( overlayMI );
 
         float aspectRatio = initialSettings.getAspectRatio();
         //gl.glPolygonMode( OpenGLUE.Constants.GL_FRONT_AND_BACK, OpenGLUE.Constants.GL_LINE ); // DEBUG

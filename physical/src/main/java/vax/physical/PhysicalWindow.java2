@@ -34,10 +34,10 @@ public class PhysicalWindow {
 
     WindowGLUE.Settings settings = new WindowGLUE.Settings( APP_NAME + " v0.1", SIZE_X, SIZE_Y );
     WindowGLUE window;
-    SceneManager sm;
+    PhysicsTestScene sm;
 
     public PhysicalWindow () {
-        sm = new SceneManager( settings );
+        sm = new PhysicsTestScene( settings );
         window = new JoglWindowGLUE( sm, settings );
     }
 

@@ -1095,80 +1095,6 @@ public class Matrix4f extends VectorFloat {
         return det1;
     }
 
-    /**
-     Does a self-mutable left side multiplication of this matrix, i.e. this = this M2
-
-     @param m2
-     @return this matrix for chaining
-     */
-    public Matrix4f multiply ( Matrix4f m2 ) {
-        multiply( data, m2.data );
-        return this;
-    }
-
-    /**
-     Does a self-mutable right side multiplication of this matrix, i.e. this = M1 this
-
-     @param m1
-     @return this matrix for chaining
-     */
-    public Matrix4f multiplyLeft ( Matrix4f m1 ) {
-        multiplyLeft( data, m1.data );
-        return this;
-    }
-
-    /**
-     Does a non-mutating multiplication, i.e. output = this M2
-
-     @param m2
-     @param output
-     @return output for chaining
-     */
-    public Matrix4f multiply ( Matrix4f m2, Matrix4f output ) {
-        multiply( data, m2.data, output.data );
-        return output;
-    }
-
-    /**
-     Does a self-mutable left side multiplication of this matrix, i.e. this = this M2
-
-     @param m2
-     @return this matrix for chaining
-     */
-    public Matrix4f multiplyMV ( Matrix4f m2 ) {
-        multiplyMV( data, m2.data );
-        return this;
-    }
-
-    /**
-     Does a self-mutable right side multiplication of this matrix, i.e. this = M1 this
-     <p>
-     Both matrices are assumed of model-view kind, with fourth row assumed to be (0,0,0,1);
-     this is about 25% faster than regular matrix multiply.
-
-     @param m1
-     @return this matrix for chaining
-     */
-    public Matrix4f multiplyLeftMV ( Matrix4f m1 ) {
-        multiplyLeftMV( data, m1.data );
-        return this;
-    }
-
-    /**
-     Does a non-mutating multiplication, i.e. output = this M2
-     <p>
-     Both matrices are assumed of model-view kind, with fourth row assumed to be (0,0,0,1);
-     this is about 25% faster than regular matrix multiply.
-
-     @param m2
-     @param output
-     @return output for chaining
-     */
-    public Matrix4f multiplyMV ( Matrix4f m2, Matrix4f output ) {
-        multiplyMV( data, m2.data, output.data );
-        return output;
-    }
-
     public Vector4f multiply ( Vector4f v ) {
         float[] sourceData = v.data;
         multiply( data, sourceData[0], sourceData[1], sourceData[2], sourceData[3], sourceData );
@@ -1190,6 +1116,80 @@ public class Matrix4f extends VectorFloat {
     public Vector3f multiplyMV ( Vector3f source, Vector3f output ) {
         float[] sourceData = source.data;
         multiplyMV( data, sourceData[0], sourceData[1], sourceData[2], output.data );
+        return output;
+    }
+
+    /**
+     Does a self-mutable left side multiplication of this matrix, i.e. this = this M2
+
+     @param m
+     @return this matrix for chaining
+     */
+    public Matrix4f multiply ( Matrix4f m ) {
+        multiply( data, m.data );
+        return this;
+    }
+
+    /**
+     Does a self-mutable right side multiplication of this matrix, i.e. this = M1 this
+
+     @param m
+     @return this matrix for chaining
+     */
+    public Matrix4f multiplyLeft ( Matrix4f m ) {
+        multiplyLeft( data, m.data );
+        return this;
+    }
+
+    /**
+     Does a non-mutating multiplication, i.e. output = this M2
+
+     @param m
+     @param output
+     @return output for chaining
+     */
+    public Matrix4f multiply ( Matrix4f m, Matrix4f output ) {
+        multiply( data, m.data, output.data );
+        return output;
+    }
+
+    /**
+     Does a self-mutable left side multiplication of this matrix, i.e. this = this M2
+
+     @param m
+     @return this matrix for chaining
+     */
+    public Matrix4f multiplyMV ( Matrix4f m ) {
+        multiplyMV( data, m.data );
+        return this;
+    }
+
+    /**
+     Does a self-mutable right side multiplication of this matrix, i.e. this = M1 this
+     <p>
+     Both matrices are assumed of model-view kind, with fourth row assumed to be (0,0,0,1);
+     this is about 25% faster than regular matrix multiply.
+
+     @param m
+     @return this matrix for chaining
+     */
+    public Matrix4f multiplyLeftMV ( Matrix4f m ) {
+        multiplyLeftMV( data, m.data );
+        return this;
+    }
+
+    /**
+     Does a non-mutating multiplication, i.e. output = this M2
+     <p>
+     Both matrices are assumed of model-view kind, with fourth row assumed to be (0,0,0,1);
+     this is about 25% faster than regular matrix multiply.
+
+     @param m
+     @param output
+     @return output for chaining
+     */
+    public Matrix4f multiplyMV ( Matrix4f m, Matrix4f output ) {
+        multiplyMV( data, m.data, output.data );
         return output;
     }
 
@@ -1239,25 +1239,25 @@ public class Matrix4f extends VectorFloat {
                 m2M13 = m2[M13], m2M23 = m2[M23], m2M33 = m2[M33], m2M43 = m2[M43],
                 m2M14 = m2[M14], m2M24 = m2[M24], m2M34 = m2[M34], m2M44 = m2[M44];
 
-        output[0] = m2M11 * m1M11 + m2M21 * m1M12 + m2M31 * m1M13 + m2M41 * m1M14;
-        output[1] = m2M12 * m1M11 + m2M22 * m1M12 + m2M32 * m1M13 + m2M42 * m1M14;
-        output[2] = m2M13 * m1M11 + m2M23 * m1M12 + m2M33 * m1M13 + m2M43 * m1M14;
-        output[3] = m2M14 * m1M11 + m2M24 * m1M12 + m2M34 * m1M13 + m2M44 * m1M14;
+        output[0] = m1M11 * m2M11 + m1M21 * m2M12 + m1M31 * m2M13 + m1M41 * m2M14;
+        output[1] = m1M12 * m2M11 + m1M22 * m2M12 + m1M32 * m2M13 + m1M42 * m2M14;
+        output[2] = m1M13 * m2M11 + m1M23 * m2M12 + m1M33 * m2M13 + m1M43 * m2M14;
+        output[3] = m1M14 * m2M11 + m1M24 * m2M12 + m1M34 * m2M13 + m1M44 * m2M14;
 
-        output[4] = m2M11 * m1M21 + m2M21 * m1M22 + m2M31 * m1M23 + m2M41 * m1M24;
-        output[5] = m2M12 * m1M21 + m2M22 * m1M22 + m2M32 * m1M23 + m2M42 * m1M24;
-        output[6] = m2M13 * m1M21 + m2M23 * m1M22 + m2M33 * m1M23 + m2M43 * m1M24;
-        output[7] = m2M14 * m1M21 + m2M24 * m1M22 + m2M34 * m1M23 + m2M44 * m1M24;
+        output[4] = m1M11 * m2M21 + m1M21 * m2M22 + m1M31 * m2M23 + m1M41 * m2M24;
+        output[5] = m1M12 * m2M21 + m1M22 * m2M22 + m1M32 * m2M23 + m1M42 * m2M24;
+        output[6] = m1M13 * m2M21 + m1M23 * m2M22 + m1M33 * m2M23 + m1M43 * m2M24;
+        output[7] = m1M14 * m2M21 + m1M24 * m2M22 + m1M34 * m2M23 + m1M44 * m2M24;
 
-        output[8] = m2M11 * m1M31 + m2M21 * m1M32 + m2M31 * m1M33 + m2M41 * m1M34;
-        output[9] = m2M12 * m1M31 + m2M22 * m1M32 + m2M32 * m1M33 + m2M42 * m1M34;
-        output[10] = m2M13 * m1M31 + m2M23 * m1M32 + m2M33 * m1M33 + m2M43 * m1M34;
-        output[11] = m2M14 * m1M31 + m2M24 * m1M32 + m2M34 * m1M33 + m2M44 * m1M34;
+        output[8] = m1M11 * m2M31 + m1M21 * m2M32 + m1M31 * m2M33 + m1M41 * m2M34;
+        output[9] = m1M12 * m2M31 + m1M22 * m2M32 + m1M32 * m2M33 + m1M42 * m2M34;
+        output[10] = m1M13 * m2M31 + m1M23 * m2M32 + m1M33 * m2M33 + m1M43 * m2M34;
+        output[11] = m1M14 * m2M31 + m1M24 * m2M32 + m1M34 * m2M33 + m1M44 * m2M34;
 
-        output[12] = m2M11 * m1M41 + m2M21 * m1M42 + m2M31 * m1M43 + m2M41 * m1M44;
-        output[13] = m2M12 * m1M41 + m2M22 * m1M42 + m2M32 * m1M43 + m2M42 * m1M44;
-        output[14] = m2M13 * m1M41 + m2M23 * m1M42 + m2M33 * m1M43 + m2M43 * m1M44;
-        output[15] = m2M14 * m1M41 + m2M24 * m1M42 + m2M34 * m1M43 + m2M44 * m1M44;
+        output[12] = m1M11 * m2M41 + m1M21 * m2M42 + m1M31 * m2M43 + m1M41 * m2M44;
+        output[13] = m1M12 * m2M41 + m1M22 * m2M42 + m1M32 * m2M43 + m1M42 * m2M44;
+        output[14] = m1M13 * m2M41 + m1M23 * m2M42 + m1M33 * m2M43 + m1M43 * m2M44;
+        output[15] = m1M14 * m2M41 + m1M24 * m2M42 + m1M34 * m2M43 + m1M44 * m2M44;
 
         return output;
     }
@@ -1285,24 +1285,24 @@ public class Matrix4f extends VectorFloat {
                 m2M13 = m2[M13], m2M23 = m2[M23], m2M33 = m2[M33], m2M43 = m2[M43];//,
         //m2M14 = m2[M14], m2M24 = m2[M24], m2M34 = m2[M34], m2M44 = m2[M44];
 
-        output[0] = m2M11 * m1M11 + m2M21 * m1M12 + m2M31 * m1M13;
-        output[1] = m2M12 * m1M11 + m2M22 * m1M12 + m2M32 * m1M13;
-        output[2] = m2M13 * m1M11 + m2M23 * m1M12 + m2M33 * m1M13;
+        output[0] = m1M11 * m2M11 + m1M21 * m2M12 + m1M31 * m2M13;
+        output[1] = m1M12 * m2M11 + m1M22 * m2M12 + m1M32 * m2M13;
+        output[2] = m1M13 * m2M11 + m1M23 * m2M12 + m1M33 * m2M13;
         output[3] = 0;
 
-        output[4] = m2M11 * m1M21 + m2M21 * m1M22 + m2M31 * m1M23;
-        output[5] = m2M12 * m1M21 + m2M22 * m1M22 + m2M32 * m1M23;
-        output[6] = m2M13 * m1M21 + m2M23 * m1M22 + m2M33 * m1M23;
+        output[4] = m1M11 * m2M21 + m1M21 * m2M22 + m1M31 * m2M23;
+        output[5] = m1M12 * m2M21 + m1M22 * m2M22 + m1M32 * m2M23;
+        output[6] = m1M13 * m2M21 + m1M23 * m2M22 + m1M33 * m2M23;
         output[7] = 0;
 
-        output[8] = m2M11 * m1M31 + m2M21 * m1M32 + m2M31 * m1M33;
-        output[9] = m2M12 * m1M31 + m2M22 * m1M32 + m2M32 * m1M33;
-        output[10] = m2M13 * m1M31 + m2M23 * m1M32 + m2M33 * m1M33;
+        output[8] = m1M11 * m2M31 + m1M21 * m2M32 + m1M31 * m2M33;
+        output[9] = m1M12 * m2M31 + m1M22 * m2M32 + m1M32 * m2M33;
+        output[10] = m1M13 * m2M31 + m1M23 * m2M32 + m1M33 * m2M33;
         output[11] = 0;
 
-        output[12] = m2M11 * m1M41 + m2M21 * m1M42 + m2M31 * m1M43 + m2M41;
-        output[13] = m2M12 * m1M41 + m2M22 * m1M42 + m2M32 * m1M43 + m2M42;
-        output[14] = m2M13 * m1M41 + m2M23 * m1M42 + m2M33 * m1M43 + m2M43;
+        output[12] = m1M11 * m2M41 + m1M21 * m2M42 + m1M31 * m2M43 + m1M41;
+        output[13] = m1M12 * m2M41 + m1M22 * m2M42 + m1M32 * m2M43 + m1M42;
+        output[14] = m1M13 * m2M41 + m1M23 * m2M42 + m1M33 * m2M43 + m1M43;
         output[15] = 1;
 
         return output;
@@ -1342,6 +1342,51 @@ public class Matrix4f extends VectorFloat {
      */
     public static float[] multiplyMV ( float[] m1, float[] m2 ) {
         float //
+                m1M11 = m1[M11], m1M21 = m1[M21], m1M31 = m1[M31], // m1M41 = m1[M41],
+                m1M12 = m1[M12], m1M22 = m1[M22], m1M32 = m1[M32], //m1M42 = m1[M42],
+                m1M13 = m1[M13], m1M23 = m1[M23], m1M33 = m1[M33];//, m1M43 = m1[M43],
+        //m1M14 = m1[M14], m1M24 = m1[M24], m1M34 = m1[M34], m1M44 = m1[M44];
+        float //
+                m2M11 = m2[M11], m2M21 = m2[M21], m2M31 = m2[M31], m2M41 = m2[M41],
+                m2M12 = m2[M12], m2M22 = m2[M22], m2M32 = m2[M32], m2M42 = m2[M42],
+                m2M13 = m2[M13], m2M23 = m2[M23], m2M33 = m2[M33], m2M43 = m2[M43];//,
+        //m2M14 = m2[M14], m2M24 = m2[M24], m2M34 = m2[M34], m2M44 = m2[M44];
+
+        m1[0] = m1M11 * m2M11 + m1M21 * m2M12 + m1M31 * m2M13;
+        m1[1] = m1M12 * m2M11 + m1M22 * m2M12 + m1M32 * m2M13;
+        m1[2] = m1M13 * m2M11 + m1M23 * m2M12 + m1M33 * m2M13;
+        //m1[3] = 0;
+
+        m1[4] = m1M11 * m2M21 + m1M21 * m2M22 + m1M31 * m2M23;
+        m1[5] = m1M12 * m2M21 + m1M22 * m2M22 + m1M32 * m2M23;
+        m1[6] = m1M13 * m2M21 + m1M23 * m2M22 + m1M33 * m2M23;
+        //m1[7] = 0;
+
+        m1[8] = m1M11 * m2M31 + m1M21 * m2M32 + m1M31 * m2M33;
+        m1[9] = m1M12 * m2M31 + m1M22 * m2M32 + m1M32 * m2M33;
+        m1[10] = m1M13 * m2M31 + m1M23 * m2M32 + m1M33 * m2M33;
+        //m1[11] = 0;
+
+        m1[12] += m1M11 * m2M41 + m1M21 * m2M42 + m1M31 * m2M43;
+        m1[13] += m1M12 * m2M41 + m1M22 * m2M42 + m1M32 * m2M43;
+        m1[14] += m1M13 * m2M41 + m1M23 * m2M42 + m1M33 * m2M43;
+        //m1[15] = 1;
+
+        return m1;
+    }
+
+    /**
+     Does a self-mutable left side multiplication of m1, i.e. M1 = M2 M1
+     <p>
+     Both matrices are assumed of model-view kind, with fourth row assumed to be (0,0,0,1);
+     this is about 25% faster than regular matrix multiply.
+
+     @param m1 both source left matrix and output target
+     @param m2 right matrix
+     @return m1 for chaining
+     */
+    public static float[] multiplyLeftMV ( float[] m1, float[] m2 ) {
+        float //
                 m1M11 = m1[M11], m1M21 = m1[M21], m1M31 = m1[M31], m1M41 = m1[M41],
                 m1M12 = m1[M12], m1M22 = m1[M22], m1M32 = m1[M32], m1M42 = m1[M42],
                 m1M13 = m1[M13], m1M23 = m1[M23], m1M33 = m1[M33], m1M43 = m1[M43];//,
@@ -1370,51 +1415,6 @@ public class Matrix4f extends VectorFloat {
         m1[12] = m2M11 * m1M41 + m2M21 * m1M42 + m2M31 * m1M43 + m2M41;
         m1[13] = m2M12 * m1M41 + m2M22 * m1M42 + m2M32 * m1M43 + m2M42;
         m1[14] = m2M13 * m1M41 + m2M23 * m1M42 + m2M33 * m1M43 + m2M43;
-        //m1[15] = 1;
-
-        return m1;
-    }
-
-    /**
-     Does a self-mutable left side multiplication of m1, i.e. M1 = M2 M1
-     <p>
-     Both matrices are assumed of model-view kind, with fourth row assumed to be (0,0,0,1);
-     this is about 25% faster than regular matrix multiply.
-
-     @param m1 both source left matrix and output target
-     @param m2 right matrix
-     @return m1 for chaining
-     */
-    public static float[] multiplyLeftMV ( float[] m1, float[] m2 ) {
-        float //
-                m1M11 = m1[M11], m1M21 = m1[M21], m1M31 = m1[M31],// m1M41 = m1[M41],
-                m1M12 = m1[M12], m1M22 = m1[M22], m1M32 = m1[M32],// m1M42 = m1[M42],
-                m1M13 = m1[M13], m1M23 = m1[M23], m1M33 = m1[M33];// m1M43 = m1[M43],
-        //m1M14 = m1[M14], m1M24 = m1[M24], m1M34 = m1[M34], m1M44 = m1[M44];
-        float //
-                m2M11 = m2[M11], m2M21 = m2[M21], m2M31 = m2[M31], m2M41 = m2[M41],
-                m2M12 = m2[M12], m2M22 = m2[M22], m2M32 = m2[M32], m2M42 = m2[M42],
-                m2M13 = m2[M13], m2M23 = m2[M23], m2M33 = m2[M33], m2M43 = m2[M43];//,
-        //m2M14 = m2[M14], m2M24 = m2[M24], m2M34 = m2[M34], m2M44 = m2[M44];
-
-        m1[0] = m1M11 * m2M11 + m1M21 * m2M12 + m1M31 * m2M13;
-        m1[1] = m1M12 * m2M11 + m1M22 * m2M12 + m1M32 * m2M13;
-        m1[2] = m1M13 * m2M11 + m1M23 * m2M12 + m1M33 * m2M13;
-        //m1[3] = 0;
-
-        m1[4] = m1M11 * m2M21 + m1M21 * m2M22 + m1M31 * m2M23;
-        m1[5] = m1M12 * m2M21 + m1M22 * m2M22 + m1M32 * m2M23;
-        m1[6] = m1M13 * m2M21 + m1M23 * m2M22 + m1M33 * m2M23;
-        //m1[7] = 0;
-
-        m1[8] = m1M11 * m2M31 + m1M21 * m2M32 + m1M31 * m2M33;
-        m1[9] = m1M12 * m2M31 + m1M22 * m2M32 + m1M32 * m2M33;
-        m1[10] = m1M13 * m2M31 + m1M23 * m2M32 + m1M33 * m2M33;
-        //m1[11] = 0;
-
-        m1[12] += m1M11 * m2M41 + m1M21 * m2M42 + m1M31 * m2M43;
-        m1[13] += m1M12 * m2M41 + m1M22 * m2M42 + m1M32 * m2M43;
-        m1[14] += m1M13 * m2M41 + m1M23 * m2M42 + m1M33 * m2M43;
         //m1[15] = 1;
 
         return m1;

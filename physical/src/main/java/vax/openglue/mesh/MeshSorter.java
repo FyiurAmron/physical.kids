@@ -7,5 +7,5 @@ import vax.util.Sorter;
 
  @author toor
  */
-public interface MeshSorter extends Sorter<Mesh, Collection<Mesh>> {
+public interface MeshSorter extends Sorter<MeshInstance, Collection<MeshInstance>> {
 }

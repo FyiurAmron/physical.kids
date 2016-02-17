@@ -8,7 +8,7 @@ import vax.openglue.mesh.*;
 public class BodyManager {
     private final List<Body> bodies = new ArrayList<>();
     private final HashSet<Body> bodySet = new HashSet<>();
-    private final Map<Body, Mesh> bodyMeshMap = new HashMap<>();
+    private final Map<Body, MeshInstance> bodyMeshMap = new HashMap<>();
     private final Vector3f gravity = new Vector3f( 0, -9.81f, 0 );
     private final Map<ColliderDescriptor, Collider<?, ?>> colliderMap = new HashMap<>();
     private final Map<Body, HashSet<Body>> contactMap = new HashMap<>();
@@ -40,10 +40,10 @@ public class BodyManager {
         bodySet.add( body );
     }
 
-    public void addBody ( Body body, Mesh mesh ) {
+    public void addBody ( Body body, MeshInstance meshInstance ) {
         addBody( body );
-        mesh.getTransform().set( body.transform );
-        bodyMeshMap.put( body, mesh );
+        meshInstance.getTransform().set( body.transform );
+        bodyMeshMap.put( body, meshInstance );
     }
 
     private void addContact ( Body b1, Body b2 ) {

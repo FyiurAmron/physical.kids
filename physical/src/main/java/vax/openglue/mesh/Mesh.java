@@ -43,10 +43,6 @@ public class Mesh implements Renderable {
                 1, 1, /* */ 0, 0,/* */ 0, 1, //
             };
 
-    protected final Matrix4f transform = new Matrix4f( true );
-
-    private Action<Mesh> updateAction, updateUniformAction;
-    private Material material;
     protected PrimitiveType primitiveType = PrimitiveType.Triangles;
     protected int //
             vaoHandle,
@@ -64,11 +60,6 @@ public class Mesh implements Renderable {
         this.meshData = meshData;
     }
 
-    public Mesh ( MeshData meshData, Matrix4f sourceTransform ) {
-        this.meshData = meshData;
-        transform.set( sourceTransform );
-    }
-
     public Mesh ( float[] vertices, float[] normals, float[] uvs, int[] indices ) {
         this( new MeshData( vertices, normals, uvs, indices ) );
     }
@@ -77,65 +68,15 @@ public class Mesh implements Renderable {
         this( new MeshData( vertices.array(), normals.array(), uvs.array(), indices.array() ) );
     }
 
-    /*
-     getters/setters
-     */
-    public Action<Mesh> getUpdateAction () {
-        return updateAction;
-    }
-
-    public void setUpdateAction ( Action<Mesh> updateAction ) {
-        this.updateAction = updateAction;
-    }
-
-    public Action<Mesh> getUpdateUniformAction () {
-        return updateUniformAction;
-    }
-
-    public void setUpdateUniformAction ( Action<Mesh> updateUniformAction ) {
-        this.updateUniformAction = updateUniformAction;
-    }
-
-    public Matrix4f getTransform () {
-        return transform;
-    }
-
-    public Material getMaterial () {
-        return material;
-    }
-
-    public void setMaterial ( Material material ) {
-        this.material = material;
-    }
-
     public MeshData getModelData () {
         return meshData;
     }
 
-    /*
-     interface implementation
-     */
-    //@Override
-    public void update () {
-        if ( updateAction != null ) {
-            updateAction.exec( this );
-        }
-        if ( updateUniformAction != null ) {
-            updateUniformAction.exec( this );
-        }
-    }
-
     @Override
     public void render ( OpenGLUE gl ) {
-        if ( material != null ) {
-            material.bind( gl );
-        }
         gl.glBindVertexArray( vaoHandle );
 
         gl.glDrawElements( primitiveType.getGlConstant(), meshData.getIndices().length, OpenGL.Constants.GL_UNSIGNED_INT, 0 );
-        if ( material != null ) {
-            material.unbind( gl );
-        }
     }
 
     /*

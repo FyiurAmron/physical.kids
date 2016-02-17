@@ -1,9 +1,13 @@
 package vax.physical;
 
 import vax.math.*;
+import vax.openglue.Material;
 import vax.openglue.UniformDescriptor;
 import vax.openglue.UniformDescriptor.PerMeshUniform;
 import vax.openglue.UniformDescriptor.PerRenderUniform;
+import vax.openglue.mesh.Mesh;
+import vax.openglue.mesh.MeshInstance;
+import vax.util.Action;
 
 /**
  POJO ATM.
@@ -40,11 +44,20 @@ public class CommonUniformDescriptor extends UniformDescriptor.Reflective {
     @PerMeshUniform
     public final Vector4f modelColor = new Vector4f();
     @PerMeshUniform
-    public final Matrix4f
-            modelMatrix = new Matrix4f(),
+    public final Matrix4f modelMatrix = new Matrix4f(),
             combinedMatrix = new Matrix4f();
 
-    public void updateCombinedMatrix() {
+    public final Action<MeshInstance> uniformUpdater = (MeshInstance mi) -> {
+        Material mat = mi.getMaterial();
+        if ( mat != null ) {
+            shininess.set( mat.shininess );
+            modelColor.set( mat.color );
+        }
+        modelMatrix.set( mi.getTransform() );
+        updateCombinedMatrix();
+    };
+
+    public void updateCombinedMatrix () {
         combinedMatrix.set( viewMatrix ); // C = V
         combinedMatrix.multiplyMV( modelMatrix ); // C := V M // mMV is a bit faster
         combinedMatrix.multiplyLeft( projectionMatrix ); // C := P ( V M ) = P V M

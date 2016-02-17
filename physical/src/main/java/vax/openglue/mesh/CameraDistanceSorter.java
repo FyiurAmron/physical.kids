@@ -9,12 +9,12 @@ import vax.math.Matrix4f;
  @author toor
  */
 public class CameraDistanceSorter implements MeshSorter {
-    private final TObjectFloatHashMap<Mesh> distMap = new TObjectFloatHashMap<>();
+    private final TObjectFloatHashMap<MeshInstance> distMap = new TObjectFloatHashMap<>();
     private Matrix4f cameraPosition;
-    private ArrayList<Mesh> meshes;
-    private final Comparator<Mesh> //
-            ascendingDepthComparator = (Mesh o1, Mesh o2) -> Float.compare( distMap.get( o1 ), distMap.get( o2 ) ),
-            descendingDepthComparator = (Mesh o1, Mesh o2) -> Float.compare( distMap.get( o2 ), distMap.get( o1 ) );
+    private ArrayList<MeshInstance> meshes;
+    private final Comparator<MeshInstance> //
+            ascendingDepthComparator = (MeshInstance o1, MeshInstance o2) -> Float.compare( distMap.get( o1 ), distMap.get( o2 ) ),
+            descendingDepthComparator = (MeshInstance o1, MeshInstance o2) -> Float.compare( distMap.get( o2 ), distMap.get( o1 ) );
 
     public CameraDistanceSorter () {
     }
@@ -31,24 +31,24 @@ public class CameraDistanceSorter implements MeshSorter {
         this.cameraPosition = cameraPosition;
     }
 
-    private Mesh prepareMeshInfo ( Mesh mesh ) {
+    private MeshInstance prepareMeshInstanceInfo ( MeshInstance mesh ) {
         distMap.put( mesh, mesh.getTransform().calcDistance( cameraPosition ) );
         return mesh;
     }
 
     @Override
-    public List<Mesh> sort ( Collection<Mesh> input, boolean ascending ) {
+    public List<MeshInstance> sort ( Collection<MeshInstance> input, boolean ascending ) {
         if ( meshes == null ) {
             meshes = new ArrayList<>( input.size() );
         }
         int max = Math.min( meshes.size(), input.size() ); // yup
-        Iterator<Mesh> it = input.iterator();
+        Iterator<MeshInstance> it = input.iterator();
 
         for( int i = 0; i < max; i++ ) {
-            meshes.set( i, prepareMeshInfo( it.next() ) );
+            meshes.set( i, prepareMeshInstanceInfo( it.next() ) );
         }
         while( it.hasNext() ) {
-            meshes.add( prepareMeshInfo( it.next() ) );
+            meshes.add( prepareMeshInstanceInfo( it.next() ) );
         }
 
         meshes.sort( ascending ? ascendingDepthComparator : descendingDepthComparator );

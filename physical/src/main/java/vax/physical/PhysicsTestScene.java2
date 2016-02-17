@@ -18,7 +18,7 @@ import vax.physics.TriangleBody;
 
  @author toor
  */
-public class SceneManager implements EventListenerGL {
+public class PhysicsTestScene implements EventListenerGL {
     private final ArrayList<Mesh> meshes = new ArrayList<>();
     private final ArrayList<Texture> textures = new ArrayList<>();
 
@@ -58,7 +58,7 @@ public class SceneManager implements EventListenerGL {
 
     private Vector3f cameraPos;
 
-    public SceneManager ( WindowGLUE.Settings initialSettings ) {
+    public PhysicsTestScene ( WindowGLUE.Settings initialSettings ) {
         this.initialSettings = initialSettings;
         viewportSize.set( initialSettings.windowSize );
     }
@@ -172,13 +172,13 @@ public class SceneManager implements EventListenerGL {
         }
 
         for( Mesh m : meshes ) {
-            mainMeshBatch.getNonAlphaBlendedMeshes().add( m );
-            m.setUpdateAction( (Mesh target) -> {
-                Matrix4f trans1 = target.getTransform();
+            mainMeshBatch.getNonAlphaBlendedMeshInstances().add( m );
+            m.setUpdateAction( (Mesh mesh) -> {
+                Matrix4f trans1 = mesh.getTransform();
 
-                Material mat = target.getMaterial();
+                Material mat = mesh.getMaterial();
                 if ( mat != null ) {
-                    shininess.setValue( mat.shininess );
+                    shininess.set( mat.shininess );
                 }
                 modelMatrix.set( trans1 );
             } );
@@ -294,7 +294,7 @@ public class SceneManager implements EventListenerGL {
         MouseGLUE mg = Main.wg.getMouseGLUE();
         int mouseX = mg.getX(), mouseY = mg.getY();
         if ( mg.isButtonDown( 0 ) || mg.isButtonDown( 1 ) ) {
-            //float f = 
+            //float f =
             count++;
             if ( count == 60 ) {
                 bodyManager.getGravity().scale( -1.01f );
@@ -310,15 +310,15 @@ public class SceneManager implements EventListenerGL {
         viewMatrix.setTranslation( cameraPos );
         //viewMatrix.lookAt( cameraPos, target, up );
 
-        random.setValue( MathUtils.nextFloat() );
+        random.set( MathUtils.nextFloat() );
         //float ftime = (float) ( System.currentTimeMillis() % 1000 ) / 1000;
         //System.out.println( ftime );
-        time.setValue( getTime() );
+        time.set( getTime() );
 
         if ( true ) {
             float TIME_THRESHOLD = 1f / 60f;
             float stepTime = TIME_THRESHOLD;
-            /*float stepTime = time.getValue();
+            /*float stepTime = time.get();
             while( stepTime > TIME_THRESHOLD ) {
                 bodyManager.update( TIME_THRESHOLD );
                 stepTime -= TIME_THRESHOLD;
@@ -327,9 +327,9 @@ public class SceneManager implements EventListenerGL {
         }
 
         //viewMatrix.setTranslationZ( viewMatrix.getTranslationZ() - 0.1f );
-        //ball.getTransform().setToRotationZ( time.getValue() );
-        //ball.getTransform().setToRotationTB( 0, 0, time.getValue() );
-        //ball.getTransform().setToRotationTB( time.getValue(), time.getValue(), time.getValue() );
+        //ball.getTransform().setToRotationZ( time.get() );
+        //ball.getTransform().setToRotationTB( 0, 0, time.get() );
+        //ball.getTransform().setToRotationTB( time.get(), time.get(), time.get() );
         if ( framebuffer != null ) {
             framebuffer.bind( gl );
             ball.setMaterial( dilloMaterial );

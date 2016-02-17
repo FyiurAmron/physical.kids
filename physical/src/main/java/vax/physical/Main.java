@@ -18,12 +18,13 @@ public class Main {
         // TODO code application logic here
         System.setProperty( "jogamp.common.utils.locks.Lock.timeout", "" + Integer.MAX_VALUE ); // so we're actually able to debug
 
-         WindowGLUE.Settings settings = new WindowGLUE.Settings( APP_NAME, 800, 600, 100, 100, false, false, false, true, false );
+        WindowGLUE.Settings settings = new WindowGLUE.Settings( APP_NAME, 800, 600, 100, 100, false, false, false, true, false );
 
-         SceneManager sm = new vax.physical.SceneManager(settings);
+        //PhysicsTestScene sm = new vax.physical.PhysicsTestScene( settings );
+        EventListenerGL evligl = new vax.physical.UiTestScene( settings );
 
-         //wg = new vax.openglue.jogl.JoglWindowGLUE( sm, settings );
-         wg = new vax.openglue.lwjgl.LwjglWindowGLUE( sm, settings );
-         wg.start();
+        //wg = new vax.openglue.jogl.JoglWindowGLUE( evligl, settings );
+        wg = new vax.openglue.lwjgl.LwjglWindowGLUE( evligl, settings );
+        wg.start();
     }
 }
