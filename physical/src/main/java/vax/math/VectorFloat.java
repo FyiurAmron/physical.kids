@@ -98,24 +98,24 @@ public class VectorFloat {
         return this;
     }
 
-    public float getValue ( int index ) {
+    public float getElement ( int index ) {
         return data[index];
     }
 
-    public VectorFloat setValue ( float value ) {
+    public VectorFloat setAllTo ( float value ) {
         for( int i = data.length - 1; i >= 0; i-- ) {
             data[i] = value;
         }
         return this;
     }
 
-    public VectorFloat setValue ( float value, int index ) {
+    public VectorFloat setElement ( int index, float value) {
         data[index] = value;
         return this;
     }
 
     public VectorFloat setToZero () {
-        return setValue( 0 );
+        return setAllTo( 0 );
     }
 
     public boolean isZero () {

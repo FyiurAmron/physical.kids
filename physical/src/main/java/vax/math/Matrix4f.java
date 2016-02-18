@@ -144,6 +144,48 @@ public class Matrix4f extends VectorFloat {
         return setTranslation( vectorFloat.data );
     }
 
+    public Matrix4f setScale ( float x, float y, float z ) {
+        data[SCALE_X] = x;
+        data[SCALE_Y] = y;
+        data[SCALE_Z] = z;
+        return this;
+    }
+
+    public Matrix4f setScale ( float... scales ) {
+        return setScale( scales[0], scales[1], scales[2] );
+    }
+
+    public Matrix4f setScale ( VectorFloat vectorFloat ) {
+        return setScale( vectorFloat.data );
+    }
+
+    public Matrix4f setScaleX ( float scaleX ) {
+        this.data[SCALE_X] = scaleX;
+        return this;
+    }
+
+    public float getScaleX () {
+        return data[SCALE_X];
+    }
+
+    public Matrix4f setScaleY ( float scaleY ) {
+        this.data[SCALE_Y] = scaleY;
+        return this;
+    }
+
+    public float getScaleY () {
+        return data[SCALE_Z];
+    }
+
+    public Matrix4f setScaleZ ( float scaleZ ) {
+        this.data[SCALE_Z] = scaleZ;
+        return this;
+    }
+
+    public float getScaleZ () {
+        return data[TRANSLATION_Z];
+    }
+
     public Vector3f createDisplacement ( Vector3f target ) {
         return getDisplacement( target, new Vector3f() );
     }

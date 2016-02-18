@@ -267,7 +267,7 @@ public class Matrix4fTest {
 
         assertEquals( new Matrix4f( zero ).multiplyLeftMV( m1 ), h );
         h.setToZero();
-        h.setValue( 1, Matrix4f.M44 );
+        h.setElement(Matrix4f.M44, 1 );
         assertEquals( new Matrix4f( m1 ).multiplyLeftMV( zero ), h );
 
         assertEquals( m1, new Matrix4f( m1 ).multiplyMV( id ) );

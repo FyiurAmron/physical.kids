@@ -35,8 +35,19 @@ public class FloatUtils {
         return (float) Math.sqrt( f );
     }
 
+    /**
+     Note: as described in
+     <a href="http://www.javaspecialists.eu/archive/Issue124.html">Copying Arrays Fast by Dr. Heinz M. Kabutz</a>,
+     for small (length ~&lt; 10000 elements) arrays, <code>arraycopy</code> is actually faster than <code>clone</code>.
+
+     @param fs
+     @return
+     */
     public static float[] copy ( float[] fs ) {
         int len = fs.length;
+        if ( len > Short.MAX_VALUE ) {
+            return fs.clone();
+        }
         float[] ret = new float[len];
         System.arraycopy( fs, 0, ret, 0, len );
         return ret;
