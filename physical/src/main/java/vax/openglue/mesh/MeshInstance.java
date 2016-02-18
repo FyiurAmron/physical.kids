@@ -21,6 +21,12 @@ public class MeshInstance implements Renderable {
         this.mesh = mesh;
     }
 
+    public MeshInstance ( Mesh mesh, Action<MeshInstance> updateUniformAction, Material material ) {
+        this.mesh = mesh;
+        this.updateUniformAction = updateUniformAction;
+        this.material = material;
+    }
+
     public MeshInstance ( Mesh mesh, Action<MeshInstance> updateAction, Action<MeshInstance> updateUniformAction, Material material ) {
         this.mesh = mesh;
         this.updateAction = updateAction;
@@ -61,6 +67,14 @@ public class MeshInstance implements Renderable {
 
     public void setMaterial ( Material material ) {
         this.material = material;
+    }
+
+    public MeshInstance copy ( boolean copyTransform ) {
+        MeshInstance copy = new MeshInstance( mesh, updateAction, updateUniformAction, material );
+        if ( copyTransform ) {
+            copy.transform.set( transform );
+        }
+        return copy;
     }
 
     /*

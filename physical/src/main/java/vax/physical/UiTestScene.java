@@ -33,6 +33,8 @@ public class UiTestScene implements EventListenerGL {
     private Material framebufferMaterial;
     private final WindowGLUE.Settings initialSettings;
 
+    private Matrix4f shmit1, shmit2, shmit3;
+
     public UiTestScene ( WindowGLUE.Settings initialSettings ) {
         this.initialSettings = initialSettings;
         cud.viewportSize.set( initialSettings.windowSize );
@@ -49,6 +51,8 @@ public class UiTestScene implements EventListenerGL {
         gl = debugGLUE;
         ImageGLUE imageGlue = gl.getImageGLUE();
 
+        Matrix4f m4;
+
         CameraDistanceSorter cds = new CameraDistanceSorter( cud.viewMatrix );
         mainMeshBatch = new MeshBatch( "main", cds );
         noiseMeshBatch = new MeshBatch( "noise", cds );
@@ -59,22 +63,9 @@ public class UiTestScene implements EventListenerGL {
         TextureData<?> squareHairTD = imageGlue.readTextureData( "squarehair.png", Resource.class );
 
         SphereMesh ballMesh = new SphereMesh( /* 0.1f */ 0.3f, 40, 40, true );
-        ball = new MeshInstance( ballMesh );
         ///* SphereMesh */ ball = new PrismMesh( new float[]{ 0, 0, 0 }, new float[]{ -0.5f, 0, -0.5f }, new float[]{ 0.5f, 0, -0.5f }, 0.3f );
-        RectangleMesh leftInterface = new RectangleMesh( -1f, -2f, RectangleMesh.RECT_VT_PROTO_2 );
+        RectangleMesh rect = new RectangleMesh( -1f, -1f, RectangleMesh.RECT_VT_PROTO_4 );
         //RectangleMesh rightInterface = new RectangleMesh( -1f, -2f, RectangleMesh.RECT_VT_PROTO_2 );
-        MeshInstance leftInterfaceMI = new MeshInstance( leftInterface );
-        leftInterfaceMI.getTransform().setTranslationX( -0.5f );
-        leftInterfaceMI.getTransform().setTranslationY( 1f );
-        //rightInterface.getTransform().setTranslationX( -0.5f );
-        //rightInterface.getTransform().setTranslationY( 1f );
-        //rightInterface.getTransform().setTranslationZ( -1f );
-
-        RectangleMesh overlay = new RectangleMesh( -2f, -2f, RectangleMesh.RECT_VT_PROTO_2 );
-        MeshInstance overlayMI = new MeshInstance( overlay );
-        //overlay.getTransform().setTranslationX( -2f );
-        overlayMI.getTransform().setTranslationY( 1f );
-
 
         //RectangleMesh leftInterface = new RectangleMesh( 2, 2, 2 );
 
@@ -83,13 +74,23 @@ public class UiTestScene implements EventListenerGL {
         Texture //
                 interfaceLeftTex = new Texture( leftInterfaceTD, TextureParameters.TRILINEAR_ANISO_CLAMP, true );
         dilloMaterial = new Material( dilloTex );
-        Material squareHairMaterial = new Material( squareHairTex );
         //dilloMaterial.color.set( 1, 0, 0, 1);
-        ball.setMaterial( dilloMaterial );
-        Material ilt = new Material( interfaceLeftTex );
-        leftInterfaceMI.setMaterial( ilt );
+        Material squareHairMaterial = new Material( squareHairTex );
+        Material interfaceLeftMaterial = new Material( interfaceLeftTex );
         //rightInterface.setMaterial( new Material( interfaceLeftTex ) );
         //rightInterface.setMaterial( ilt );
+        MeshInstance squareHairMI1 = new MeshInstance( rect, cud.uniformUpdater, squareHairMaterial );
+        MeshInstance squareHairMI2 = squareHairMI1.copy( false );
+        MeshInstance squareHairMI3 = squareHairMI1.copy( false );
+        shmit1 = squareHairMI1.getTransform();
+        shmit1.setScale( 0.5f, 0.5f, 0.5f );
+        shmit1.setTranslationZ( -2 );
+        shmit2 = squareHairMI2.getTransform();
+        shmit2.setScale( 0.4f, 0.4f, 0.4f );
+        shmit2.setTranslationZ( -3 );
+        shmit3 = squareHairMI3.getTransform();
+        shmit3.setScale( 0.3f, 0.3f, 0.3f );
+        shmit3.setTranslationZ( -4 );
 
         textures.add( dilloTex );
         textures.add( interfaceLeftTex );
@@ -99,20 +100,32 @@ public class UiTestScene implements EventListenerGL {
             tex.init( gl );
         }
 
-        ball.setUpdateAction( (MeshInstance target) -> {
+        ball = new MeshInstance( ballMesh, (MeshInstance target) -> {
             target.getTransform().setTranslationZ( (float) Math.sin( getTime() ) );
             //trans.setTranslationZ( -1.5f + (float) Math.cos( t ) );
-        } );
-        ball.setUpdateUniformAction( cud.uniformUpdater );
-        leftInterfaceMI.setUpdateUniformAction( cud.uniformUpdater );
+        }, cud.uniformUpdater, dilloMaterial );
+        MeshInstance leftInterfaceMI = new MeshInstance( rect, cud.uniformUpdater, interfaceLeftMaterial );
+        m4 = leftInterfaceMI.getTransform();
+        m4.setTranslationX( -0.5f );
+        m4.setTranslationY( 1f );
+        //m4.scaleXYZ( 2);
+        m4.setElement( Matrix4f.SCALE_Y, 2 );
+        //rightInterface.getTransform().setTranslationX( -0.5f );
+        //rightInterface.getTransform().setTranslationY( 1f );
+        //rightInterface.getTransform().setTranslationZ( -1f );
+        MeshInstance overlayMI = new MeshInstance( rect, cud.uniformUpdater, null );
+        m4 = overlayMI.getTransform();
+        //overlay.getTransform().setTranslationX( -2f );
+        m4.setTranslationY( 1f );
+        m4.setElement( Matrix4f.SCALE_X, 2 );
+        m4.setElement( Matrix4f.SCALE_Y, 2 );
         //rightInterface.setUpdateUniformAction( uniformUpdater );
-        overlayMI.setUpdateUniformAction( cud.uniformUpdater );
 
         meshes.add( ballMesh );
-        meshes.add( leftInterface );
+        meshes.add( rect );
         //meshes.add( rightInterface );
         mainMeshBatch.getNonAlphaBlendedMeshInstances().add( ball );
-        mainMeshBatch.getAlphaBlendedMeshInstances().add( leftInterfaceMI );
+        mainMeshBatch.addAlphaBlendedMeshIntances( squareHairMI1, squareHairMI2, squareHairMI3, leftInterfaceMI );
         //mainMeshBatch.getAlphaBlendedMeshInstances().add( rightInterface );
         //mainMeshBatch.getNonAlphaBlendedMeshInstances().add( leftInterface );
         noiseMeshBatch.getAlphaBlendedMeshInstances().add( overlayMI );
@@ -127,7 +140,7 @@ public class UiTestScene implements EventListenerGL {
         gl.glBlendFunc( OpenGLUE.Constants.GL_SRC_ALPHA, OpenGLUE.Constants.GL_ONE_MINUS_SRC_ALPHA );
         //projectionMatrix.setToPerspective( 0.1f, 100f, 67, aspectRatio );
         float halfSizeX = 1f, halfSizeY = 1f, sizeX = 2 * halfSizeX, sizeY = 2 * halfSizeY;
-        cud.projectionMatrix.setToOrthoWindow( -halfSizeX, -halfSizeY, sizeX, sizeY, -10, 10 );
+        cud.projectionMatrix.setToOrthoWindow( -halfSizeX, -halfSizeY, sizeX, sizeY, 10, -10 );
         //projectionMatrix.setToIdentity();
         cud.viewMatrix.setToIdentity();
         //modelviewMatrix.scaleZ( -1f );
@@ -182,9 +195,34 @@ public class UiTestScene implements EventListenerGL {
 
         MouseGLUE mg = Main.wg.getMouseGLUE();
         int mouseX = mg.getX(), mouseY = mg.getY();
+        float mouseRatioX = mg.getRatioX(), mouseRatioY = mg.getRatioY();
+        float targetX = mouseRatioX * 2 - 1;
+        float targetY = -( mouseRatioY * 2 - 1 );
+        /*
+         shmit1.setTranslationX( targetX );
+         shmit1.setTranslationY( targetY + 0.5f * shmit1.getScaleY() );
+         shmit2.setTranslationX( targetX );
+         shmit2.setTranslationY( targetY + 0.5f * shmit2.getScaleY() );
+         shmit3.setTranslationX( targetX );
+         shmit3.setTranslationY( targetY + 0.5f * shmit3.getScaleY() );
+         */
+        float curX, curY;
+        curX = shmit1.getTranslationX();
+        curY = shmit1.getTranslationY();
+        shmit1.setTranslationX( 0.7f * curX + 0.3f * targetX );
+        shmit1.setTranslationY( 0.7f * curY + 0.3f * ( targetY + 0.5f * shmit1.getScaleY() ) );
+        curX = shmit2.getTranslationX();
+        curY = shmit2.getTranslationY();
+        shmit2.setTranslationX( 0.5f * curX + 0.5f * targetX );
+        shmit2.setTranslationY( 0.5f * curY + 0.5f * ( targetY + 0.5f * shmit2.getScaleY() ) );
+        curX = shmit3.getTranslationX();
+        curY = shmit3.getTranslationY();
+        shmit3.setTranslationX( 0.2f * curX + 0.8f * targetX );
+        shmit3.setTranslationY( 0.2f * curY + 0.8f * ( targetY + 0.5f * shmit3.getScaleY() ) );
+
         cud.mousePos.set( mouseX, mouseY );
-        cud.lightDirUnit.setX( mg.getRatioX() * 2 - 1 );
-        cud.lightDirUnit.setY( -( mg.getRatioY() * 2 - 1 ) );
+        cud.lightDirUnit.setX( mouseRatioX * 2 - 1 );
+        cud.lightDirUnit.setY( -( mouseRatioY * 2 - 1 ) );
 
         cud.randomX.set( MathUtils.nextFloat() );
         cud.randomY.set( MathUtils.nextFloat() );

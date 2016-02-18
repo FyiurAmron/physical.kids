@@ -64,6 +64,18 @@ public class MeshBatch implements EventListenerGL {
         return alphaBlendedMeshInstances;
     }
 
+    public void addAlphaBlendedMeshIntances( MeshInstance... meshIntances ) {
+        for( MeshInstance mi : meshIntances ) {
+            alphaBlendedMeshInstances.add( mi );
+        }
+    }
+
+    public void addNonAlphaBlendedMeshIntances( MeshInstance... meshIntances ) {
+        for( MeshInstance mi : meshIntances ) {
+            nonAlphaBlendedMeshInstances.add( mi );
+        }
+    }
+
     /**
 
      @return explicitly mutable batch's mesh set
