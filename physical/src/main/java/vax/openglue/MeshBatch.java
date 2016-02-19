@@ -64,13 +64,13 @@ public class MeshBatch implements EventListenerGL {
         return alphaBlendedMeshInstances;
     }
 
-    public void addAlphaBlendedMeshIntances( MeshInstance... meshIntances ) {
+    public void addAlphaBlendedMeshInstances( MeshInstance... meshIntances ) {
         for( MeshInstance mi : meshIntances ) {
             alphaBlendedMeshInstances.add( mi );
         }
     }
 
-    public void addNonAlphaBlendedMeshIntances( MeshInstance... meshIntances ) {
+    public void addNonAlphaBlendedMeshInstances( MeshInstance... meshIntances ) {
         for( MeshInstance mi : meshIntances ) {
             nonAlphaBlendedMeshInstances.add( mi );
         }
@@ -114,6 +114,7 @@ public class MeshBatch implements EventListenerGL {
         }
 
         if ( !nonAlphaBlendedMeshInstances.isEmpty() ) {
+            gl.glEnable( OpenGL.Constants.GL_DEPTH_TEST );
             gl.glDisable( OpenGL.Constants.GL_BLEND );
             for( MeshInstance m : meshSorter.sort( nonAlphaBlendedMeshInstances ) ) {
                 m.update();
@@ -125,6 +126,7 @@ public class MeshBatch implements EventListenerGL {
         }
 
         if ( !alphaBlendedMeshInstances.isEmpty() ) {
+            gl.glDisable( OpenGL.Constants.GL_DEPTH_TEST );
             gl.glEnable( OpenGL.Constants.GL_BLEND );
             for( MeshInstance m : meshSorter.sort( alphaBlendedMeshInstances, false ) ) {
                 m.update();

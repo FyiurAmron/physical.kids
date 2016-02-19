@@ -104,19 +104,19 @@ public class RectangleMesh extends Mesh {
         size1 *= 0.5f;
         size2 *= 0.5f;
         switch ( axis ) {
-            case Vector3f.OX:
+            case VectorFloat.OX:
                 return new float[][]{
                     new float[]{ 0, -size1, -size2 },
                     new float[]{ 0, size1, -size2 },
                     new float[]{ 0, -size1, size2 }
                 };
-            case Vector3f.OY:
+            case VectorFloat.OY:
                 return new float[][]{
                     new float[]{ -size1, 0, -size2 },
                     new float[]{ size1, 0, -size2 },
                     new float[]{ -size1, 0, size2 }
                 };
-            case Vector3f.OZ:
+            case VectorFloat.OZ:
                 return new float[][]{
                     new float[]{ -size1, -size2, 0 },
                     new float[]{ size1, -size2, 0 },

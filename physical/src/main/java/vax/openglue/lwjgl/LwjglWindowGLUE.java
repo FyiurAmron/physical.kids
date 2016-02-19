@@ -41,16 +41,14 @@ public class LwjglWindowGLUE implements WindowGLUE {
         try {
             init();
             loop();
-
+        } finally {
+            cvel.dispose( ue );
             GLFW.glfwDestroyWindow( glfwHandle );
             keyCallback.release();
-        } finally {
             if ( errorCallback != null ) {
                 errorCallback.release();
-
-                GLFW.glfwTerminate();
-                cvel.dispose( ue );
             }
+            GLFW.glfwTerminate();
         }
     }
 

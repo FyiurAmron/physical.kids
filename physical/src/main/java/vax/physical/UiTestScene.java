@@ -17,7 +17,7 @@ public class UiTestScene implements EventListenerGL {
     private final ArrayList<Mesh> meshes = new ArrayList<>();
     private final ArrayList<Texture> textures = new ArrayList<>();
 
-    private final boolean debug = false;
+    private final boolean debug = true;
 
     private MeshBatch mainMeshBatch, noiseMeshBatch, overlayMeshBatch;
 
@@ -47,7 +47,7 @@ public class UiTestScene implements EventListenerGL {
     @Override
     public void init ( OpenGLUE gl ) {
         cud.init();
-        debugGLUE.setGlue( gl );
+        debugGLUE.setGlue( gl ); // note: always debug in init()
         gl = debugGLUE;
         ImageGLUE imageGlue = gl.getImageGLUE();
 
@@ -64,15 +64,21 @@ public class UiTestScene implements EventListenerGL {
 
         SphereMesh ballMesh = new SphereMesh( /* 0.1f */ 0.3f, 40, 40, true );
         ///* SphereMesh */ ball = new PrismMesh( new float[]{ 0, 0, 0 }, new float[]{ -0.5f, 0, -0.5f }, new float[]{ 0.5f, 0, -0.5f }, 0.3f );
-        RectangleMesh rect = new RectangleMesh( -1f, -1f, RectangleMesh.RECT_VT_PROTO_4 );
-        //RectangleMesh rightInterface = new RectangleMesh( -1f, -2f, RectangleMesh.RECT_VT_PROTO_2 );
-
-        //RectangleMesh leftInterface = new RectangleMesh( 2, 2, 2 );
+        RectangleMesh rect = new RectangleMesh( Vector3f.OZ, 2f, 2f, RectangleMesh.RECT_VT_PROTO_1 );
 
         /* Texture */ dilloTex = new Texture( dilloTD, TextureParameters.TRILINEAR_ANISO_CLAMP, true );
         Texture squareHairTex = new Texture( squareHairTD, TextureParameters.TRILINEAR_ANISO_CLAMP, true );
         Texture //
                 interfaceLeftTex = new Texture( leftInterfaceTD, TextureParameters.TRILINEAR_ANISO_CLAMP, true );
+
+        textures.add( dilloTex );
+        textures.add( interfaceLeftTex );
+        textures.add( squareHairTex );
+
+        for( Texture tex : textures ) {
+            tex.init( gl );
+        }
+
         dilloMaterial = new Material( dilloTex );
         //dilloMaterial.color.set( 1, 0, 0, 1);
         Material squareHairMaterial = new Material( squareHairTex );
@@ -83,36 +89,25 @@ public class UiTestScene implements EventListenerGL {
         MeshInstance squareHairMI2 = squareHairMI1.copy( false );
         MeshInstance squareHairMI3 = squareHairMI1.copy( false );
         shmit1 = squareHairMI1.getTransform();
-        shmit1.setScale( 0.5f, 0.5f, 0.5f );
-        shmit1.setTranslationZ( -2 );
+        shmit1.setScale( 0.25f, 0.25f, 0.25f );
+        shmit1.setTranslationZ( 2 );
         shmit2 = squareHairMI2.getTransform();
-        shmit2.setScale( 0.4f, 0.4f, 0.4f );
-        shmit2.setTranslationZ( -3 );
+        shmit2.setScale( 0.2f, 0.2f, 0.2f );
+        shmit2.setTranslationZ( 3 );
         shmit3 = squareHairMI3.getTransform();
-        shmit3.setScale( 0.3f, 0.3f, 0.3f );
-        shmit3.setTranslationZ( -4 );
-
-        textures.add( dilloTex );
-        textures.add( interfaceLeftTex );
-        textures.add( squareHairTex );
-
-        for( Texture tex : textures ) {
-            tex.init( gl );
-        }
+        shmit3.setScale( 0.15f, 0.15f, 0.15f );
+        shmit3.setTranslationZ( 4 );
 
         ball = new MeshInstance( ballMesh, (MeshInstance target) -> {
             target.getTransform().setTranslationZ( (float) Math.sin( getTime() ) );
             //trans.setTranslationZ( -1.5f + (float) Math.cos( t ) );
         }, cud.uniformUpdater, dilloMaterial );
+
         MeshInstance leftInterfaceMI = new MeshInstance( rect, cud.uniformUpdater, interfaceLeftMaterial );
         m4 = leftInterfaceMI.getTransform();
         m4.setTranslationX( -0.5f );
-        m4.setTranslationY( 1f );
-        //m4.scaleXYZ( 2);
-        m4.setElement( Matrix4f.SCALE_Y, 2 );
-        //rightInterface.getTransform().setTranslationX( -0.5f );
-        //rightInterface.getTransform().setTranslationY( 1f );
-        //rightInterface.getTransform().setTranslationZ( -1f );
+        m4.setScale( 0.5f, 1, 0.5f );
+
         MeshInstance overlayMI = new MeshInstance( rect, cud.uniformUpdater, null );
         m4 = overlayMI.getTransform();
         //overlay.getTransform().setTranslationX( -2f );
@@ -124,8 +119,8 @@ public class UiTestScene implements EventListenerGL {
         meshes.add( ballMesh );
         meshes.add( rect );
         //meshes.add( rightInterface );
-        mainMeshBatch.getNonAlphaBlendedMeshInstances().add( ball );
-        mainMeshBatch.addAlphaBlendedMeshIntances( squareHairMI1, squareHairMI2, squareHairMI3, leftInterfaceMI );
+        mainMeshBatch.addNonAlphaBlendedMeshInstances( ball, leftInterfaceMI );
+        mainMeshBatch.addAlphaBlendedMeshInstances( squareHairMI1, squareHairMI2, squareHairMI3 );
         //mainMeshBatch.getAlphaBlendedMeshInstances().add( rightInterface );
         //mainMeshBatch.getNonAlphaBlendedMeshInstances().add( leftInterface );
         noiseMeshBatch.getAlphaBlendedMeshInstances().add( overlayMI );
@@ -186,6 +181,14 @@ public class UiTestScene implements EventListenerGL {
          */
     }
 
+    private void weightedAvgXY ( float newWeight, Matrix4f target, float newX, float newY ) {
+        float //
+                curX = target.getTranslationX(),
+                curY = target.getTranslationY();
+        target.setTranslationX( ( 1 - newWeight ) * curX + newWeight * newX );
+        target.setTranslationY( ( 1 - newWeight ) * curY + newWeight * newY );
+    }
+
     @Override
     public void render ( OpenGLUE gl ) {
         if ( debug ) {
@@ -196,29 +199,12 @@ public class UiTestScene implements EventListenerGL {
         MouseGLUE mg = Main.wg.getMouseGLUE();
         int mouseX = mg.getX(), mouseY = mg.getY();
         float mouseRatioX = mg.getRatioX(), mouseRatioY = mg.getRatioY();
+
         float targetX = mouseRatioX * 2 - 1;
         float targetY = -( mouseRatioY * 2 - 1 );
-        /*
-         shmit1.setTranslationX( targetX );
-         shmit1.setTranslationY( targetY + 0.5f * shmit1.getScaleY() );
-         shmit2.setTranslationX( targetX );
-         shmit2.setTranslationY( targetY + 0.5f * shmit2.getScaleY() );
-         shmit3.setTranslationX( targetX );
-         shmit3.setTranslationY( targetY + 0.5f * shmit3.getScaleY() );
-         */
-        float curX, curY;
-        curX = shmit1.getTranslationX();
-        curY = shmit1.getTranslationY();
-        shmit1.setTranslationX( 0.7f * curX + 0.3f * targetX );
-        shmit1.setTranslationY( 0.7f * curY + 0.3f * ( targetY + 0.5f * shmit1.getScaleY() ) );
-        curX = shmit2.getTranslationX();
-        curY = shmit2.getTranslationY();
-        shmit2.setTranslationX( 0.5f * curX + 0.5f * targetX );
-        shmit2.setTranslationY( 0.5f * curY + 0.5f * ( targetY + 0.5f * shmit2.getScaleY() ) );
-        curX = shmit3.getTranslationX();
-        curY = shmit3.getTranslationY();
-        shmit3.setTranslationX( 0.2f * curX + 0.8f * targetX );
-        shmit3.setTranslationY( 0.2f * curY + 0.8f * ( targetY + 0.5f * shmit3.getScaleY() ) );
+        weightedAvgXY( 0.3f, shmit1, targetX, targetY );
+        weightedAvgXY( 0.5f, shmit2, targetX, targetY );
+        weightedAvgXY( 0.7f, shmit3, targetX, targetY );
 
         cud.mousePos.set( mouseX, mouseY );
         cud.lightDirUnit.setX( mouseRatioX * 2 - 1 );
@@ -266,10 +252,10 @@ public class UiTestScene implements EventListenerGL {
         }
 
         // overlays
-        gl.glClear( ClearBufferMask.DepthBufferBit );
-        noiseMeshBatch.render( gl );
-        gl.glClear( ClearBufferMask.DepthBufferBit );
-        overlayMeshBatch.render( gl );
+        //gl.glClear( ClearBufferMask.DepthBufferBit );
+        //noiseMeshBatch.render( gl );
+        //gl.glClear( ClearBufferMask.DepthBufferBit );
+        //overlayMeshBatch.render( gl );
     }
 
     // TODO implement a proper export filter here

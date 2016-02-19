@@ -3,6 +3,8 @@ package vax.math;
 import java.util.Arrays;
 
 public class VectorFloat {
+    public static final int OX = 0, OY = 1, OZ = 2, OW = 3;
+
     protected float[] data;
 
     public VectorFloat ( int requiredSize ) {
@@ -109,7 +111,7 @@ public class VectorFloat {
         return this;
     }
 
-    public VectorFloat setElement ( int index, float value) {
+    public VectorFloat setElement ( int index, float value ) {
         data[index] = value;
         return this;
     }

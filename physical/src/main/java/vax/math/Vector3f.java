@@ -1,8 +1,7 @@
 package vax.math;
 
 public class Vector3f extends VectorFloat {
-    public final static int SIZE = 3,
-            OX = 0, OY = 1, OZ = 2;
+    public final static int SIZE = 3;
 
     public Vector3f () {
         super( new float[SIZE] );
