@@ -10,7 +10,8 @@ import vax.math.Matrix4f;
  */
 public class CameraDistanceSorter implements MeshSorter {
     private final TObjectFloatHashMap<MeshInstance> distMap = new TObjectFloatHashMap<>();
-    private Matrix4f cameraPosition;
+    private Matrix4f viewMatrix;
+    private final Matrix4f cameraMatrix = new Matrix4f();
     private ArrayList<MeshInstance> meshes;
     private final Comparator<MeshInstance> //
             ascendingDepthComparator = (MeshInstance o1, MeshInstance o2) -> Float.compare( distMap.get( o1 ), distMap.get( o2 ) ),
@@ -19,20 +20,20 @@ public class CameraDistanceSorter implements MeshSorter {
     public CameraDistanceSorter () {
     }
 
-    public CameraDistanceSorter ( Matrix4f cameraPosition ) {
-        this.cameraPosition = cameraPosition;
+    public CameraDistanceSorter ( Matrix4f viewMatrix ) {
+        this.viewMatrix = viewMatrix;
     }
 
-    public Matrix4f getCameraPosition () {
-        return cameraPosition;
+    public Matrix4f getViewMatrix () {
+        return viewMatrix;
     }
 
-    public void setCameraPosition ( Matrix4f cameraPosition ) {
-        this.cameraPosition = cameraPosition;
+    public void setViewMatrix ( Matrix4f viewMatrix ) {
+        this.viewMatrix = viewMatrix;
     }
 
     private MeshInstance prepareMeshInstanceInfo ( MeshInstance mesh ) {
-        distMap.put( mesh, mesh.getTransform().calcDistance( cameraPosition ) );
+        distMap.put( mesh, mesh.getTransform().calcTranslationDistanceSq( cameraMatrix ) );
         return mesh;
     }
 
@@ -41,14 +42,30 @@ public class CameraDistanceSorter implements MeshSorter {
         if ( meshes == null ) {
             meshes = new ArrayList<>( input.size() );
         }
-        int max = Math.min( meshes.size(), input.size() ); // yup
-        Iterator<MeshInstance> it = input.iterator();
-
-        for( int i = 0; i < max; i++ ) {
-            meshes.set( i, prepareMeshInstanceInfo( it.next() ) );
+        int inputSize = input.size();
+        if ( inputSize == 0 ) {
+            meshes.clear();
+            return meshes;
         }
-        while( it.hasNext() ) {
-            meshes.add( prepareMeshInstanceInfo( it.next() ) );
+        viewMatrix.invert( cameraMatrix );
+        Iterator<MeshInstance> it = input.iterator();
+        int meshesSize = meshes.size();
+        if ( meshesSize == inputSize ) {
+            for( int i = 0; i < inputSize; i++ ) {
+                meshes.set( i, prepareMeshInstanceInfo( it.next() ) );
+            }
+        } else if ( meshesSize < inputSize ) {
+            for( int i = 0; i < meshesSize; i++ ) {
+                meshes.set( i, prepareMeshInstanceInfo( it.next() ) );
+            }
+            while( it.hasNext() ) {
+                meshes.add( prepareMeshInstanceInfo( it.next() ) );
+            }
+        } else { // meshesSize > inputSize
+            for( int i = 0; i < inputSize; i++ ) {
+                meshes.set( i, prepareMeshInstanceInfo( it.next() ) );
+            }
+            meshes.subList( inputSize, meshesSize ).clear();
         }
 
         meshes.sort( ascending ? ascendingDepthComparator : descendingDepthComparator );

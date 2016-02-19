@@ -1,26 +1,18 @@
 package vax.openglue.mesh;
 
-import java.io.*;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import vax.math.Matrix4f;
 import vax.openglue.constants.BufferTarget;
 import vax.openglue.constants.PrimitiveType;
 import vax.openglue.*;
-import vax.physical.Main;
-import vax.util.Action;
 
 public class Mesh implements Renderable {
-    public static final int VERTEX_COUNT = 3, // because we use triangles
+    public static final int //
+            VERTEX_COUNT = 3, // implicitly assume we're using triangles
             V_DIMS = 3, VN_DIMS = 3, VT_DIMS = 2, // for reference for other implementing classes
             VS_COUNT = 3;
     // v, vn, vt; 3 total.
-    protected static final String[][] OBJ_SECTION_NAMES = {
-        { "vertices", "v" },
-        { "normals", "vn" },
-        { "UVs", "vt" }
-    };
     public static final float[] TRI_VT_PROTO = {
         1, 1, /* */ 1, 0, /* */ 0, 1
     };
@@ -75,7 +67,6 @@ public class Mesh implements Renderable {
     @Override
     public void render ( OpenGLUE gl ) {
         gl.glBindVertexArray( vaoHandle );
-
         gl.glDrawElements( primitiveType.getGlConstant(), meshData.getIndices().length, OpenGL.Constants.GL_UNSIGNED_INT, 0 );
     }
 
@@ -120,46 +111,6 @@ public class Mesh implements Renderable {
         enableAttribute( gl, 2, uvsVboHandle, Mesh.VT_DIMS );
         gl.glBindBuffer( BufferTarget.ElementArrayBuffer, eboHandle );
         gl.glBindVertexArray( 0 ); // important!
-    }
-
-    protected void writeOBJ_buf ( DataOutputStream dos, int bufNr ) throws IOException {
-        FloatBuffer fb = FloatBuffer.wrap( meshData.getData()[bufNr] );
-        dos.writeBytes( "#\n# " + OBJ_SECTION_NAMES[bufNr][0] + "\n#\n\n" );
-        String prefix = OBJ_SECTION_NAMES[bufNr][1] + " ";
-        if ( bufNr != 2 ) {
-            for( int j = 0; j < meshData.getVertexCount(); j++ ) {
-                dos.writeBytes( prefix + fb.get() + " " + fb.get() + " " + fb.get() + "\n" );
-            }
-        } else {
-            for( int j = 0; j < meshData.getVertexCount(); j++ ) {
-                dos.writeBytes( prefix + fb.get() + " " + fb.get() + "\n" );
-            }
-        }
-        dos.writeBytes( "\n" );
-    }
-
-    public void writeOBJ ( String filename ) throws IOException {
-        try ( FileOutputStream fos = new FileOutputStream( filename + ".obj" );
-                DataOutputStream dos = new DataOutputStream( fos ) ) {
-            dos.writeBytes( "# created by " + Main.APP_NAME + "\n" );
-            int tri_cnt = meshData.getVertexCount() / VERTEX_COUNT;
-            dos.writeBytes( "# " + meshData.getVertexCount() + " vertex total == normals == UVs\n"
-                    + "# " + tri_cnt + " tris == faces\n\n"
-                    + "mtllib " + filename + ".mtl\nusemtl " + filename + "\n\n"
-                    + "#\n# " + getClass() + "\n#\n\n" );
-            writeOBJ_buf( dos, 0 );
-            writeOBJ_buf( dos, 2 );
-            writeOBJ_buf( dos, 1 );
-            dos.writeBytes( "#\n# faces\n#\n" );
-            for( int i = 0, j = 1, k = 2, l = 3; i < tri_cnt; i++, k += 3, j += 3, l += 3 ) {
-                dos.writeBytes( "f " + j + "/" + j + "/" + j + " " + k + "/" + k + "/" + k + " " + l + "/" + l + "/" + l + "\n" );
-            }
-            dos.writeBytes( "\n# EOF\n" );
-        }
-    }
-
-    public void writeOBJ () throws IOException {
-        writeOBJ( "" + getClass() );
     }
 
     /**
