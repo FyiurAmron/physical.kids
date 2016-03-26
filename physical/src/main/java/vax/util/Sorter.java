@@ -8,6 +8,7 @@ import java.util.List;
  @param <T>
  @param <I>
  */
+@FunctionalInterface
 public interface Sorter<T, I extends Iterable<T>> {
     default List<T> sort ( I iterable ) {
         return sort( iterable, true );

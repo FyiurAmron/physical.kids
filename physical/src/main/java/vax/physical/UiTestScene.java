@@ -19,7 +19,7 @@ public class UiTestScene implements EventListenerGL {
 
     private final boolean debug = true;
 
-    private MeshBatch mainMeshBatch, noiseMeshBatch, overlayMeshBatch;
+    private MeshBatch mainMeshBatch, uiMeshBatch, noiseMeshBatch, overlayMeshBatch;
 
     private final CommonUniformDescriptor cud = new CommonUniformDescriptor();
 
@@ -57,6 +57,7 @@ public class UiTestScene implements EventListenerGL {
         mainMeshBatch = new MeshBatch( "main", cds );
         noiseMeshBatch = new MeshBatch( "noise", cds );
         overlayMeshBatch = new MeshBatch( "overlay", cds );
+        uiMeshBatch = new MeshBatch( "ui", cds );
 
         TextureData<?> dilloTD = imageGlue.readTextureData( "angry-armadillo.png", Resource.class );
         TextureData<?> leftInterfaceTD = imageGlue.readTextureData( "interface.png", Resource.class );
@@ -81,13 +82,16 @@ public class UiTestScene implements EventListenerGL {
 
         dilloMaterial = new Material( dilloTex );
         //dilloMaterial.color.set( 1, 0, 0, 1);
-        Material squareHairMaterial = new Material( squareHairTex );
-        Material interfaceLeftMaterial = new Material( interfaceLeftTex );
+        Material //
+                squareHairMaterial1 = new Material( squareHairTex, new Vector4f( 0, 1, 0, 0.5f ), 1, 0, 1 ),
+                squareHairMaterial2 = new Material( squareHairTex, new Vector4f( 1, 1, 0, 0.5f ), 1, 0, 1 ),
+                squareHairMaterial3 = new Material( squareHairTex, new Vector4f( 1, 0, 0, 0.5f ), 1, 0, 1 );
+        Material interfaceLeftMaterial = new Material( interfaceLeftTex, new Vector4f(1,1,1,1), 1, 0, 1 );
         //rightInterface.setMaterial( new Material( interfaceLeftTex ) );
         //rightInterface.setMaterial( ilt );
-        MeshInstance squareHairMI1 = new MeshInstance( rect, cud.uniformUpdater, squareHairMaterial );
-        MeshInstance squareHairMI2 = squareHairMI1.copy( false );
-        MeshInstance squareHairMI3 = squareHairMI1.copy( false );
+        MeshInstance squareHairMI1 = new MeshInstance( rect, cud.uniformUpdater, squareHairMaterial1 );
+        MeshInstance squareHairMI2 = new MeshInstance( rect, cud.uniformUpdater, squareHairMaterial2 );
+        MeshInstance squareHairMI3 = new MeshInstance( rect, cud.uniformUpdater, squareHairMaterial3 );
         shmit1 = squareHairMI1.getTransform();
         shmit1.setScale( 0.25f, 0.25f, 0.25f );
         shmit1.setTranslationZ( 2 );
@@ -102,6 +106,7 @@ public class UiTestScene implements EventListenerGL {
             target.getTransform().setTranslationZ( (float) Math.sin( getTime() ) );
             //trans.setTranslationZ( -1.5f + (float) Math.cos( t ) );
         }, cud.uniformUpdater, dilloMaterial );
+        ball.getTransform().setTranslationX( -0.5f );
 
         MeshInstance leftInterfaceMI = new MeshInstance( rect, cud.uniformUpdater, interfaceLeftMaterial );
         m4 = leftInterfaceMI.getTransform();
@@ -119,12 +124,13 @@ public class UiTestScene implements EventListenerGL {
         meshes.add( ballMesh );
         meshes.add( rect );
         //meshes.add( rightInterface );
-        mainMeshBatch.addNonAlphaBlendedMeshInstances( ball, leftInterfaceMI );
-        mainMeshBatch.addAlphaBlendedMeshInstances( squareHairMI1, squareHairMI2, squareHairMI3 );
+        mainMeshBatch.addNonAlphaBlendedMeshInstances( ball );
+        mainMeshBatch.addAlphaBlendedMeshInstances();
         //mainMeshBatch.getAlphaBlendedMeshInstances().add( rightInterface );
         //mainMeshBatch.getNonAlphaBlendedMeshInstances().add( leftInterface );
-        noiseMeshBatch.getAlphaBlendedMeshInstances().add( overlayMI );
-        overlayMeshBatch.getAlphaBlendedMeshInstances().add( overlayMI );
+        noiseMeshBatch.addAlphaBlendedMeshInstances( overlayMI );
+        overlayMeshBatch.addAlphaBlendedMeshInstances( overlayMI );
+        uiMeshBatch.addAlphaBlendedMeshInstances( leftInterfaceMI, squareHairMI1, squareHairMI2, squareHairMI3 );
 
         float aspectRatio = initialSettings.getAspectRatio();
         //gl.glPolygonMode( OpenGLUE.Constants.GL_FRONT_AND_BACK, OpenGLUE.Constants.GL_LINE ); // DEBUG
@@ -153,25 +159,30 @@ public class UiTestScene implements EventListenerGL {
         HashSet<Uniform> //
                 mainUniSet = mainMeshBatch.getPerRenderUniforms(),
                 noiseUniSet = noiseMeshBatch.getPerRenderUniforms(),
-                overlayUniSet = overlayMeshBatch.getPerRenderUniforms();
+                overlayUniSet = overlayMeshBatch.getPerRenderUniforms(),
+                uiUniSet = uiMeshBatch.getPerRenderUniforms();
         for( Uniform u : cud.perRenderUniforms ) {
             mainUniSet.add( u );
             noiseUniSet.add( u );
             overlayUniSet.add( u );
+            uiUniSet.add( u );
         }
 
         mainUniSet = mainMeshBatch.getPerMeshUniforms();
         noiseUniSet = noiseMeshBatch.getPerMeshUniforms();
         overlayUniSet = overlayMeshBatch.getPerMeshUniforms();
+        uiUniSet = uiMeshBatch.getPerMeshUniforms();
         for( Uniform u : cud.perMeshUniforms ) {
             mainUniSet.add( u );
             noiseUniSet.add( u );
             overlayUniSet.add( u );
+            uiUniSet.add( u );
         }
 
         mainMeshBatch.init( gl );
         noiseMeshBatch.init( gl );
         overlayMeshBatch.init( gl );
+        uiMeshBatch.init( gl );
 
         /*
          Vector2i windowSize = initialSettings.windowSize;
@@ -252,10 +263,12 @@ public class UiTestScene implements EventListenerGL {
         }
 
         // overlays
-        //gl.glClear( ClearBufferMask.DepthBufferBit );
-        //noiseMeshBatch.render( gl );
-        //gl.glClear( ClearBufferMask.DepthBufferBit );
-        //overlayMeshBatch.render( gl );
+        gl.glClear( ClearBufferMask.DepthBufferBit );
+        noiseMeshBatch.render( gl );
+        gl.glClear( ClearBufferMask.DepthBufferBit );
+        overlayMeshBatch.render( gl );
+        gl.glClear( ClearBufferMask.DepthBufferBit );
+        uiMeshBatch.render( gl );
     }
 
     // TODO implement a proper export filter here

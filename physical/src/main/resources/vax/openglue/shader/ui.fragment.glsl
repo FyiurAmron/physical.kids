@@ -40,9 +40,9 @@ void main() {
     //vec4 diffuseColor = texture(textureSampler, uv) * vec4(uv,0,1) * abs(sin(time*2)); // Groovy Disco TM
     vec4 diffuseColor, specularColor;
     if ( nl > 0 ) {
-        diffuseColor = ( vec4( lightColor * clamp( nl, 0.0, 1.0 ) ) + vec4(emissionFactor,emissionFactor,emissionFactor,0.0) ) * modelColor;
-        //diffuseColor = modelColor;
-        vec3 viewDir = normalize( vec3(-viewMatrix[3] - modelMatrix * vec4(raw_Position,1)) ); // raw_Position is interpolated per-pixel
+        vec3 viewDir = normalize(vec3(-viewMatrix[3] - modelMatrix * vec4(raw_Position,1)));
+        //diffuseColor = ( vec4( lightColor * clamp( nl, 0.0, 1.0 ) ) + vec4(emissionFactor,emissionFactor,emissionFactor,0.0) ) * modelColor;
+        diffuseColor = modelColor;
         specularColor = specularFactor * clamp( vec4( pow( max( 0.0, dot( reflect(-lightDirUnit, normal), viewDir) ), shininess) ), 0.0, 1.0 );
     } else {
         diffuseColor = vec4( 0,0,0,1 );
@@ -56,7 +56,7 @@ void main() {
 */
 
     out_fragColor = //mouseHighlight +
-       vec4( clamp( textureColor * clamp( diffuseColor + ambientColor, 0.0, 1.0 ) + specularColor, 0.0, 1.0 ) );
+       vec4( clamp( textureColor * diffuseColor /*+ textureColor * ambientColor + specularColor*/, 0.0, 1.0 ) );
 
     // IN CASE OF DEBUG:
     //out_fragColor = vec4(uv.x,uv.y,0,1);

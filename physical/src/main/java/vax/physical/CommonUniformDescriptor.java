@@ -40,11 +40,15 @@ public class CommonUniformDescriptor extends UniformDescriptor.Reflective {
             mousePos = new Vector2i();
 
     @PerMeshUniform
-    public final Value1f shininess = new Value1f();
+    public final Value1f //
+            emissionFactor = new Value1f(),
+            specularFactor = new Value1f(),
+            shininess = new Value1f();
     @PerMeshUniform
     public final Vector4f modelColor = new Vector4f();
     @PerMeshUniform
-    public final Matrix4f modelMatrix = new Matrix4f(),
+    public final Matrix4f //
+            modelMatrix = new Matrix4f(),
             combinedMatrix = new Matrix4f();
 
     public final Action<MeshInstance> uniformUpdater = (MeshInstance mi) -> {
