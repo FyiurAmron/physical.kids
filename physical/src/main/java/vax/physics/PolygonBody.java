@@ -3,8 +3,6 @@ package vax.physics;
 import vax.math.Plane3f;
 import vax.math.Vector3f;
 
-import javax.sound.midi.Soundbank;
-
 /**
  Created by Kuba on 2016-01-16.
  */
@@ -69,7 +67,7 @@ public abstract class PolygonBody extends Body {
         _setPoints( vArray );
     }
 
-    protected void _setPoints ( Vector3f[] vArray ) {
+    private void _setPoints ( Vector3f[] vArray ) {
 
         if ( vArray.length != vertices.length ) {
             throw new IllegalStateException();

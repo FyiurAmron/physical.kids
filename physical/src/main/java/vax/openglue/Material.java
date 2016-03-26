@@ -9,21 +9,29 @@ import vax.math.Vector4f;
 public class Material {
     public Texture texture;
     public Vector4f color;
-    public int shininess;
+    public float shininess, specularFactor, emissionFactor;
 
     public Material () {
     }
 
     public Material ( Texture texture ) {
-        this.texture = texture;
-        color = new Vector4f( 1, 1, 1, 1 );
-        shininess = 10;
+        this( texture, new Vector4f( 1, 1, 1, 1 ), 10, 0.5f, 0 );
     }
 
-    public Material ( Texture texture, Vector4f color, int shininess ) {
+    public Material ( Texture texture, Vector4f color ) {
+        this( texture, color, 10, 0.5f, 0 );
+    }
+
+    public Material ( Texture texture, Vector4f color, float shininess, float specularFactor, float emissionFactor ) {
         this.texture = texture;
         this.color = color;
         this.shininess = shininess;
+        this.specularFactor = specularFactor;
+        this.emissionFactor = emissionFactor;
+    }
+
+    public Material copy ( boolean newColorCopy ) {
+        return new Material( texture, newColorCopy ? new Vector4f( color ) : color, shininess, specularFactor, emissionFactor );
     }
 
     public void bind ( OpenGLUE gl ) {

@@ -1,5 +1,11 @@
 package vax.physics;
 
+/**
+
+@author toor
+@param <T1>
+@param <T2>
+*/
 public abstract class Collider<T1 extends Body, T2 extends Body> {
     final ColliderDescriptor colliderDescriptor;
     protected static CollisionResult resultFalse = new CollisionResult( false, null, Float.POSITIVE_INFINITY );

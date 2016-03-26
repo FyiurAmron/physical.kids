@@ -4,6 +4,7 @@ package vax.openglue.constants;
 
  @author toor
  */
+@FunctionalInterface
 public interface OpenGlConstantWrapper {
     int getGlConstant ();
 
